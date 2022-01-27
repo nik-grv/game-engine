@@ -62,8 +62,6 @@ project "Engine"
 		"IMGui",
 		"assimp",
 		"box2d",
-		"lua",
-		"ReactPhysics3d"
 		
 	}
 	
