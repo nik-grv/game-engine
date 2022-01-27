@@ -1,4 +1,4 @@
-## Welcome to GitHub Pages
+## Welcome to Tankery-Here-It-Comes
 
 You can use the [editor on GitHub](https://github.com/IMAT3905/Tankery-Here-It-Comes/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
 
