@@ -108,7 +108,7 @@ namespace Engine {
 
 	}
 
-
+#pragma region AppEvents
 	/*!
 	\param closeEvent WindowCloseEvent  - window close event
 	*/
@@ -259,6 +259,7 @@ namespace Engine {
 		return e.isHandled();
 	}
 
+#pragma endregion
 
 	Application::~Application()
 	{
@@ -297,7 +298,9 @@ namespace Engine {
 
 #pragma endregion
 
-#pragma region RAW_DATA
+		//Renderer3D::init();
+
+#pragma region [History] - RAW_DATA
 
 		////vertices data when using texture atlast
 //float cubeVertices[8 * 24] = {
@@ -419,10 +422,11 @@ namespace Engine {
 			20, 21, 22,
 			22, 23, 20
 		};
+		*/
 #pragma endregion
 
-#pragma region GL_BUFFERS
-
+#pragma region [History] -  GL_BUFFERS
+/*
 		std::shared_ptr<VertexArray> cubeVAO;
 		std::shared_ptr<VertexBuffer> cubeVBO;
 		std::shared_ptr<IndexBuffer> cubeIBO;
@@ -450,19 +454,18 @@ namespace Engine {
 
 		pyramidVAO->addVertexBuffer(pyramidVBO);
 		pyramidVAO->setIndexBuffer(pyramidIBO);
-
+		*/
 #pragma endregion
-
-		//Renderer3D::init();
 		
-#pragma region SHADERS
-
+#pragma region [History] - SHADERS
+/*
 		std::shared_ptr<ShaderRend> TPShader;
 		TPShader.reset(ShaderRend::create("./assets/shaders/texturedPhong.glsl"));
-
+		*/
 #pragma endregion 
 
-#pragma region MATERIALS
+#pragma region [History] - MATERIALS
+/*
 		std::shared_ptr<Material> pyraMat1;
 		std::shared_ptr<Material> pyraMat2;
 		std::shared_ptr<Material> pyraMat3;
@@ -476,10 +479,11 @@ namespace Engine {
 		numberMat.reset(new Material(TPShader, numberTexture));
 
 		//Renderer3D::registerShader(TPShader);
-
+		*/
 #pragma endregion
 
-#pragma region MVP
+#pragma region [History] - MVP
+/*
 		models[0] = glm::translate(glm::mat4(1.0f), glm::vec3(-2.f, 0.f, -6.f));
 		models[1] = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, -6.f));
 		models[2] = glm::translate(glm::mat4(1.0f), glm::vec3(2.f, 0.f, -6.f));
@@ -508,9 +512,11 @@ namespace Engine {
 		SceneWideUniforms scenewideUniforms2D;
 		scenewideUniforms2D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(view2D)));
 		scenewideUniforms2D["u_projection"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(projection2D)));
-
+		*/
 #pragma endregion
-		
+
+#pragma region [History] - Quad
+		/*
 		float timestep = 0.f;
 		int fps;
 
@@ -525,7 +531,9 @@ namespace Engine {
 			Quad::createCentreHalfExtens({ 200.0f,100 }, {50.0f,50.0f}),
 		};
 		*/
-#pragma region RenderCommands
+#pragma endregion 
+
+#pragma region [History] - RenderCommands
 
 		//std::shared_ptr<RendererCommands> clearColorAndDepthCommand;
 		//std::shared_ptr<RendererCommands> enableDepthCommand;
@@ -565,6 +573,7 @@ namespace Engine {
 
 		while (m_running)
 		{
+#pragma region [History] - While Loop
 			/*RendererShared::actionCommand(enableDepthCommand);
 
 			timestep = m_timer->getElapsedTime();
@@ -730,6 +739,7 @@ namespace Engine {
 
 			RendererShared::actionCommand(disableBlendCommand);
 			*/
+#pragma endregion
 			timestep = m_timer->getElapsedTime();
 			m_timer->reset();
 
