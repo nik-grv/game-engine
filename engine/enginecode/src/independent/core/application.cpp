@@ -277,8 +277,8 @@ namespace Engine {
 	void Application::run()
 	{
 
-#pragma region TEXTURES
-
+#pragma region [History] - TEXTURES
+/*
 		std::shared_ptr<TextureRend> letterTexture;
 		letterTexture.reset(TextureRend::create("assets/textures/letterCube.png"));
 		std::shared_ptr<TextureRend> numberTexture;
@@ -293,7 +293,7 @@ namespace Engine {
 		std::shared_ptr<TextureRend> plainWhiteTex;
 		unsigned char whitePixel[4] = { 255,255,255,255 };
 		plainWhiteTex.reset(TextureRend::create(1, 1, 4, whitePixel));
-
+		*/
 		
 
 #pragma endregion
