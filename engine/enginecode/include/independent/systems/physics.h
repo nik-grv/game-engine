@@ -17,6 +17,8 @@ namespace Engine {
 			m_rp3dCommon.destroyPhysicsWorld(m_world);
 		}
 
+		inline rp3d::PhysicsCommon& GetPhysCommon() { return m_rp3dCommon; };
+
 		rp3d::PhysicsWorld* m_world; //!< Game world, (I think) required for all bodies and things to be in. Has gravity maybe (if not, set)
 	private:
 		rp3d::PhysicsCommon m_rp3dCommon;	//!< Some sort of physics common i guess. Can be accessable through application class
