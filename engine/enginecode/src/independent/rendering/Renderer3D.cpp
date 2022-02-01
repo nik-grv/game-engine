@@ -26,7 +26,7 @@ namespace Engine {
 		s_data->lightUBO->uploadDataToUB("u_lightPos", glm::value_ptr(s_data->lightPos));
 		s_data->lightUBO->uploadDataToUB("u_viewPos", glm::value_ptr(s_data->viewPos));
 		s_data->lightUBO->uploadDataToUB("u_lightColour", glm::value_ptr(s_data->lightCol));
-
+		
 	}
 
 	void Renderer3D::begin(const SceneWideUniforms& sceneWideUniforms)
