@@ -23,7 +23,7 @@ namespace Engine {
 		static TempMesh output;
 		static std::vector<std::shared_ptr<Material>> s_material;
 		static std::vector<std::shared_ptr<VertexArray>> s_VAO;
-
+		static std::string s_workingDir = "";
 		std::shared_ptr<VertexArray> cubeVAO;
 		std::shared_ptr<VertexBuffer> cubeVBO;
 		std::shared_ptr<IndexBuffer> cubeIBO;
@@ -124,9 +124,15 @@ namespace Engine {
 						std::string pwd = std::filesystem::current_path().u8string();
 						std::string fn(str.C_Str());
 
-						std::string texturepath(pwd + "\\assets\\models\\" + fn);
+						auto extenLoc = fn.find(".DDS");
+						if (extenLoc != std::string::npos)
+						{
+							fn.replace(extenLoc, extenLoc + 4, ".bmp");
+						}
+						//std::string texturepath(pwd + "\\assets\\models\\" + fn);
+						std::string texturepath(pwd + s_workingDir + fn);
 						Log::info("Texture type:{0} filepath:{1}", type, texturepath.c_str());
-						output.diffusTex.reset(Engine::TextureRend::create(texturepath.c_str()));
+						output.diffusTex.reset(TextureRend::create(texturepath.c_str()));
 
 					}
 
@@ -202,6 +208,12 @@ namespace Engine {
 
 		static void ASSIMPLoad(const std::string& filepath, uint32_t flags)
 		{
+			auto lastSlashLocation = filepath.find_last_of("\\/");
+			//find slash
+			if (lastSlashLocation != std::string::npos)
+			{
+				s_workingDir = filepath.substr(0,lastSlashLocation + 1);
+			}
 			Assimp::Importer importer;
 			const aiScene *scene = importer.ReadFile(filepath, flags);
 
