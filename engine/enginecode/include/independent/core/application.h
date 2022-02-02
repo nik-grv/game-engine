@@ -46,7 +46,7 @@ namespace Engine {
 		std::shared_ptr<Log> m_loggerSystem; //!< logger system var
 		std::shared_ptr<System> m_windowSystem; //!< window system
 
-		std::shared_ptr<PhysicsSystem> m_physics; // Not a pointer as it has its own memory management
+		std::shared_ptr<PhysicsSystem> m_physics; // Physics Sytem
 
 		std::shared_ptr<Window> m_window; //!< timer var
 		std::shared_ptr<Timer> m_timer; //!< timer var
