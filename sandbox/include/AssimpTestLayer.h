@@ -22,6 +22,7 @@ public:
 	void OnUpdate(float timestep) override;
 	void OnRender() override;
 	void onMouseMoved(MouseMovedEvent& e) override;
+	void onKeyPressed(KeyPressedEvent & e) override;
 private:
 
 	std::shared_ptr<RendererCommands> clearColorAndDepthCommand;
@@ -163,8 +164,8 @@ private:
 
 	std::shared_ptr<ShaderRend> shader;
 	std::shared_ptr<Material> material;
-	std::shared_ptr<ShaderRend> shader1;
-	std::shared_ptr<Material> material1;
+	//std::shared_ptr<ShaderRend> shader1;
+	//std::shared_ptr<Material> material1;
 
 
 	glm::mat4 m_view3D;
@@ -172,7 +173,10 @@ private:
 	using SceneWideUniforms = std::unordered_map<const char*, std::pair<ShaderDataType, void*>>; //!< sceen wide uniform 
 	SceneWideUniforms m_swu3D;
 	glm::mat4 m_model1;
-	glm::mat4 m_model2;
+	//glm::mat4 m_model2;
+
+	glm::vec3 m_rotation = { 0.f, 0.f, 0.f };
+	float m_scale = 1.f;
 
 
 };
