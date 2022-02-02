@@ -52,7 +52,9 @@ namespace Engine {
 		//reset timer
 		m_timer.reset(new ChronoTimer);
 		m_timer->start();
-		while (!m_fullscreenSet)
+
+#pragma region [FEATURE] Set Fullsceen
+		/*while (!m_fullscreenSet)
 		{
 			std::cout << "\nStart with Fullscreen (Y/N) ?\n";
 			std::cin >> m_setFullScreen;
@@ -79,6 +81,9 @@ namespace Engine {
 			}
 		
 		}
+		*/
+#pragma endregion
+
 		WindowProperties props("My Game Engine",RendererShared::SCR_WIDTH, RendererShared::SCR_HEIGHT,m_isFullscreen);
 		m_window.reset(Window::create(props));
 
@@ -100,8 +105,6 @@ namespace Engine {
 
 		InputPoller::setNativeWindow(m_window->getNativewindow());
 		m_timer->reset();
-
-		m_camera.setCameraPos(glm::vec3(0.0f, 0.0f, 3.0f));
 
 		Renderer2D::init();
 		Renderer3D::init();
@@ -569,7 +572,7 @@ namespace Engine {
 #pragma endregion RenderCommands
 		//RendererShared::actionCommand(enableDepthCommand);
 		float timestep = 0.f;
-		int fps;
+		//int fps;
 
 		while (m_running)
 		{

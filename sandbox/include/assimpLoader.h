@@ -18,15 +18,20 @@ namespace Engine {
 			std::vector<Renderer3DVertex> vertices;
 			std::vector<uint32_t> indicies;
 			std::shared_ptr<TextureRend> diffusTex = nullptr;
-			glm::vec3 defuse = { 1.f, 1.f, 1.f };
+			glm::vec3 defuseTint = { 1.f, 1.f, 1.f };
 		};
-		static TempMesh output, output2;
-		static std::shared_ptr<Material> material = nullptr;
+		static TempMesh output;
+		static std::vector<std::shared_ptr<Material>> s_material;
+		static std::vector<std::shared_ptr<VertexArray>> s_VAO;
 
+		std::shared_ptr<VertexArray> cubeVAO;
+		std::shared_ptr<VertexBuffer> cubeVBO;
+		std::shared_ptr<IndexBuffer> cubeIBO;
 
 		//auto& resources = Application::getInstance().getResourceManager();
-		static void ASSIMPProcessMesh(aiMesh *mesh, const aiScene *scene)
+		static void ASSIMPProcessMesh(aiMesh* mesh, const aiScene* scene)
 		{
+			output.vertices.clear();
 			//std::multimap<uint32_t, std::pair<uint32_t, float>> vertexBoneWeights;
 
 			// Find vertex properties
@@ -54,8 +59,8 @@ namespace Engine {
 				vert.normal = normal;
 				vert.uvCoords = texCoords[0];
 				output.vertices.push_back(vert);
-				
-				
+
+
 				// Log part - assume postion, normal and UV coords
 				//Log::info("VERTEX DATA");
 				//if(texCoords.size()>0)Log::info("P x:{0}, y:{1}, z:{2}, N x:{3}, y:{4}, z:{5}, T u:{6}, v{7}", position.x, position.y, position.z, normal.x, normal.y, normal.z, texCoords[0].x, texCoords[0].y);
@@ -118,13 +123,13 @@ namespace Engine {
 					{
 						std::string pwd = std::filesystem::current_path().u8string();
 						std::string fn(str.C_Str());
-						
+
 						std::string texturepath(pwd + "\\assets\\models\\" + fn);
 						Log::info("Texture type:{0} filepath:{1}", type, texturepath.c_str());
-						output.diffusTex.reset( Engine::TextureRend::create(texturepath.c_str()) );
-						
+						output.diffusTex.reset(Engine::TextureRend::create(texturepath.c_str()));
+
 					}
-					
+
 				}
 
 			}
@@ -134,10 +139,39 @@ namespace Engine {
 			int intValue;
 			float floatValue;
 			aiColor3D colorValue;
-			if (AI_SUCCESS == material->Get(AI_MATKEY_NAME, stringValue)) Log::info("Material name: {0}", stringValue.C_Str());
+
+			if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, colorValue))
+			{
+				Log::info("Material name: {0}", stringValue.C_Str());
+				output.defuseTint = { (float)colorValue.r,(float)colorValue.g, (float)colorValue.b };
+			}
+
+			//
+			cubeVAO.reset(VertexArray::create());
+
+			VertexBufferLayout cubeBufferLayout = { ShaderDataType::Float3,ShaderDataType::Float3 ,ShaderDataType::Float2 };
+			cubeVBO.reset(VertexBuffer::create(output.vertices.data(), sizeof(Renderer3DVertex)* output.vertices.size(), cubeBufferLayout));
+
+			cubeIBO.reset(IndexBuffer::create(output.indicies.data(), output.indicies.size()));
+
+			cubeVAO->addVertexBuffer(cubeVBO);
+			cubeVAO->setIndexBuffer(cubeIBO);
+			//
+
+			std::shared_ptr<ShaderRend> shader;
+			shader.reset(ShaderRend::create("./assets/shaders/texturedPhong.glsl"));
+			Renderer3D::registerShader(shader);
+			std::shared_ptr<Material> mat;
+			if (output.diffusTex)
+				mat.reset(new Material(shader, output.diffusTex));
+			else
+				mat.reset(new Material(shader, glm::vec4(output.defuseTint,1.0f)));
+
+			s_VAO.push_back(cubeVAO);
+			s_material.push_back(mat);
 		}
 
-		static void ASSIMPProcessNode(aiNode *node, const aiScene *scene, std::shared_ptr<Material> material, std::shared_ptr<VertexArray> objVAO, std::shared_ptr<VertexBuffer> objVBO, std::shared_ptr<IndexBuffer> objIBO)
+		static void ASSIMPProcessNode(aiNode *node, const aiScene *scene)
 		{
 			std::string parentName = "Null";
 			if (node->mParent != nullptr) parentName = node->mParent->mName.C_Str();
@@ -162,11 +196,11 @@ namespace Engine {
 			//  Process child nodes
 			for (uint32_t i = 0; i < node->mNumChildren; i++)
 			{
-				ASSIMPProcessNode(node->mChildren[i], scene, material, objVAO, objVBO, objIBO);
+				ASSIMPProcessNode(node->mChildren[i], scene);
 			}
 		}
 
-		static void ASSIMPLoad(const std::string& filepath, uint32_t flags, std::shared_ptr<Material> material, std::shared_ptr<VertexArray> objVAO, std::shared_ptr<VertexBuffer> objVBO, std::shared_ptr<IndexBuffer> objIBO)  //Need to change geo to use Geometry if get time.
+		static void ASSIMPLoad(const std::string& filepath, uint32_t flags)
 		{
 			Assimp::Importer importer;
 			const aiScene *scene = importer.ReadFile(filepath, flags);
@@ -176,8 +210,8 @@ namespace Engine {
 				Log::error("Cannot load: {0}, ASSIMP Error {1}", filepath, importer.GetErrorString());
 				return;
 			}
-			ASSIMPProcessNode(scene->mRootNode, scene, material, objVAO, objVBO, objIBO);
-
+			Log::info("Loaded: {0} ", filepath);
+			ASSIMPProcessNode(scene->mRootNode, scene);
 
 		}
 	}

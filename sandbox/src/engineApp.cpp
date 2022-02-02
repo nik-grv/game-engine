@@ -12,9 +12,9 @@
 */
 engineApp::engineApp()
 {
-	m_layerStack.Push(new SceneLayer("Scene Layer"));
-	m_layerStack.Push(new UILayer("UI Layer"));
+	//m_layerStack.Push(new SceneLayer("Scene Layer"));
 	m_layerStack.Push(new AssimpLayer("Test"));
+	m_layerStack.Push(new UILayer("UI Layer"));
 }
 
 //! Empty Destructor

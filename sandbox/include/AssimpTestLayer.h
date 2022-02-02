@@ -37,27 +37,22 @@ private:
 //		 0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterSubTex.transformU(0.f),  letterSubTex.transformV(0.5f),
 //		-0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(0.5f),
 //		-0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(0.f),
-
 //		-0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(0.5f),
 //		 0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(0.5f),
 //		 0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(0.f),
 //		-0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterSubTex.transformU(0.33), letterSubTex.transformV(0.f),
-
 //		-0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterSubTex.transformU(1.f),  letterSubTex.transformV(0.f),
 //		 0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(0.f),
 //		 0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(0.5f),
 //		-0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterSubTex.transformU(1.0f), letterSubTex.transformV(0.5f),
-
 //		0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,	letterSubTex.transformU(0.f),  letterSubTex.transformV(0.5f),
 //		 0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterSubTex.transformU(0.f),  letterSubTex.transformV(1.0f),
 //		-0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(1.0f),
 //		-0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  letterSubTex.transformU(0.3f), letterSubTex.transformV(0.5f),
-
 //		-0.5f,  0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(0.5f),
 //		-0.5f,  0.5f, -0.5f, -1.f,  0.f,  0.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(0.5f),
 //		-0.5f, -0.5f, -0.5f, -1.f,  0.f,  0.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(1.0f),
 //		-0.5f, -0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(1.0f),
-
 //		0.5f, -0.5f, -0.5f,  1.f,  0.f,  0.f,   letterSubTex.transformU(1.0f), letterSubTex.transformV(1.0f),
 //		0.5f,  0.5f, -0.5f,  1.f,  0.f,  0.f,   letterSubTex.transformU(1.0f), letterSubTex.transformV(0.5f),
 //		0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,   letterSubTex.transformU(0.66f),letterSubTex.transformV(0.5f),
@@ -158,22 +153,16 @@ private:
 	std::shared_ptr<RendererCommands> disableDepthCommand;
 	std::shared_ptr<RendererCommands> blendFuncAlphaCommand;
 
-	std::shared_ptr<VertexArray> cubeVAO, cubeVAO2;
-	std::shared_ptr<VertexBuffer> cubeVBO, cubeVBO2;
-	std::shared_ptr<IndexBuffer> cubeIBO, cubeIBO2;
-
+	std::shared_ptr<VertexArray> m_VAO;
 	std::shared_ptr<ShaderRend> shader;
-	std::shared_ptr<Material> material;
-	//std::shared_ptr<ShaderRend> shader1;
-	//std::shared_ptr<Material> material1;
+	std::shared_ptr<Material> mat;
 
 
 	glm::mat4 m_view3D;
 	glm::mat4 m_projection3D;
 	using SceneWideUniforms = std::unordered_map<const char*, std::pair<ShaderDataType, void*>>; //!< sceen wide uniform 
 	SceneWideUniforms m_swu3D;
-	glm::mat4 m_model1;
-	//glm::mat4 m_model2;
+	glm::mat4 m_model1 , m_model2;
 
 	glm::vec3 m_rotation = { 0.f, 0.f, 0.f };
 	float m_scale = 1.f;
