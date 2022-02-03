@@ -153,9 +153,11 @@ private:
 	std::shared_ptr<RendererCommands> disableDepthCommand;
 	std::shared_ptr<RendererCommands> blendFuncAlphaCommand;
 
-	std::shared_ptr<VertexArray> m_VAO;
+	std::shared_ptr<VertexArray> m_VAO1,m_VAO2;
+	std::shared_ptr<VertexBuffer> m_VBO1,m_VBO2;
+	std::shared_ptr<IndexBuffer> m_IBO1,m_IBO2;
 	std::shared_ptr<ShaderRend> shader;
-	std::shared_ptr<Material> mat;
+	std::shared_ptr<Material> mat1,mat2;
 
 
 	glm::mat4 m_view3D;
