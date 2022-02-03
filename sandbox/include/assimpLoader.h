@@ -21,12 +21,12 @@ namespace Engine {
 			glm::vec3 defuseTint = { 1.f, 1.f, 1.f };
 		};
 		static TempMesh output;
-		static std::vector<std::shared_ptr<Material>> s_material;
-		static std::vector<std::shared_ptr<VertexArray>> s_VAO;
+		//static std::vector<std::shared_ptr<Material>> s_material;
+		//static std::vector<std::shared_ptr<VertexArray>> s_VAO;
 		static std::string s_workingDir = "";
-		std::shared_ptr<VertexArray> cubeVAO;
+		/*std::shared_ptr<VertexArray> cubeVAO;
 		std::shared_ptr<VertexBuffer> cubeVBO;
-		std::shared_ptr<IndexBuffer> cubeIBO;
+		std::shared_ptr<IndexBuffer> cubeIBO;*/
 
 		//auto& resources = Application::getInstance().getResourceManager();
 		static void ASSIMPProcessMesh(aiMesh* mesh, const aiScene* scene)
@@ -152,29 +152,17 @@ namespace Engine {
 				output.defuseTint = { (float)colorValue.r,(float)colorValue.g, (float)colorValue.b };
 			}
 
-			//
-			cubeVAO.reset(VertexArray::create());
+			
 
-			VertexBufferLayout cubeBufferLayout = { ShaderDataType::Float3,ShaderDataType::Float3 ,ShaderDataType::Float2 };
-			cubeVBO.reset(VertexBuffer::create(output.vertices.data(), sizeof(Renderer3DVertex)* output.vertices.size(), cubeBufferLayout));
 
-			cubeIBO.reset(IndexBuffer::create(output.indicies.data(), output.indicies.size()));
-
-			cubeVAO->addVertexBuffer(cubeVBO);
-			cubeVAO->setIndexBuffer(cubeIBO);
-			//
-
-			std::shared_ptr<ShaderRend> shader;
-			shader.reset(ShaderRend::create("./assets/shaders/texturedPhong.glsl"));
-			Renderer3D::registerShader(shader);
-			std::shared_ptr<Material> mat;
+			/*std::shared_ptr<Material> mat;
 			if (output.diffusTex)
 				mat.reset(new Material(shader, output.diffusTex));
 			else
 				mat.reset(new Material(shader, glm::vec4(output.defuseTint,1.0f)));
 
 			s_VAO.push_back(cubeVAO);
-			s_material.push_back(mat);
+			s_material.push_back(mat);*/
 		}
 
 		static void ASSIMPProcessNode(aiNode *node, const aiScene *scene)
