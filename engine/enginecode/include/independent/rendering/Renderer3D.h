@@ -5,6 +5,19 @@
 
 namespace Engine {
 
+	class Renderer3DVertex
+	{
+	public:
+		Renderer3DVertex() = default;
+		Renderer3DVertex(const glm::vec3& pos, const glm::vec3& norm, const glm::vec2& uv) :
+			position(pos), normal(norm), uvCoords(uv) {}
+		 glm::vec3 position;
+		 glm::vec3 normal; 
+		 glm::vec2 uvCoords;
+		 static VertexBufferLayout layout;
+	};
+
+
 	/**
 	\class Material
 	* \brief class to hold shader and uniform data associated with the shader
@@ -151,12 +164,17 @@ namespace Engine {
 			std::shared_ptr<ShaderRend> shader; //!< shader for the 3d models
 			std::shared_ptr<UniformBuffer> cameraUBO; //!< camera ubo data
 			std::shared_ptr<UniformBuffer> lightUBO; //!< lights ubo data
+			std::shared_ptr<VertexArray> VAO; //!< All static meshes
 			glm::vec4 defTint; //!< def white tint color (albedo)
 			TextureUnitManager m_TextureUnitManager; //!< texture unit maanger
 			uint32_t m_TextureUnit;	//!<texture unit
 			glm::vec3 lightPos = glm::vec3(1.f, 4.f, 6.f); //!< light pos
 			glm::vec3 viewPos= glm::vec3(0.f, 0.f, 0.f); //!< view pos
 			glm::vec3 lightCol = glm::vec3(1.f, 1.f, 1.f); //!< light col
+
+			std::vector<glm::mat4> modelInstanceData;
+			std::vector<uint32_t> tintInstanceData;
+			std::vector<uint32_t> texInstanceData;
 
 		};
 

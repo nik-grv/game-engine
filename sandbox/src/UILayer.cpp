@@ -38,12 +38,22 @@ void UILayer::OnRender()
 	RendererShared::actionCommand(blendFuncAlphaCommand);
 
 	Renderer2D::begin(m_swu);
-	Renderer2D::submit(m_quad[0], glm::vec4(1.f, 1.0f, 1.f, 1.f));
-	Renderer2D::submit("FPSSSSSS :", glm::vec2(20.0f, 50.0f), glm::vec4(1.0f, .0f, .0f, 1.0f));
+	Renderer2D::submit(m_quad[0], glm::vec4(.5f, 1.0f, .5f, .5f));
+
+	Renderer2D::submit("FPS :", glm::vec2(20.0f, 50.0f), glm::vec4(1.0f, .0f, .0f, 1.0f));
+	int fps = 1.0f / m_timestep;
+	std::string fps_s = std::to_string(fps);
+	const char* resultFPS = fps_s.c_str();
+	Renderer2D::submit(resultFPS, glm::vec2(100.0f, 50.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
 	Renderer2D::end();
 
 	RendererShared::actionCommand(disableBlendCommand);
 	RendererShared::actionCommand(enableDepthCommand);
 
+}
+
+void UILayer::OnUpdate(float timeStep)
+{
+	m_timestep = timeStep;
 }

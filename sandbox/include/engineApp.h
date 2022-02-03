@@ -6,7 +6,7 @@
 #include "engine.h"
 #include "UILayer.h"
 #include "SceneLayer.h"
-
+#include "AssimpTestLayer.h"
 /**
 \class EngineApp
 * \brief entry class to run the application
