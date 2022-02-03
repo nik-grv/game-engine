@@ -15,6 +15,7 @@
 namespace Engine {
 	class EnTTLayer : public Layer{
 	public:
+		EnTTLayer(const char* name);
 		void OnUpdate(float timestep) override;
 		void onKeyPressed(KeyPressedEvent& e) override;
 		void OnRender() override;
@@ -30,7 +31,7 @@ namespace Engine {
 		std::shared_ptr<ShaderRend> shader;
 
 		entt::registry& m_registry; //ESC registry whatever that is
-		std::vector<entt::entity>& m_entitites; //Entities
+		std::vector<entt::entity>& m_entities; //Entities
 
 		entt::entity m_currentCamera; //Camera thing
 	};
