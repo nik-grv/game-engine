@@ -50,16 +50,17 @@ AssimpLayer::AssimpLayer(const char* name) : Layer(name)
 
 void AssimpLayer::OnUpdate(float timestep)
 {
-	glm::mat4 rotX = glm::rotate(glm::mat4(1.0f), m_rotation.x, { 1.f, 1.f, 1.f });
+	Log::info("ATL UPDATE!");
+	glm::mat4 rotX = glm::rotate(glm::mat4(1.0f), m_rotation.x, { 1.f, 0.f, 0.f });
 	glm::mat4 rotY = glm::rotate(glm::mat4(1.0f), m_rotation.y, { 0.f, 1.f, 0.f });
-	glm::mat4 rotZ = glm::rotate(glm::mat4(1.0f), m_rotation.z, { 0.f, 1.f, 1.f });
+	glm::mat4 rotZ = glm::rotate(glm::mat4(1.0f), m_rotation.z, { 0.f, 0.f, 1.f });
 	
 	glm::mat4 rotation = rotX * rotY * rotZ;
 
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), { m_scale, m_scale, m_scale });
 	
-	m_model1 = rotation * scale;
-	m_model2 = rotation * scale;
+	m_model1 = rotation * scale; //Code broken here needs fixing !
+	//m_model2 = rotation * scale;
 	m_model2 = glm::translate(glm::mat4(1.0f), glm::vec3(-5.f, 0.f, 0.f));
 	m_camera.update(timestep);
 }
@@ -83,9 +84,17 @@ void AssimpLayer::OnRender()
 	//	//m_model1 = glm::translate(glm::mat4(1.0f), glm::vec3(-5.f, 0.f, 0.f));
 	//}
 
-	m_model1 = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, 0.f));
+	glm::mat4 rotX = glm::rotate(glm::mat4(1.0f), m_rotation.x, { 1.f, 0.f, 0.f });
+	glm::mat4 rotY = glm::rotate(glm::mat4(1.0f), m_rotation.y, { 0.f, 1.f, 0.f });
+	glm::mat4 rotZ = glm::rotate(glm::mat4(1.0f), m_rotation.z, { 0.f, 0.f, 1.f });
+
+	glm::mat4 rotation = rotX * rotY * rotZ;
+
+	glm::mat4 scale = glm::scale(glm::mat4(1.0f), { m_scale, m_scale, m_scale });
+
+	m_model1 = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, 0.f)) * rotation * scale;
 	Renderer3D::submit(m_VAO1, mat1, m_model1);
-	m_model1 = glm::translate(glm::mat4(1.0f), glm::vec3(5.f, 0.f, 0.f));
+	m_model1 = glm::translate(glm::mat4(1.0f), glm::vec3(5.f, 0.f, 0.f)) * rotation * scale;
 	Renderer3D::submit(m_VAO1, mat1, m_model1);
 	Renderer3D::submit(m_VAO2, mat2, m_model2);
 
@@ -103,7 +112,7 @@ void AssimpLayer::onKeyPressed(KeyPressedEvent& e)
 	float scale = 0.01;
 	if (e.getKeyCode() == NG_KEY_KP_ADD)
 	{
-		if (InputPoller::isKeyPressed(NG_KEY_X)) { m_rotation.x += rot; }
+		if (InputPoller::isKeyPressed(NG_KEY_X)) { m_rotation.x += rot; Log::info("X pressed"); }
 		else if (InputPoller::isKeyPressed(NG_KEY_Y)) { m_rotation.y += rot; }
 		else if (InputPoller::isKeyPressed(NG_KEY_Z)) { m_rotation.z += rot; }
 		else { m_scale += scale; }
