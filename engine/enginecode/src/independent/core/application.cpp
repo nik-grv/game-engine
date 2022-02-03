@@ -49,6 +49,9 @@ namespace Engine {
 #endif
 		m_windowSystem->start();
 
+		m_physics.reset(new PhysicsSystem);
+		m_physics->start(); // reset first? we need?
+
 		//reset timer
 		m_timer.reset(new ChronoTimer);
 		m_timer->start();
@@ -266,10 +269,13 @@ namespace Engine {
 
 	Application::~Application()
 	{
+		//delete world
+		m_physics->stop();
 		//stop the systems and logger
 		m_loggerSystem->stop();
 		//stop windows system
 		m_windowSystem->stop();
+		
 	}
 
 

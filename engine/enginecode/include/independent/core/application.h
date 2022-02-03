@@ -22,13 +22,14 @@
 
 
 #include "systems/log.h"
-#include "core/timer.h"
+#include "systems/physics.h"
 #include "events/events.h"
+#include "core/timer.h"
 #include "core/window.h"
 #include "core/inputPoller.h"
+#include "core/LayerStack.h"
 #include "camera/Camera.h"
 #include "camera/FollowPlayer.h"
-#include "core/LayerStack.h"
 
 namespace Engine {
 
@@ -44,6 +45,8 @@ namespace Engine {
 
 		std::shared_ptr<Log> m_loggerSystem; //!< logger system var
 		std::shared_ptr<System> m_windowSystem; //!< window system
+
+		std::shared_ptr<PhysicsSystem> m_physics; // Physics Sytem
 
 		std::shared_ptr<Window> m_window; //!< timer var
 		std::shared_ptr<Timer> m_timer; //!< timer var
@@ -80,6 +83,8 @@ namespace Engine {
 		
 		std::shared_ptr<FollowPlayer> m_playerCam;	//!< follow player camera
 
+		rp3d::PhysicsWorld* m_world; //!< Game world
+
 		bool m_isFullscreen = false; //!< is window fullscreen
 		bool m_fullscreenSet = false; //!< is window fullscreen
 		char m_setFullScreen; //!< input for fullscreen
@@ -87,6 +92,8 @@ namespace Engine {
 		virtual ~Application(); //!< Deconstructor
 		inline static Application& getInstance() { return *s_instance; } //!< Instance getter from singleton pattern
 		inline std::shared_ptr<Window> getAppWindow() { return m_window; };
+		inline rp3d::PhysicsWorld* GetWorld() { return m_physics->m_world; };
+		inline rp3d::PhysicsCommon& GetPhysCommon() { return m_physics->GetPhysCommon(); }
 		void run(); //!< Main loop
 		LayerStack m_layerStack;
 	};
