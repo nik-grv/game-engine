@@ -35,6 +35,9 @@ namespace Engine {
 	*/
 	Application::Application()
 	{
+		for (auto ent : m_entities)
+			ent = m_registry.create();
+		
 		if (s_instance == nullptr)
 		{
 			s_instance = this;
@@ -109,7 +112,7 @@ namespace Engine {
 		m_timer->reset();
 
 		Renderer2D::init();
-		Renderer3D::init();
+		//Renderer3D::init();
 
 	}
 
@@ -275,6 +278,8 @@ namespace Engine {
 		//stop windows system
 		m_windowSystem->stop();
 		
+		for (auto ent : m_entities)
+			m_registry.destroy(ent);
 	}
 
 
