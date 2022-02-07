@@ -22,9 +22,9 @@ namespace Engine {
 	public:
 		EnTTLayer(const char* name);
 		void OnUpdate(float timestep) override;
-		void onKeyPressed(KeyPressedEvent& e) override;
+		//void onKeyPressed(KeyPressedEvent& e) override;
 		void OnRender() override;
-		void OnResize(WindowResizeEvent& e) override;
+		//void OnResize(WindowResizeEvent& e) override;
 	private:
 
 

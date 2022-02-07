@@ -99,8 +99,8 @@ namespace Engine {
 		void run(); //!< Main loop
 		LayerStack m_layerStack;
 
-		entt::registry& m_registry; //ESC registry whatever that is
-		std::vector<entt::entity>& m_entities; //Entities
+		entt::registry m_registry; //ESC registry whatever that is
+		std::vector<entt::entity> m_entities; //Entities
 	};
 
 	// To be defined in users code
