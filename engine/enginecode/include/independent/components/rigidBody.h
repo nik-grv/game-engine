@@ -99,4 +99,35 @@ namespace Engine {
 		rp3d::Collider* collider;	//!< Collider
 
 	};
+
+	class SphereColliderComponent {
+	public:
+		SphereColliderComponent(RigidBodyComponent& bodyComp, float radius)
+		{
+			auto& physCommon = Application::getInstance().GetPhysCommon();
+
+			shape = physCommon.createSphereShape(radius);
+
+			rp3d::Transform transform = rp3d::Transform::identity();
+
+			collider = bodyComp.m_body->addCollider(shape, transform);
+		}
+
+	private:
+		rp3d::SphereShape* shape;
+		rp3d::Collider* collider = nullptr;
+	};
+
+	class CapsuleColliderComponent {
+	public:
+		CapsuleColliderComponent(RigidBodyComponent& bodyComp, float radius, float height) {
+			auto& physCommon = Application::getInstance().GetPhysCommon();
+			shape = physCommon.createCapsuleShape(radius, height);
+			rp3d::Transform transform = rp3d::Transform::identity();
+			collider = bodyComp.m_body->addCollider(shape, transform);
+		}
+	private:
+		rp3d::CapsuleShape* shape;
+		rp3d::Collider* collider = nullptr;
+	};
 }
