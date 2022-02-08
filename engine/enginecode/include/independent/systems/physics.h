@@ -5,7 +5,8 @@
 #include <reactphysics3d/reactphysics3d.h>
 
 namespace Engine {
-	class PhysicsSystem : public System {
+	class PhysicsSystem : public System 
+	{
 	public:
 
 		rp3d::PhysicsWorld::WorldSettings worldSettings;
@@ -25,11 +26,8 @@ namespace Engine {
 
 		rp3d::PhysicsWorld* m_world; //!< Game world, (I think) required for all bodies and things to be in. Has gravity maybe (if not, set)
 
-		void updateTransforms()
-		{
-
-		}
 	private:
 		rp3d::PhysicsCommon m_rp3dCommon;	//!< Some sort of physics common i guess. Can be accessable through application class
 	};
+
 }

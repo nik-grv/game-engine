@@ -5,7 +5,6 @@
 */
 
 #include "engineApp.h"
-#include "AssimpTestLayer.h"
 
 //! Empty Constructor
 /*!

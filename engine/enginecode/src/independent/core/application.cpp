@@ -761,7 +761,6 @@ namespace Engine {
 			m_timer->reset();
 
 			m_physics->m_world->update(timestep);
-			
 			m_layerStack.Update(timestep);
 			m_layerStack.Render();
 			m_window->onUpdate(timestep);

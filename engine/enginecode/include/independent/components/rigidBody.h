@@ -3,16 +3,18 @@
 
 #include "engine.h"	//Need to include reactphysics here i think?
 #include <glm/gtc/type_ptr.hpp>
+#include "systems/log.h"
 
 namespace Engine {
 
-	enum class RigidBodyType {Static, Kinematic, Dynamic};
+	enum class RigidBodyType { Static, Kinematic, Dynamic };
 
-	class RigidBodyComponent {
+	class RigidBodyComponent
+	{
 	public:
 
 		//!< default constructor perhaps?
-		RigidBodyComponent()	
+		RigidBodyComponent()
 		{
 			rp3d::PhysicsWorld* world = Application::getInstance().GetWorld();		//Give application a world for this to work.
 			rp3d::Vector3 position(0.0, 0.0, 0.0);
@@ -25,7 +27,7 @@ namespace Engine {
 			//m_body->setMass(10000);
 			//Log::error("is gravity enabled {0}", m_body->isGravityEnabled());
 			//std::cout << m_body->isGravityEnabled() << std::endl;
-			
+
 		}
 
 
@@ -85,7 +87,7 @@ namespace Engine {
 			}
 		}
 
- 		rp3d::RigidBody* m_body;
+		rp3d::RigidBody* m_body;
 	};
 
 	class BoxColliderComponent {
@@ -118,7 +120,6 @@ namespace Engine {
 			collider = bodyComp.m_body->addCollider(shape, transform);
 		}
 
-	private:
 		rp3d::SphereShape* shape;
 		rp3d::Collider* collider = nullptr;
 	};
@@ -131,8 +132,12 @@ namespace Engine {
 			rp3d::Transform transform = rp3d::Transform::identity();
 			collider = bodyComp.m_body->addCollider(shape, transform);
 		}
-	private:
 		rp3d::CapsuleShape* shape;
 		rp3d::Collider* collider = nullptr;
 	};
+
+	namespace NGPhyiscs
+	{
+		void updateTransforms();
+	}
 }

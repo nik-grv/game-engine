@@ -107,6 +107,7 @@ namespace Engine {
 
 	void EnTTLayer::OnUpdate(float timestep)
 	{
+		NGPhyiscs::updateTransforms();
 		m_camera.update(timestep);
 	}
 
