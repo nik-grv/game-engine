@@ -23,16 +23,11 @@ namespace Engine {
 	public:
 		EnTTLayer(const char* name);
 		void OnUpdate(float timestep) override;
-		//void onKeyPressed(KeyPressedEvent& e) override;
 		void OnRender() override;
-		//void OnResize(WindowResizeEvent& e) override;
+		void onMouseMoved(MouseMovedEvent& e) override;
+		void onKeyPressed(KeyPressedEvent& e) override;
 	private:
-
-
-
-
 		//vertices adata
-
 		float cubeVertices[8 * 24] = {
 			//	 <------ Pos ------>  <--- normal --->  <-- UV -->
 				 0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  0.f,  0.f,

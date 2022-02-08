@@ -21,9 +21,11 @@ namespace Engine {
 
 			m_body = world->createRigidBody(transform);		// related to world
 			m_body->setType(rp3d::BodyType::DYNAMIC);	// Set body type to be dynamic in a default constructor
-			m_body->setMass(10000);
-			Log::error("is gravity enabled {0}", m_body->isGravityEnabled());
-			std::cout << m_body->isGravityEnabled() << std::endl;
+			m_body->enableGravity(true);
+			//m_body->setMass(10000);
+			//Log::error("is gravity enabled {0}", m_body->isGravityEnabled());
+			//std::cout << m_body->isGravityEnabled() << std::endl;
+			
 		}
 
 
@@ -99,7 +101,7 @@ namespace Engine {
 		}
 
 		rp3d::BoxShape* shape;	//!<Box shape
-		rp3d::Collider* collider;	//!< Collider
+		rp3d::Collider* collider = nullptr;	//!< Collider
 
 	};
 

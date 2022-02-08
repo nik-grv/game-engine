@@ -86,17 +86,20 @@ namespace Engine {
 
 
 		m_registry.emplace<TransformComponent>(m_entities[0]);
-		m_registry.emplace<TransformComponent>(m_entities[1],glm::vec3(0),glm::vec3(0),glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[1],glm::vec3(0.0f,5.0f,0.0f),glm::vec3(0),glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[2],glm::vec3(-5,0,0),glm::vec3(0),glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[3],glm::vec3(-1.0f, 1.0f, 6.0f),glm::vec3(0),glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(-3, 0, 0), glm::vec3(0), glm::vec3(1));
 
-		m_registry.emplace<RigidBodyComponent>(m_entities[1]);
+		auto t1 = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
+		auto rb1 = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic,t1);
 	
 		
 		m_registry.emplace<RenderComponent>(m_entities[1],m_VAO1, mat1);
 		m_registry.emplace<RenderComponent>(m_entities[4],m_VAO2, mat1);
 		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO2, mat2);
+
+		//m_registry.emplace<BoxColliderComponent>(m_entities[1], rb1, glm::vec3(5.0f,0.15f,5.0f));
 		//m_registry.emplace<RenderComponent>(m_entities[3]);
 	
 	}
@@ -111,6 +114,12 @@ namespace Engine {
 	{
 		RendererShared::actionCommand(clearColorAndDepthCommand);
 
+		m_view3D = m_camera.getCameraViewMatrix();
+
+		m_swu3D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_view3D)));
+		m_swu3D["u_projection"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_projection3D)));
+
+
 		Renderer3D::begin(m_swu3D);
 		
 		auto group = m_registry.group<TransformComponent, RenderComponent>();
@@ -124,5 +133,29 @@ namespace Engine {
 		Renderer3D::end();
 	}
 
-	//for loop to render all in render function
+	void EnTTLayer::onMouseMoved(MouseMovedEvent& e)
+	{
+		m_camera.mouseMovement(e.getMousePos().x, e.getMousePos().y);
+	}
+
+	void EnTTLayer::onKeyPressed(KeyPressedEvent& e)
+	{
+		float rot = 0.25;
+		float scale = 0.01;
+		/*if (e.getKeyCode() == NG_KEY_KP_ADD)
+		{
+			if (InputPoller::isKeyPressed(NG_KEY_X)) { m_rotation.x += rot; Log::info("X pressed"); }
+			else if (InputPoller::isKeyPressed(NG_KEY_Y)) { m_rotation.y += rot; }
+			else if (InputPoller::isKeyPressed(NG_KEY_Z)) { m_rotation.z += rot; }
+			else { m_scale += scale; }
+		}
+
+		if (e.getKeyCode() == NG_KEY_KP_SUBTRACT)
+		{
+			if (InputPoller::isKeyPressed(NG_KEY_X)) { m_rotation.x -= rot; }
+			else if (InputPoller::isKeyPressed(NG_KEY_Y)) { m_rotation.y -= rot; }
+			else if (InputPoller::isKeyPressed(NG_KEY_Z)) { m_rotation.z -= rot; }
+			else if (m_scale > scale) { m_scale -= scale; }
+		}*/
+	}
 }

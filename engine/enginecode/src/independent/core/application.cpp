@@ -54,7 +54,7 @@ namespace Engine {
 
 		m_physics.reset(new PhysicsSystem);
 		m_physics->start(); // reset first? we need?
-		m_physics->m_world->setGravity(reactphysics3d::Vector3(0.f, -1.f, 0.f));
+		m_physics->m_world->setGravity(reactphysics3d::Vector3(0.f, -10.f, 0.f));
 		m_physics->m_world->setIsGravityEnabled(true);
 
 		//reset timer
@@ -760,9 +760,10 @@ namespace Engine {
 			timestep = m_timer->getElapsedTime();
 			m_timer->reset();
 
+			m_physics->m_world->update(timestep);
+			
 			m_layerStack.Update(timestep);
 			m_layerStack.Render();
-
 			m_window->onUpdate(timestep);
 		}
 
