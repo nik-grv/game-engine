@@ -166,7 +166,7 @@ namespace Engine {
 			std::shared_ptr<UniformBuffer> lightUBO; //!< lights ubo data
 			std::shared_ptr<VertexArray> VAO; //!< All static meshes
 			glm::vec4 defTint; //!< def white tint color (albedo)
-			TextureUnitManager m_TextureUnitManager; //!< texture unit maanger
+			TextureUnitManager m_TextureUnitManager; //!< texture unit manager
 			uint32_t m_TextureUnit;	//!<texture unit
 			glm::vec3 lightPos = glm::vec3(1.f, 4.f, 6.f); //!< light pos
 			glm::vec3 viewPos= glm::vec3(0.f, 0.f, 0.f); //!< view pos
