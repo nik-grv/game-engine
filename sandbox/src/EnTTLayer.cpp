@@ -37,6 +37,7 @@ namespace Engine {
 		m_swu3D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_view3D)));
 		m_swu3D["u_projection"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_projection3D)));
 
+		Renderer3D::init();
 
 		std::shared_ptr<ShaderRend> shader;
 		shader.reset(ShaderRend::create("./assets/shaders/texturedPhong.glsl"));
@@ -66,14 +67,12 @@ namespace Engine {
 		m_VAO2->setIndexBuffer(m_IBO2);
 		mat2.reset(new Material(shader, Loader::output.diffusTex, glm::vec4(1.0f)));
 
-
-		Renderer3D::init();
-
-		m_entities.resize(4);
+		m_entities.resize(5);
 		m_entities[0] = m_registry.create();
 		m_entities[1] = m_registry.create();
 		m_entities[2] = m_registry.create();
 		m_entities[3] = m_registry.create();
+		m_entities[4] = m_registry.create();
 		
 
 		m_registry.emplace<RootComponent>(m_entities[0]);
@@ -83,15 +82,20 @@ namespace Engine {
 		m_registry.emplace<LabelComponent>(m_entities[1],"Tank");
 		m_registry.emplace<LabelComponent>(m_entities[2],"Cube");
 		m_registry.emplace<LabelComponent>(m_entities[3],"Camera");
+		m_registry.emplace<LabelComponent>(m_entities[4],"Cube");
 
 
 		m_registry.emplace<TransformComponent>(m_entities[0]);
 		m_registry.emplace<TransformComponent>(m_entities[1],glm::vec3(0),glm::vec3(0),glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[2],glm::vec3(-5,0,0),glm::vec3(0),glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[3],glm::vec3(-1.0f, 1.0f, 6.0f),glm::vec3(0),glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(-3, 0, 0), glm::vec3(0), glm::vec3(1));
+
+		m_registry.emplace<RigidBodyComponent>(m_entities[1]);
 	
 		
 		m_registry.emplace<RenderComponent>(m_entities[1],m_VAO1, mat1);
+		m_registry.emplace<RenderComponent>(m_entities[4],m_VAO2, mat1);
 		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO2, mat2);
 		//m_registry.emplace<RenderComponent>(m_entities[3]);
 	

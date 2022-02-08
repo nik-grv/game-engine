@@ -15,6 +15,7 @@
 #include "include/independent/components/relationship.h"
 #include "include/independent/components/render.h"
 #include "include/independent/components/label.h"
+#include "include/independent/components/rigidBody.h"
 #include <assimpLoader.h>
 
 namespace Engine {

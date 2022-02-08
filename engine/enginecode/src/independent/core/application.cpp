@@ -54,10 +54,13 @@ namespace Engine {
 
 		m_physics.reset(new PhysicsSystem);
 		m_physics->start(); // reset first? we need?
+		m_physics->m_world->setGravity(reactphysics3d::Vector3(0.f, -1.f, 0.f));
+		m_physics->m_world->setIsGravityEnabled(true);
 
 		//reset timer
 		m_timer.reset(new ChronoTimer);
 		m_timer->start();
+
 
 #pragma region [FEATURE] Set Fullsceen
 		/*while (!m_fullscreenSet)

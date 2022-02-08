@@ -21,6 +21,9 @@ namespace Engine {
 
 			m_body = world->createRigidBody(transform);		// related to world
 			m_body->setType(rp3d::BodyType::DYNAMIC);	// Set body type to be dynamic in a default constructor
+			m_body->setMass(10000);
+			Log::error("is gravity enabled {0}", m_body->isGravityEnabled());
+			std::cout << m_body->isGravityEnabled() << std::endl;
 		}
 
 
