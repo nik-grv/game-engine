@@ -25,7 +25,7 @@ engineApp::~engineApp()
 
 }
 
-//! Start the appplication
+//! Start the application
 /*!
 */
 Engine::Application* Engine::startApplication()

@@ -8,6 +8,11 @@ workspace "Engine"
 		"Release"
 	}
 
+	flags
+	{
+		"MultiProcessorCompile"
+	}
+
 outputdir = "%{cfg.buildcfg}-%{cfg.system}"
 
 group "Engine"
