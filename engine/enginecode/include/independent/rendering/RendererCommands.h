@@ -18,7 +18,9 @@ namespace Engine {
 		/** \enum Commands
 		* \brief Enum for Renderer commands
 		*/
-		enum class Commands  { clearColorAndDepthBuffer,setClearColor ,enableCommand,disableCommand , blendFuncCommand , useProgramCommand};
+		enum class Commands  { clearColorAndDepthBuffer,setClearColor ,enableCommand,disableCommand , blendFuncCommand , useProgramCommand , 
+			setLineMode , setFillMode
+		};
 	private:
 		std::function<void(void)> m_action; //!< action of the render commans
 		friend class RenderCommandFactory; //!< make RenderCommandFactory a friend class
@@ -40,6 +42,12 @@ namespace Engine {
 			{
 			case Engine::RendererCommands::Commands::clearColorAndDepthBuffer:
 				result->m_action = getClearColorAndDepthBuffer();
+				return result;
+			case Engine::RendererCommands::Commands::setLineMode:
+				result->m_action = setGlLine();
+				return result;
+			case Engine::RendererCommands::Commands::setFillMode:
+				result->m_action = setGlFill();
 				return result;
 			case Engine::RendererCommands::Commands::enableCommand:
 				uint32_t enableCmd;
@@ -82,6 +90,8 @@ namespace Engine {
 		static std::function<void(void)> glDisableCmd(uint32_t cmd); //!< function to disable gl commands
 		static std::function<void(void)> glBlendFuncCmd(uint32_t sFactor , uint32_t dFactor); //!< function to blend gl commands
 		static std::function<void(void)> glUseProgramCmd(uint32_t program); //!< function to use program
+		static std::function<void(void)> setGlLine(); //!< function to draw gl lines
+		static std::function<void(void)> setGlFill(); //!< function to draw gl fill
 
 		template <typename G, size_t I, typename... Ts>
 		typename std::enable_if<I >= sizeof...(Ts),void>::type
