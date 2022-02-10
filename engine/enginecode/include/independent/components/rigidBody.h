@@ -136,6 +136,21 @@ namespace Engine {
 		rp3d::Collider* collider = nullptr;
 	};
 
+	//Height Field Shape for terrain heightmap
+	class HeightmapCollider {
+	public:
+		HeightmapCollider(RigidBodyComponent& bodyComp, uint32_t columCount, uint32_t rowCount, float minHeight, float maxHeight, std::vector<float> heightValues) {
+
+			auto& physCommon = Application::getInstance().GetPhysCommon();
+			shape = physCommon.createHeightFieldShape(columCount, rowCount, minHeight, maxHeight, heightValues.data(), rp3d::HeightFieldShape::HeightDataType::HEIGHT_FLOAT_TYPE);
+			rp3d::Transform transform = rp3d::Transform::identity();
+			collider = bodyComp.m_body->addCollider(shape, transform);
+		}
+		rp3d::HeightFieldShape* shape;
+		rp3d::Collider* collider = nullptr;
+	};
+
+
 	namespace NGPhyiscs
 	{
 		void updateTransforms();

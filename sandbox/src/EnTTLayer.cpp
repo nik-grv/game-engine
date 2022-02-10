@@ -66,12 +66,29 @@ namespace Engine {
 		m_VAO2->setIndexBuffer(m_IBO2);
 		mat2.reset(new Material(shader, Loader::output.diffusTex, glm::vec4(1.0f)));
 
+
+		// height data used for a height map later on
+		std::vector<float> heigthData;
+		heigthData.resize(49);
+		for (size_t i = 0; i < 7; i++)	//size_t is an unsigned int
+		{
+			heigthData.at(i) = i - 3;
+			heigthData.at(i + 7) = i - 3;
+			heigthData.at(i + 14) = i - 3;
+			heigthData.at(i + 21) = i - 3;
+			heigthData.at(i + 28) = i - 3;
+			heigthData.at(i + 35) = i - 3;
+			heigthData.at(i + 42) = i - 3;
+
+		}
+
 		m_entities.resize(5);
 		m_entities[0] = m_registry.create();
 		m_entities[1] = m_registry.create();
 		m_entities[2] = m_registry.create();
 		m_entities[3] = m_registry.create();
 		m_entities[4] = m_registry.create();
+		//m_entities[5] = m_registry.create();
 
 
 		m_registry.emplace<RootComponent>(m_entities[0]);
@@ -82,25 +99,31 @@ namespace Engine {
 		m_registry.emplace<LabelComponent>(m_entities[2], "Cube");
 		m_registry.emplace<LabelComponent>(m_entities[3], "Camera");
 		m_registry.emplace<LabelComponent>(m_entities[4], "Floor");
+		//m_registry.emplace<LabelComponent>(m_entities[5], "Slope");
 
 
 		m_registry.emplace<TransformComponent>(m_entities[0]);
 		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(0.0f, 50.0f, 0.0f), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(0.0f, 20, 0), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0, 0), glm::vec3(0), glm::vec3(15.0f, 1.f, 15.0f));
+		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(15.0f, 1.f, 15.0f));
+		//m_registry.emplace<TransformComponent>(m_entities[5]);
 
 		auto tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
 		auto cubeTransform = m_registry.get<TransformComponent>(m_entities[2]).GetTransform();
 		auto floorTransform = m_registry.get<TransformComponent>(m_entities[4]).GetTransform();
+		//auto slopeTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
 
 		auto tank_rb = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic, tankTransform);
 		auto cube_rb = m_registry.emplace<RigidBodyComponent>(m_entities[2], RigidBodyType::Dynamic, cubeTransform);
 		auto floor_rb = m_registry.emplace<RigidBodyComponent>(m_entities[4], RigidBodyType::Static, floorTransform);
+		//auto slope_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Static, slopeTransform);
 
 		m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(2.72f, 1.22f, 5.f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[2], cube_rb, glm::vec3(1.0f, 1.f, 1.0f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(15.0f, 1.f, 15.0f) * 0.5f);
+		//auto something = m_registry.emplace<HeightmapCollider>(m_entities[5], slope_rb, 7, 7, -3, 3, heigthData);
+		//Log::error("{0}", something.collider.)
 
 		m_registry.emplace<RenderComponent>(m_entities[1], m_VAO1, mat1);
 		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO2, mat2);
@@ -158,13 +181,7 @@ namespace Engine {
 			rp3d::Vector3 s = collider.shape->getHalfExtents() * 2;
 			glm::vec3 scale = glm::vec3(s.x, s.y, s.z);
 
-			glm::mat4 transformMat = glm::translate(glm::mat4(1.f), t) * glm::toMat4(r) * glm::scale(glm::mat4(1.f), scale);
-			//vec3 for pos
-			//quat for roation
-			//vec3 for scale from the box collider
-			//mat4 transform from the three combined
-			//auto& transform = group.get<TransformComponent>(entity);
-			
+			glm::mat4 transformMat = glm::translate(glm::mat4(1.f), t) * glm::toMat4(r) * glm::scale(glm::mat4(1.f), scale);		
 			Renderer3D::submit(m_VAO2, wireframeMat, transformMat);
 		}
 		Renderer3D::end();
