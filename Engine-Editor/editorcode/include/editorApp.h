@@ -3,6 +3,7 @@
 #pragma once
 
 #include "include/independent/core/entrypoint.h"
+#include "ImGuiLayer.h"
 #include "EditorLayer.h"
 #include "engine.h"
 /**

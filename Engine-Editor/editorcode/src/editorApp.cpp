@@ -10,7 +10,8 @@ namespace Engine {
 
 	EditorApp::EditorApp()
 	{
-		m_layerStack.Push(new EditorLayer("Editor"));
+		//m_layerStack.Push(new EditorLayer("Editor"));
+		m_layerStack.Push(new ImGuiLayer());
 	}
 
 	EditorApp::~EditorApp()

@@ -12,8 +12,10 @@ namespace Engine {
 
 			void OnAttach();
 			void OnDettach();
-			void OnUpdate();
-			void onEvemt(Event& event);
+			void OnUpdate(float timestep)override;
+			void onMouseMoved(MouseMovedEvent& e) override;
+			void onKeyPressed(KeyPressedEvent& e) override;
 		private:
+			float m_Time = 0.0f;
 	};
 }
