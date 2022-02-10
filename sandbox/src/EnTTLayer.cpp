@@ -85,25 +85,25 @@ namespace Engine {
 
 
 		m_registry.emplace<TransformComponent>(m_entities[0]);
-		m_registry.emplace<TransformComponent>(m_entities[1],glm::vec3(0.0f,5.0f,0.0f),glm::vec3(0),glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[1],glm::vec3(0.0f,50.0f,0.0f),glm::vec3(0),glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[2],glm::vec3(-3,2,0),glm::vec3(0),glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[3],glm::vec3(-1.0f, 1.0f, 6.0f),glm::vec3(0),glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0, 0), glm::vec3(0), glm::vec3(10.0f,1.f,10.0f));
 
 		auto tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
-		auto tank_rb = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic, tankTransform);
-
 		auto floorTransform = m_registry.get<TransformComponent>(m_entities[4]).GetTransform();
+
+		auto tank_rb = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic, tankTransform);
 		auto floor_rb = m_registry.emplace<RigidBodyComponent>(m_entities[4], RigidBodyType::Static, floorTransform);
 
-		m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(1.0f, 5.0f, 1.0f));
+		m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(5.0f, 0.1f, 5.0f));
 		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(10.0f, 1.f, 10.0f));
 		
 		m_registry.emplace<RenderComponent>(m_entities[1],m_VAO1, mat1);
 		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO2, mat2);
 		m_registry.emplace<RenderComponent>(m_entities[4],m_VAO2, mat1);
 
-		//m_registry.emplace<BoxColliderComponent>(m_entities[1], rb1, glm::vec3(5.0f,0.15f,5.0f));
+		//m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(5.0f,0.15f,5.0f));
 		//m_registry.emplace<RenderComponent>(m_entities[3]);
 	
 	}
