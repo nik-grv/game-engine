@@ -98,9 +98,9 @@ namespace Engine {
 		auto cube_rb = m_registry.emplace<RigidBodyComponent>(m_entities[2], RigidBodyType::Dynamic, cubeTransform);
 		auto floor_rb = m_registry.emplace<RigidBodyComponent>(m_entities[4], RigidBodyType::Static, floorTransform);
 
-		m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(5.0f, 0.1f, 5.0f));
-		m_registry.emplace<BoxColliderComponent>(m_entities[2], cube_rb, glm::vec3(1.0f, 1.f, 1.0f));
-		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(15.0f, 0.05f, 15.0f));
+		m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(2.72f, 1.22f, 5.f) * 0.5f);
+		m_registry.emplace<BoxColliderComponent>(m_entities[2], cube_rb, glm::vec3(1.0f, 1.f, 1.0f) * 0.5f);
+		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(15.0f, 1.f, 15.0f) * 0.5f);
 
 		m_registry.emplace<RenderComponent>(m_entities[1], m_VAO1, mat1);
 		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO2, mat2);
@@ -148,8 +148,24 @@ namespace Engine {
 		auto bxColl = m_registry.view<TransformComponent, BoxColliderComponent>();
 		for (auto entity : bxColl)
 		{
-			auto& transform = group.get<TransformComponent>(entity);
-			Renderer3D::submit(m_VAO2, wireframeMat, transform.GetTransform());
+			auto& transform = bxColl.get<TransformComponent>(entity);
+			auto& collider = bxColl.get<BoxColliderComponent>(entity);
+			//auto& [transform, collider] = bxColl.get<TransformComponent, BoxColliderComponent>(entity);
+
+			glm::vec3 t = transform.translation;
+			glm::quat r = transform.rotation;
+
+			rp3d::Vector3 s = collider.shape->getHalfExtents() * 2;
+			glm::vec3 scale = glm::vec3(s.x, s.y, s.z);
+
+			glm::mat4 transformMat = glm::translate(glm::mat4(1.f), t) * glm::toMat4(r) * glm::scale(glm::mat4(1.f), scale);
+			//vec3 for pos
+			//quat for roation
+			//vec3 for scale from the box collider
+			//mat4 transform from the three combined
+			//auto& transform = group.get<TransformComponent>(entity);
+			
+			Renderer3D::submit(m_VAO2, wireframeMat, transformMat);
 		}
 		Renderer3D::end();
 
