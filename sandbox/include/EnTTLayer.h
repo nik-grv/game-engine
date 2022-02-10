@@ -120,6 +120,7 @@ namespace Engine {
 		std::shared_ptr<IndexBuffer> m_IBO1, m_IBO2;
 		std::shared_ptr<ShaderRend> shader;
 		std::shared_ptr<Material> mat1, mat2;
+		std::shared_ptr<Material> wireframeMat;
 
 		glm::mat4 m_view3D;
 		glm::mat4 m_projection3D;
@@ -135,5 +136,8 @@ namespace Engine {
 		Camera m_camera;
 
 		std::shared_ptr<RendererCommands> clearColorAndDepthCommand;
+		std::shared_ptr<RendererCommands> setGlLineCmd;
+		std::shared_ptr<RendererCommands> setGlFillCmd;
+
 	};
 }

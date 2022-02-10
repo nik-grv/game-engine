@@ -7,15 +7,15 @@ namespace Engine {
 	EnTTLayer::EnTTLayer(const char* name) : Layer(name), m_registry(Application::getInstance().m_registry), m_entities(Application::getInstance().m_entities)
 	{
 		clearColorAndDepthCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::clearColorAndDepthBuffer));
+		setGlLineCmd.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::setLineMode));
+		setGlFillCmd.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::setFillMode));
 
 		auto& window = Application::getInstance().getAppWindow();
-
 		{
 			std::shared_ptr<RendererCommands> setclearCommand;
 			setclearCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::setClearColor, 1.0f, 1.0f, 1.0f, 1.0f));
 			RendererShared::actionCommand(setclearCommand);
 		}
-
 
 		//textures
 		std::shared_ptr<TextureRend> letterTexture;
@@ -39,7 +39,6 @@ namespace Engine {
 
 		Renderer3D::init();
 
-		std::shared_ptr<ShaderRend> shader;
 		shader.reset(ShaderRend::create("./assets/shaders/texturedPhong.glsl"));
 		Renderer3D::registerShader(shader);
 
@@ -82,22 +81,27 @@ namespace Engine {
 		m_registry.emplace<LabelComponent>(m_entities[1],"Tank");
 		m_registry.emplace<LabelComponent>(m_entities[2],"Cube");
 		m_registry.emplace<LabelComponent>(m_entities[3],"Camera");
-		m_registry.emplace<LabelComponent>(m_entities[4],"Cube");
+		m_registry.emplace<LabelComponent>(m_entities[4],"Floor");
 
 
 		m_registry.emplace<TransformComponent>(m_entities[0]);
 		m_registry.emplace<TransformComponent>(m_entities[1],glm::vec3(0.0f,5.0f,0.0f),glm::vec3(0),glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[2],glm::vec3(-5,0,0),glm::vec3(0),glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[2],glm::vec3(-3,2,0),glm::vec3(0),glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[3],glm::vec3(-1.0f, 1.0f, 6.0f),glm::vec3(0),glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(-3, 0, 0), glm::vec3(0), glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0, 0), glm::vec3(0), glm::vec3(10.0f,1.f,10.0f));
 
-		auto t1 = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
-		auto rb1 = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic,t1);
-	
+		auto tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
+		auto tank_rb = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic, tankTransform);
+
+		auto floorTransform = m_registry.get<TransformComponent>(m_entities[4]).GetTransform();
+		auto floor_rb = m_registry.emplace<RigidBodyComponent>(m_entities[4], RigidBodyType::Static, floorTransform);
+
+		m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(1.0f, 5.0f, 1.0f));
+		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(10.0f, 1.f, 10.0f));
 		
 		m_registry.emplace<RenderComponent>(m_entities[1],m_VAO1, mat1);
-		m_registry.emplace<RenderComponent>(m_entities[4],m_VAO2, mat1);
 		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO2, mat2);
+		m_registry.emplace<RenderComponent>(m_entities[4],m_VAO2, mat1);
 
 		//m_registry.emplace<BoxColliderComponent>(m_entities[1], rb1, glm::vec3(5.0f,0.15f,5.0f));
 		//m_registry.emplace<RenderComponent>(m_entities[3]);
@@ -106,7 +110,7 @@ namespace Engine {
 
 
 	void EnTTLayer::OnUpdate(float timestep)
-	{
+	{		
 		NGPhyiscs::updateTransforms();
 		m_camera.update(timestep);
 	}
@@ -122,7 +126,7 @@ namespace Engine {
 
 
 		Renderer3D::begin(m_swu3D);
-		
+
 		auto group = m_registry.group<TransformComponent, RenderComponent>();
 		for (auto entity : group)
 		{
@@ -130,8 +134,25 @@ namespace Engine {
 			auto& render = group.get<RenderComponent>(entity);
 			Renderer3D::submit(render.m_vao, render.m_mat, transform.GetTransform());
 		}
-
 		Renderer3D::end();
+
+		//draw wireframe of box colliders
+		Renderer3D::begin(m_swu3D);
+
+		//set polygon mode to gl_Line
+		RendererShared::actionCommand(setGlLineCmd);
+		wireframeMat.reset(new Material(shader, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f)));
+
+		auto bxColl = m_registry.view<TransformComponent, BoxColliderComponent>();
+		for (auto entity : bxColl)
+		{
+			auto& transform = group.get<TransformComponent>(entity);
+			Renderer3D::submit(m_VAO2, wireframeMat, transform.GetTransform());
+		}
+		Renderer3D::end();
+
+		//set polygon mode to gl_fill back for drawing the models
+		RendererShared::actionCommand(setGlFillCmd);
 	}
 
 	void EnTTLayer::onMouseMoved(MouseMovedEvent& e)
