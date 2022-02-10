@@ -138,6 +138,9 @@ namespace Engine {
 			NGPhyiscs::updateTransforms();
 		//doit = false;
 		m_camera.update(timestep);
+
+		Log::error("POS - {0},{1},{2}", m_camera.getCameraPos().x, m_camera.getCameraPos().y, m_camera.getCameraPos().z);
+
 	}
 
 	void EnTTLayer::OnRender()
@@ -233,13 +236,13 @@ namespace Engine {
 
 			m_registry.emplace<LabelComponent>(projectileEntity, "Projectile");
 
-			auto camTransform = m_camera.getCameraViewMatrix();
+			auto camTransform = glm::inverse(m_camera.getCameraViewMatrix());
 
 			glm::vec3 forward = { camTransform[2][0],camTransform[2][1] ,camTransform[2][2] };
 			glm::vec3 camPos = { camTransform[3][0],camTransform[3][1] ,camTransform[3][2] };
 			Log::error("CAMPOS - {0},{1},{2}", camPos.x, camPos.y, camPos.z);
 			Log::error("POS - {0},{1},{2}", m_camera.getCameraPos().x, m_camera.getCameraPos().y, m_camera.getCameraPos().z);
-			auto projTransform = m_registry.emplace<TransformComponent>(projectileEntity, m_camera.getCameraPos() - forward, glm::vec3(0.0f), glm::vec3(0.5f));
+			auto projTransform = m_registry.emplace<TransformComponent>(projectileEntity, camPos - forward * 1.0f, glm::vec3(0.0f), glm::vec3(0.5f));
 
 			m_registry.emplace<RenderComponent>(projectileEntity, m_VAO2, mat2);
 			m_registry.emplace<RelationshipComponent>(projectileEntity);
@@ -247,8 +250,8 @@ namespace Engine {
 
 			auto projectiel_rb = m_registry.emplace<RigidBodyComponent>(projectileEntity, RigidBodyType::Dynamic, projTransform.GetTransform());
 			m_registry.emplace<SphereColliderComponent>(projectileEntity, projectiel_rb, 0.5f);
-			glm::vec3 force = (-forward * 5.5f);
-			projectiel_rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(force.x, force.y + 2.f, force.z + 2.f));
+			glm::vec3 force = (-forward * 500.5f);
+			projectiel_rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(force.x, force.y + 20.f, force.z + 20.f));
 
 		}
 	}
