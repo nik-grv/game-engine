@@ -8,6 +8,11 @@ workspace "Engine"
 		"Release"
 	}
 
+	flags
+	{
+		"MultiProcessorCompile"
+	}
+
 outputdir = "%{cfg.buildcfg}-%{cfg.system}"
 
 group "Engine"
@@ -146,8 +151,8 @@ project "Sandbox"
 		runtime "Release"
 		optimize "On"
 
-<<<<<<< Updated upstream
-=======
+
+
 project "Engine-Editor"
 		location "Engine-Editor"
 		kind "ConsoleApp"
@@ -209,7 +214,6 @@ project "Engine-Editor"
 			runtime "Release"
 			optimize "On"
 
->>>>>>> Stashed changes
  project "EngineTests"
 		location "engineTests"
         kind "ConsoleApp"
@@ -339,4 +343,4 @@ group "Vendor"
 	include "vendor/box2d"
 	include "vendor/lua"
 	include "vendor/react3d"
-	
+

@@ -1,4 +1,5 @@
 #include "../include/EditorLayer.h"
+
 #include "../../sandbox/include/assimpLoader.h"
 
 
@@ -10,12 +11,14 @@ EditorLayer::EditorLayer(const char* name) : Layer(name)
 	RendererShared::actionCommand(setclearCommand);
 
 	m_camera.setCameraPos(glm::vec3(-1.0f, 1.0f, 6.0f));
+
 	m_view3D = m_camera.getCameraViewMatrix();
 	m_projection3D =
 		glm::perspective(glm::radians(m_camera.getFOV()), (float)RendererShared::SCR_WIDTH / (float)RendererShared::SCR_HEIGHT, 0.1f, 100.f);
 
 	m_swu3D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_view3D)));
 	m_swu3D["u_projection"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_projection3D)));
+
 
 
 	std::shared_ptr<ShaderRend> shader;
@@ -61,6 +64,7 @@ void EditorLayer::OnUpdate(float timestep)
 	m_model1 = rotation * scale; //Code broken here needs fixing !
 	//m_model2 = rotation * scale;
 	m_model2 = glm::translate(glm::mat4(1.0f), glm::vec3(-5.f, 0.f, 0.f));
+
 	m_camera.update(timestep);
 }
 
@@ -97,6 +101,7 @@ void EditorLayer::OnRender()
 	m_model1 = glm::translate(glm::mat4(1.0f), glm::vec3(5.f, 0.f, 0.f)) * rotation * scale;
 	Renderer3D::submit(m_VAO1, mat1, m_model1);
 	Renderer3D::submit(m_VAO2, mat2, m_model2);
+
 
 	Renderer3D::end();
 }

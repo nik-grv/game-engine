@@ -178,10 +178,12 @@ private:
 	glm::mat4 m_projection3D;
 	using SceneWideUniforms = std::unordered_map<const char*, std::pair<ShaderDataType, void*>>; //!< scene wide uniform 
 	SceneWideUniforms m_swu3D;
+
 	glm::mat4 m_model1, m_model2;
 
 	glm::vec3 m_rotation = { 0.f, 0.f, 0.f };
 	float m_scale = 1.f;
+
 
 
 
