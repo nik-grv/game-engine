@@ -72,46 +72,48 @@ namespace Engine {
 		m_entities[2] = m_registry.create();
 		m_entities[3] = m_registry.create();
 		m_entities[4] = m_registry.create();
-		
+
 
 		m_registry.emplace<RootComponent>(m_entities[0]);
-		
-		
-		m_registry.emplace<LabelComponent>(m_entities[0],"Root Component");
-		m_registry.emplace<LabelComponent>(m_entities[1],"Tank");
-		m_registry.emplace<LabelComponent>(m_entities[2],"Cube");
-		m_registry.emplace<LabelComponent>(m_entities[3],"Camera");
-		m_registry.emplace<LabelComponent>(m_entities[4],"Floor");
+
+
+		m_registry.emplace<LabelComponent>(m_entities[0], "Root Component");
+		m_registry.emplace<LabelComponent>(m_entities[1], "Tank");
+		m_registry.emplace<LabelComponent>(m_entities[2], "Cube");
+		m_registry.emplace<LabelComponent>(m_entities[3], "Camera");
+		m_registry.emplace<LabelComponent>(m_entities[4], "Floor");
 
 
 		m_registry.emplace<TransformComponent>(m_entities[0]);
-		m_registry.emplace<TransformComponent>(m_entities[1],glm::vec3(0.0f,50.0f,0.0f),glm::vec3(0),glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[2],glm::vec3(-3,2,0),glm::vec3(0),glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[3],glm::vec3(-1.0f, 1.0f, 6.0f),glm::vec3(0),glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0, 0), glm::vec3(0), glm::vec3(10.0f,1.f,10.0f));
+		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(0.0f, 50.0f, 0.0f), glm::vec3(0), glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(0.0f, 20, 0), glm::vec3(0), glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0, 0), glm::vec3(0), glm::vec3(15.0f, 1.f, 15.0f));
 
 		auto tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
+		auto cubeTransform = m_registry.get<TransformComponent>(m_entities[2]).GetTransform();
 		auto floorTransform = m_registry.get<TransformComponent>(m_entities[4]).GetTransform();
 
 		auto tank_rb = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic, tankTransform);
+		auto cube_rb = m_registry.emplace<RigidBodyComponent>(m_entities[2], RigidBodyType::Dynamic, cubeTransform);
 		auto floor_rb = m_registry.emplace<RigidBodyComponent>(m_entities[4], RigidBodyType::Static, floorTransform);
 
 		m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(5.0f, 0.1f, 5.0f));
-		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(10.0f, 1.f, 10.0f));
-		
-		m_registry.emplace<RenderComponent>(m_entities[1],m_VAO1, mat1);
-		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO2, mat2);
-		m_registry.emplace<RenderComponent>(m_entities[4],m_VAO2, mat1);
+		m_registry.emplace<BoxColliderComponent>(m_entities[2], cube_rb, glm::vec3(1.0f, 1.f, 1.0f));
+		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(15.0f, 0.05f, 15.0f));
 
-		//m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(5.0f,0.15f,5.0f));
-		//m_registry.emplace<RenderComponent>(m_entities[3]);
-	
+		m_registry.emplace<RenderComponent>(m_entities[1], m_VAO1, mat1);
+		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO2, mat2);
+		m_registry.emplace<RenderComponent>(m_entities[4], m_VAO2, mat1);
+
 	}
 
-
+	bool doit = true;
 	void EnTTLayer::OnUpdate(float timestep)
 	{		
-		NGPhyiscs::updateTransforms();
+		if(doit)
+			NGPhyiscs::updateTransforms();
+		//doit = false;
 		m_camera.update(timestep);
 	}
 
