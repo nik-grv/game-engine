@@ -57,6 +57,7 @@ namespace Engine {
 		//m_physics->m_world->setGravity(reactphysics3d::Vector3(0.f, -10.f, 0.f));
 		//m_physics->m_world->setIsGravityEnabled(true);
 
+
 		//reset timer
 		m_timer.reset(new ChronoTimer);
 		m_timer->start();
@@ -284,6 +285,7 @@ namespace Engine {
 		
 		for (auto ent : m_entities)
 			m_registry.destroy(ent);
+
 	}
 
 

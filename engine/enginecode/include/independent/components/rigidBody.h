@@ -15,6 +15,7 @@ namespace Engine {
 
 		//!< default constructor perhaps?
 		RigidBodyComponent()
+
 		{
 			rp3d::PhysicsWorld* world = Application::getInstance().GetWorld();		//Give application a world for this to work.
 			rp3d::Vector3 position(0.0, 0.0, 0.0);
@@ -27,7 +28,6 @@ namespace Engine {
 			//m_body->setMass(10000);
 			//Log::error("is gravity enabled {0}", m_body->isGravityEnabled());
 			//std::cout << m_body->isGravityEnabled() << std::endl;
-
 		}
 
 
@@ -86,8 +86,9 @@ namespace Engine {
 				break;
 			}
 		}
-
+    
 		rp3d::RigidBody* m_body;
+
 	};
 
 	class BoxColliderComponent {
@@ -104,7 +105,6 @@ namespace Engine {
 
 		rp3d::BoxShape* shape;	//!<Box shape
 		rp3d::Collider* collider = nullptr;	//!< Collider
-
 	};
 
 	class SphereColliderComponent {
@@ -155,4 +155,5 @@ namespace Engine {
 	{
 		void updateTransforms();
 	}
+
 }
