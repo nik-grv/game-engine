@@ -151,6 +151,8 @@ project "Sandbox"
 		runtime "Release"
 		optimize "On"
 
+
+
 project "Engine-Editor"
 		location "Engine-Editor"
 		kind "ConsoleApp"
@@ -175,6 +177,7 @@ project "Engine-Editor"
 			"engine/precompiled/",
 			"vendor/glfw/include",
 			"vendor/glm/",
+			"vendor/glad/include",
 			"vendor/spdlog/include",
 			"vendor/json/single_include/nlohmann",
 			"vendor/freetype2/include",

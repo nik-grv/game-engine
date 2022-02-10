@@ -124,4 +124,44 @@ namespace Engine {
 			return std::function<void(void)>();
 		}
 	}
+	
+	std::function<void(void)> RenderCommandFactory::setGlLine()
+	{
+		switch (RenderAPI::getAPI())
+		{
+		case RenderAPI::API::None:
+			Log::info("No rendering API");
+			return std::function<void(void)>();
+		case RenderAPI::API::OpenGL:
+			return []() { glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); };
+		case RenderAPI::API::Direct3d:
+			Log::info("Direcr3D not supported");
+			return std::function<void(void)>();
+		case RenderAPI::API::Vulkan:
+			Log::info("Vulkan not supported");
+			return std::function<void(void)>();
+		default:
+			return std::function<void(void)>();
+		}
+	}
+	
+	std::function<void(void)> RenderCommandFactory::setGlFill()
+	{
+		switch (RenderAPI::getAPI())
+		{
+		case RenderAPI::API::None:
+			Log::info("No rendering API");
+			return std::function<void(void)>();
+		case RenderAPI::API::OpenGL:
+			return []() { glPolygonMode(GL_FRONT_AND_BACK,GL_FILL); };
+		case RenderAPI::API::Direct3d:
+			Log::info("Direcr3D not supported");
+			return std::function<void(void)>();
+		case RenderAPI::API::Vulkan:
+			Log::info("Vulkan not supported");
+			return std::function<void(void)>();
+		default:
+			return std::function<void(void)>();
+		}
+	}
 }

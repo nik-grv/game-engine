@@ -160,6 +160,14 @@ private:
 	std::shared_ptr<VertexArray> cubeVAO;
 	std::shared_ptr<VertexBuffer> cubeVBO;
 	std::shared_ptr<IndexBuffer> cubeIBO;
+
+
+	std::shared_ptr<VertexArray> m_VAO1, m_VAO2;
+	std::shared_ptr<VertexBuffer> m_VBO1, m_VBO2;
+	std::shared_ptr<IndexBuffer> m_IBO1, m_IBO2;
+	std::shared_ptr<ShaderRend> shader;
+	std::shared_ptr<Material> mat1, mat2;
+
 	
 	std::shared_ptr<ShaderRend> TPShader;
 	std::shared_ptr<Material> letterMat;
@@ -170,7 +178,13 @@ private:
 	glm::mat4 m_projection3D;
 	using SceneWideUniforms = std::unordered_map<const char*, std::pair<ShaderDataType, void*>>; //!< scene wide uniform 
 	SceneWideUniforms m_swu3D;
-	glm::mat4 m_model1;
+
+	glm::mat4 m_model1, m_model2;
+
+	glm::vec3 m_rotation = { 0.f, 0.f, 0.f };
+	float m_scale = 1.f;
+
+
 
 
 };
