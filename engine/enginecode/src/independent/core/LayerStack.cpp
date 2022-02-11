@@ -17,8 +17,10 @@ namespace Engine
 	{
 		for (auto& layer : m_layers)
 		{
-			if (layer->isActive())
+			if (layer->isActive()){
 				layer->OnUpdate(timeStep);
+				//layer->OnAttach();
+			}
 		}
 	}
 

@@ -93,7 +93,7 @@ namespace Engine {
 	public:
 		virtual ~Application(); //!< Deconstructor
 		inline static Application& getInstance() { return *s_instance; } //!< Instance getter from singleton pattern
-		inline std::shared_ptr<Window> getAppWindow() { return m_window; };
+		inline Window& getAppWindow() { return *m_window; };
 
 		inline rp3d::PhysicsWorld* GetWorld() { return m_physics->m_world; };
 		inline rp3d::PhysicsCommon& GetPhysCommon() { return m_physics->GetPhysCommon(); }
