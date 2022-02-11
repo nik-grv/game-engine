@@ -2,10 +2,7 @@
 
 #include "imgui.h"
 #include "..\OpenGL\ImGuiOpenGL.h"
-<<<<<<< Updated upstream
-=======
 #include "..\OpenGL\ImGuiGLFW.h"
->>>>>>> Stashed changes
 #include "GLFW/glfw3.h"
 
 namespace Engine {
@@ -23,12 +20,6 @@ namespace Engine {
 
 	void ImGuiLayer::OnAttach()
 	{
-<<<<<<< Updated upstream
-		ImGui::CreateContext();
-		ImGui::StyleColorsDark();
-
-		ImGuiIO& io = ImGui::GetIO();
-=======
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -38,7 +29,6 @@ namespace Engine {
 		
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 
->>>>>>> Stashed changes
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 
@@ -119,40 +109,11 @@ namespace Engine {
 		//Log::info("Key Pressed GUI");
 	}
 
-<<<<<<< Updated upstream
-	void ImGuiLayer::OnUpdate(float timestep)
-=======
 	void ImGuiLayer::onKeyReleased(KeyReleasedEvent& e)
->>>>>>> Stashed changes
 	{
-		ImGuiIO& io = ImGui::GetIO();
-		Application& app = Application::getInstance();
-		io.DisplaySize = ImVec2(app.getAppWindow()->getWidth(), app.getAppWindow()->getHeight());
 
-		float time = (float)glfwGetTime();
-		io.DeltaTime = m_Time > 0.0 ? (time - m_Time) : (1.0f / 60);
-		m_Time = time;
-
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui::NewFrame();
-
-
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
-
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
-<<<<<<< Updated upstream
-	void ImGuiLayer::onMouseMoved(MouseMovedEvent& e)
-	{
-		Log::info("Mouse MOVED GUI");
-	}
-	void ImGuiLayer::onKeyPressed(KeyPressedEvent& e)
-	{
-		Log::info("Key Pressed GUI");
-=======
 	/*void ImGuiLayer::onKeyTypedEvent(KeyTypedEvent& e)
 	{
 
@@ -178,7 +139,6 @@ namespace Engine {
 		io.MouseWheelH += e.getXScroll();
 		io.MouseWheel += e.getYScroll();
 		//Log::info("Mouse Scrolled GUI");
->>>>>>> Stashed changes
 	}
 #pragma endregion
 
