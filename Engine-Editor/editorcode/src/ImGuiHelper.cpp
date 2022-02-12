@@ -71,8 +71,8 @@ namespace Engine
 		ImGui::Begin("DockSpace Demo", NULL, window_flags);
 		ImGui::PopStyleVar();
 
-		if (opt_fullscreen)
-			ImGui::PopStyleVar(2);
+		//if (opt_fullscreen)
+		//	ImGui::PopStyleVar(2);
 
 		// DockSpace
 		ImGuiIO& io = ImGui::GetIO();

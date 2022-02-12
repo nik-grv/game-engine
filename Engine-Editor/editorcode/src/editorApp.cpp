@@ -8,8 +8,6 @@
 
 EditorApp::EditorApp()
 {
-	
-	//m_layerStack.Push(new EditorLayer("Editor"));
 	m_layerStack.Push(new Engine::ImGuiLayer("ImGUI Layer"));
 }
 
@@ -18,7 +16,7 @@ EditorApp::~EditorApp()
 
 }
 
-EditorApp::Application* startApplication()
+EditorApp::Application* Engine::startApplication()
 {
 	return new EditorApp();
 }
