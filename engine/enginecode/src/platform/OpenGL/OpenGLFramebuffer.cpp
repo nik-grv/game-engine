@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include "platform/OpenGL/OpenGLFramebuffer.h"
 #include "systems/log.h"
+#include "rendering/renderBuffer.h"
 
 namespace Engine
 {
@@ -35,7 +36,16 @@ namespace Engine
 			}
 			else
 			{
-				//..
+				switch (type) {
+				case AttachmentType::Depth:
+					m_nonSampledTargets.push_back(std::shared_ptr<RenderBuffer>(RenderBuffer::create(type, m_size)));
+					glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_nonSampledTargets.back()->GetID());
+					break;
+				case AttachmentType::DepthAndStencil:
+					m_nonSampledTargets.push_back(std::shared_ptr<RenderBuffer>(RenderBuffer::create(type, m_size)));
+					glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_nonSampledTargets.back()->GetID());
+					break;
+				}
 			}
 
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)

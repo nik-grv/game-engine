@@ -136,7 +136,7 @@ namespace Engine {
 
 		//framebuffer stuff...
 
-		FramebufferLayout fbLayout = { {AttachmentType::Color,true} };
+		FramebufferLayout fbLayout = { {AttachmentType::Color,true},{AttachmentType::Depth,false }  };
 
 		textureTarget.reset(Framebuffer::create(glm::ivec2(window->getWidth(), window->getHeight()), fbLayout));
 		defaultTarget.reset(Framebuffer::createDefault());
@@ -162,7 +162,7 @@ namespace Engine {
 	}
 
 	void FramebufferLayer::OnRender()
-	{
+	{	
 		textureTarget->use();
 
 		//render 3d scene...

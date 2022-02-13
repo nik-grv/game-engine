@@ -7,6 +7,7 @@
 #include "events/events.h"
 #include <memory>
 #include "rendering/TextureRend.h"
+#include "rendering/renderBuffer.h"
 
 namespace Engine
 {
@@ -56,6 +57,7 @@ namespace Engine
 		glm::ivec2 m_size; // size of the FB
 		FramebufferLayout m_layout; // layout of FB attachment
 		std::vector<std::shared_ptr<TextureRend>> m_sampleTargets; // sample targets
+		std::vector<std::shared_ptr<RenderBuffer>> m_nonSampledTargets;
 	};
 
 

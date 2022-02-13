@@ -148,6 +148,7 @@ namespace Engine {
 
 		std::shared_ptr<Framebuffer> defaultTarget;
 		std::shared_ptr<Framebuffer> textureTarget;
+		std::shared_ptr<Framebuffer> depthTarget;
 
 		Quad m_screenQuad;
 		SubTexture m_screenTexture;

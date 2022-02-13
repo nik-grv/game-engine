@@ -65,7 +65,7 @@ namespace Engine {
 
 	void ImGuiLayer::OnDettach()
 	{
-		ImGui::End();
+		//ImGui::End();
 
 		//Log::info("ON DETTACH RUNNING!");
 		ImGui_ImplOpenGL3_Shutdown();
