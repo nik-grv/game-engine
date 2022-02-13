@@ -1,8 +1,8 @@
-/** EnTTLayer.h */
+/** framebufferLayer.h */
 #pragma once
 
-
 #include <rendering/Renderer3D.h>
+#include <rendering/Renderer2D.h>
 
 #include <rendering/shaderDataType.h>
 #include "engine.h"
@@ -17,11 +17,13 @@
 #include "include/independent/components/label.h"
 #include "include/independent/components/rigidBody.h"
 #include <assimpLoader.h>
+#include <rendering/framebuffer.h>
 
 namespace Engine {
-	class EnTTLayer : public Layer{
+
+	class FramebufferLayer : public Layer {
 	public:
-		EnTTLayer(const char* name);
+		FramebufferLayer(const char* name);
 		void OnUpdate(float timestep) override;
 		void OnRender() override;
 		void onMouseMoved(MouseMovedEvent& e) override;
@@ -122,10 +124,10 @@ namespace Engine {
 		std::shared_ptr<Material> mat1, mat2;
 		std::shared_ptr<Material> wireframeMat;
 
-		glm::mat4 m_view3D;
-		glm::mat4 m_projection3D;
+		glm::mat4 m_view3D,m_view2D;
+		glm::mat4 m_projection3D, m_projection2D;
 		using SceneWideUniforms = std::unordered_map<const char*, std::pair<ShaderDataType, void*>>; //!< sceen wide uniform 
-		SceneWideUniforms m_swu3D;
+		SceneWideUniforms m_swu3D, m_swu2D;
 		glm::mat4 m_model1, m_model2;
 
 		entt::registry& m_registry; //ESC registry whatever that is
@@ -139,5 +141,15 @@ namespace Engine {
 		std::shared_ptr<RendererCommands> setGlLineCmd;
 		std::shared_ptr<RendererCommands> setGlFillCmd;
 
+		std::shared_ptr<RendererCommands> enableBlendCommand;
+		std::shared_ptr<RendererCommands> disableDepthCommand;
+		std::shared_ptr<RendererCommands> enableDepthCommand;
+		std::shared_ptr<RendererCommands> disableBlendCommand;
+
+		std::shared_ptr<Framebuffer> defaultTarget;
+		std::shared_ptr<Framebuffer> textureTarget;
+
+		Quad m_screenQuad;
+		SubTexture m_screenTexture;
 	};
 }

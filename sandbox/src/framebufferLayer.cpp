@@ -1,14 +1,19 @@
-#include "EnTTLayer.h"
+#include "framebufferLayer.h"
 
 
 namespace Engine {
 
 
-	EnTTLayer::EnTTLayer(const char* name) : Layer(name), m_registry(Application::getInstance().m_registry), m_entities(Application::getInstance().m_entities)
+	FramebufferLayer::FramebufferLayer(const char* name) : Layer(name), m_registry(Application::getInstance().m_registry), m_entities(Application::getInstance().m_entities)
 	{
 		clearColorAndDepthCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::clearColorAndDepthBuffer));
 		setGlLineCmd.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::setLineMode));
 		setGlFillCmd.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::setFillMode));
+
+		enableBlendCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::enableCommand, GL_BLEND));
+		disableDepthCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::disableCommand, GL_DEPTH_TEST));
+		enableDepthCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::enableCommand, GL_DEPTH_TEST));
+		disableBlendCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::disableCommand, GL_BLEND));
 
 		auto& window = Application::getInstance().getAppWindow();
 		{
@@ -28,7 +33,6 @@ namespace Engine {
 
 
 		//loading model
-
 		m_camera.setCameraPos(glm::vec3(-1.0f, 1.0f, 6.0f));
 		m_view3D = m_camera.getCameraViewMatrix();
 		m_projection3D =
@@ -129,17 +133,43 @@ namespace Engine {
 		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO2, mat2);
 		m_registry.emplace<RenderComponent>(m_entities[4], m_VAO2, mat1);
 
+
+		//framebuffer stuff...
+
+		FramebufferLayout fbLayout = { {AttachmentType::Color,true} };
+
+		textureTarget.reset(Framebuffer::create(glm::ivec2(window->getWidth(), window->getHeight()), fbLayout));
+		defaultTarget.reset(Framebuffer::createDefault());
+
+		//set the 2d camera
+		m_view2D = glm::mat4(1.0f);
+		m_projection2D = glm::ortho(0.0f, static_cast<float>(window->getWidth()), static_cast<float>(window->getHeight()), 0.0f);
+
+		m_swu2D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_view2D)));
+		m_swu2D["u_projection"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_projection2D)));
+
+		m_screenQuad = Quad::createCentreHalfExtens(glm::vec2(RendererShared::SCR_WIDTH * 0.5f, RendererShared::SCR_HEIGHT * 0.5f),
+			glm::vec2(RendererShared::SCR_WIDTH * 0.5f, RendererShared::SCR_HEIGHT * 0.5f));
+
+		m_screenTexture = SubTexture(textureTarget->getTexture(0), glm::vec2(0, 1), glm::vec2(1, 0));
 	}
 
-	void EnTTLayer::OnUpdate(float timestep)
+	
+	void FramebufferLayer::OnUpdate(float timestep)
 	{
 		NGPhyiscs::updateTransforms();
 		m_camera.update(timestep);
 	}
 
-	void EnTTLayer::OnRender()
+	void FramebufferLayer::OnRender()
 	{
+		textureTarget->use();
+
+		//render 3d scene...
+
 		RendererShared::actionCommand(clearColorAndDepthCommand);
+		RendererShared::actionCommand(enableDepthCommand);
+		RendererShared::actionCommand(disableBlendCommand);
 
 		m_view3D = m_camera.getCameraViewMatrix();
 
@@ -178,21 +208,35 @@ namespace Engine {
 			rp3d::Vector3 s = collider.shape->getHalfExtents() * 2;
 			glm::vec3 scale = glm::vec3(s.x, s.y, s.z);
 
-			glm::mat4 transformMat = glm::translate(glm::mat4(1.f), t) * glm::toMat4(r) * glm::scale(glm::mat4(1.f), scale);		
+			glm::mat4 transformMat = glm::translate(glm::mat4(1.f), t) * glm::toMat4(r) * glm::scale(glm::mat4(1.f), scale);
 			Renderer3D::submit(m_VAO2, wireframeMat, transformMat);
 		}
 		Renderer3D::end();
 
 		//set polygon mode to gl_fill back for drawing the models
 		RendererShared::actionCommand(setGlFillCmd);
+
+		//render the framebuffer on a 2d quad
+
+		defaultTarget->use();
+
+		RendererShared::actionCommand(disableDepthCommand);
+		RendererShared::actionCommand(enableBlendCommand);
+
+		Renderer2D::begin(m_swu2D);
+
+		Renderer2D::submit(m_screenQuad, m_screenTexture);
+		Renderer2D::submit("2D Renderer Framebuffer", glm::vec2(500, 500), glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
+
+		Renderer2D::end();
 	}
 
-	void EnTTLayer::onMouseMoved(MouseMovedEvent& e)
+	void FramebufferLayer::onMouseMoved(MouseMovedEvent& e)
 	{
 		m_camera.mouseMovement(e.getMousePos().x, e.getMousePos().y);
 	}
 
-	void EnTTLayer::onKeyPressed(KeyPressedEvent& e)
+	void FramebufferLayer::onKeyPressed(KeyPressedEvent& e)
 	{
 		float rot = 0.25;
 		float scale = 0.01;

@@ -118,7 +118,7 @@ namespace Engine {
 		InputPoller::setNativeWindow(m_window->getNativewindow());
 		m_timer->reset();
 
-		ImGuiHelper::init();
+		//ImGuiHelper::init();
 
 		Renderer2D::init();
 		//Renderer3D::init();
@@ -286,7 +286,7 @@ namespace Engine {
 		//stop the systems and logger
 		m_loggerSystem->stop();
 		
-		ImGuiHelper::shutdown();
+		//ImGuiHelper::shutdown();
 
 		//stop windows system
 		m_windowSystem->stop();
