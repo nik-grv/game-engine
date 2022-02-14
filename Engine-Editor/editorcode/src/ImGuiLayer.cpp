@@ -1,16 +1,18 @@
+#include <glad/glad.h>
 #include "../include/ImGuiLayer.h"
 
-#include "imgui.h"
-#include "..\OpenGL\ImGuiOpenGL.h"
-#include "..\OpenGL\ImGuiGLFW.h"
-#include "GLFW/glfw3.h"
+
+//#include "..\OpenGL\ImGuiOpenGL.h"
+//#include "..\OpenGL\ImGuiGLFW.h"
+//#include "GLFW/glfw3.h"
+#include "../editorcode/include/ImGuiHelper.h";
+
 
 namespace Engine {
 
-	ImGuiLayer::ImGuiLayer()
-		: Layer("ImGuiLayer")
+	ImGuiLayer::ImGuiLayer(const char* name) : Layer(name)
 	{
-		
+
 	}
 
 	ImGuiLayer::~ImGuiLayer()
@@ -21,13 +23,18 @@ namespace Engine {
 	void ImGuiLayer::OnAttach()
 	{
 		//Log::info("ON ATTACH RUNNING!");
-		IMGUI_CHECKVERSION();
+		//IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGui::StyleColorsDark();
-
+		//ImGuiHelper::init();
+		Application& app = Application::getInstance();
+		/*
 		ImGuiIO& io = ImGui::GetIO();
-		
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+
+		//Application& app = Application::getInstance();
+		io.DisplaySize = ImVec2(app.getAppWindow()->getWidth(), app.getAppWindow()->getHeight());
+
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiWindowFlags_NoMove;       // Enable Keyboard Controls
 
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
@@ -54,13 +61,13 @@ namespace Engine {
 		io.KeyMap[ImGuiKey_X] = GLFW_KEY_X;
 		io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
 		io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
-
-		ImGui_ImplOpenGL3_Init("#version 410");
+		*/
+		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)app.getAppWindow()->getNativewindow(), true);
+		ImGui_ImplOpenGL3_Init("#version 440");
 	}
 
 	void ImGuiLayer::OnDettach()
 	{
-		//Log::info("ON DETTACH RUNNING!");
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -68,23 +75,19 @@ namespace Engine {
 
 	void ImGuiLayer::OnUpdate(float timestep)
 	{
-		Application& app = Application::getInstance();
-
-		ImGuiIO& io = ImGui::GetIO();
-		//Application& app = Application::getInstance();
-		io.DisplaySize = ImVec2(app.getAppWindow().getWidth(), app.getAppWindow().getHeight());
-
-		float time = (float)glfwGetTime();
-		io.DeltaTime = m_Time > 0.0f ? (time - m_Time) : (1.0f / 60.0f);
-
 		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
-
+		ImGui::Begin("Test");
+		ImGui::Text("This is window A");
+		ImGui::End();
+	
 		ImGui::Render();
+		glfwMakeContextCurrent((GLFWwindow*)app.getAppWindow()->getNativewindow());
+		glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 	}
 
 #pragma region -- [ GUIInputManager ] --
@@ -98,11 +101,11 @@ namespace Engine {
 #pragma region Controls
 		if (e.getKeyCode() == GLFW_KEY_C)
 		{
-			glfwSetInputMode(reinterpret_cast<GLFWwindow*>(app.getAppWindow().getNativewindow()), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			glfwSetInputMode(reinterpret_cast<GLFWwindow*>(app.getAppWindow()->getNativewindow()), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
-		else if (e.getKeyCode() == NG_KEY_LEFT_ALT )
+		else if (e.getKeyCode() == NG_KEY_LEFT_ALT)
 		{
-			glfwSetInputMode(reinterpret_cast<GLFWwindow*>(app.getAppWindow().getNativewindow()), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			glfwSetInputMode(reinterpret_cast<GLFWwindow*>(app.getAppWindow()->getNativewindow()), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		}
 #pragma endregion
 
@@ -119,7 +122,7 @@ namespace Engine {
 
 	}*/
 
-	void ImGuiLayer::onMouseBtnPressed(MouseButtonPressedEvent & e)
+	void ImGuiLayer::onMouseBtnPressed(MouseButtonPressedEvent& e)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseDown[e.getButton()] = true;
@@ -127,13 +130,13 @@ namespace Engine {
 		//Log::info("Mouse Button Pressed GUI");
 	}
 
-	void ImGuiLayer::onMouseBtnReleased(MouseButtonReleasedEvent&e)
+	void ImGuiLayer::onMouseBtnReleased(MouseButtonReleasedEvent& e)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseDown[e.getButton()] = false;
 	}
 
-	void ImGuiLayer::onMouseScrolled(MouseScrollEvent & e)
+	void ImGuiLayer::onMouseScrolled(MouseScrollEvent& e)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseWheelH += e.getXScroll();

@@ -7,7 +7,7 @@ namespace Engine {
 	class ImGuiLayer : public Layer
 	{
 	public:
-		ImGuiLayer();
+		ImGuiLayer(const char* name);
 		~ImGuiLayer();
 
 		void OnAttach();
@@ -19,9 +19,9 @@ namespace Engine {
 		//void onKeyTypedEvent(KeyTypedEvent& e) override; (IMPLEMENT FUCNTION LATER)
 
 		void onMouseMoved(MouseMovedEvent& e) override;
-		void onMouseBtnPressed(MouseButtonPressedEvent&e) override;
-		void onMouseBtnReleased(MouseButtonReleasedEvent&e) override;
-		void onMouseScrolled(MouseScrollEvent&e) override;
+		void onMouseBtnPressed(MouseButtonPressedEvent& e) override;
+		void onMouseBtnReleased(MouseButtonReleasedEvent& e) override;
+		void onMouseScrolled(MouseScrollEvent& e) override;
 		Application& app = Application::getInstance();
 	private:
 

@@ -32,7 +32,7 @@
 //  2016-10-15: Misc: Added a void* user_data parameter to Clipboard function handlers.
 
 #include "imgui.h"
-#include "ImGuiGLFW.h"
+#include "../editorcode/include/ImGuiGLFW.h"
 
 // GLFW
 #include <GLFW/glfw3.h>
@@ -160,6 +160,9 @@ static bool ImGui_ImplGlfw_Init(GLFWwindow* window, bool install_callbacks, Glfw
     io.SetClipboardTextFn = ImGui_ImplGlfw_SetClipboardText;
     io.GetClipboardTextFn = ImGui_ImplGlfw_GetClipboardText;
     io.ClipboardUserData = g_Window;
+#if defined(_WIN32)
+    io.ImeWindowHandle = (void*)glfwGetWin32Window(g_Window);
+#endif
 
     g_MouseCursors[ImGuiMouseCursor_Arrow] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
     g_MouseCursors[ImGuiMouseCursor_TextInput] = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);

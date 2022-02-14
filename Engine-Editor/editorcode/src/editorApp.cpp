@@ -3,27 +3,20 @@
 *
 * Contains the entry point of the application
 */
+//
+#include "../include/editorApp.h"
 
-#include "engine.h"
-#include "../editorcode/include/editorApp.h"
-namespace Engine {
+EditorApp::EditorApp()
+{
+	m_layerStack.Push(new Engine::ImGuiLayer("ImGUI Layer"));
+}
 
-	EditorApp::EditorApp()
-	{
-		//m_layerStack.Push(new EditorLayer("Editor"));
-		m_layerStack.Push(new ImGuiLayer());
+EditorApp::~EditorApp()
+{
 
-	}
+}
 
-	EditorApp::~EditorApp()
-	{
-
-	}
-
-	Application* startApplication()
-	{
-		return new EditorApp();
-	}
-
-
+EditorApp::Application* Engine::startApplication()
+{
+	return new EditorApp();
 }
