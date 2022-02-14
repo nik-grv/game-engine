@@ -5,7 +5,8 @@
 
 
 namespace Engine {
-	class OpenGLRenderBuffer : public RenderBuffer {
+	class OpenGLRenderBuffer : public RenderBuffer 
+	{
 	public:
 		OpenGLRenderBuffer() { m_ID = 0; }
 		OpenGLRenderBuffer(AttachmentType type, glm::ivec2 size);

@@ -164,8 +164,9 @@ project "Engine-Editor"
 	
 		files
 		{
-			"%{prj.name}/include/**.h",
-			"%{prj.name}/src/**.cpp",
+			"%{prj.name}/editorcode/include/**.h",
+			"%{prj.name}/editorcode/src/**.cpp",
+			"%{prj.name}/editorcode/OpenGL/**.cpp"
 		}
 	
 		includedirs
@@ -192,7 +193,9 @@ project "Engine-Editor"
 	
 		links
 		{
-			"Engine"
+			"Engine",
+			"IMGui",
+			"Glad"
 		}
 	
 		filter "system:windows"

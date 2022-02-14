@@ -1,3 +1,4 @@
+#include <glad/glad.h>
 #include "../include/ImGuiLayer.h"
 
 
@@ -5,6 +6,7 @@
 //#include "..\OpenGL\ImGuiGLFW.h"
 //#include "GLFW/glfw3.h"
 #include "../editorcode/include/ImGuiHelper.h";
+
 
 namespace Engine {
 
@@ -21,12 +23,12 @@ namespace Engine {
 	void ImGuiLayer::OnAttach()
 	{
 		//Log::info("ON ATTACH RUNNING!");
-		IMGUI_CHECKVERSION();
+		//IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGui::StyleColorsDark();
-
+		//ImGuiHelper::init();
 		Application& app = Application::getInstance();
-
+		/*
 		ImGuiIO& io = ImGui::GetIO();
 
 		//Application& app = Application::getInstance();
@@ -59,15 +61,13 @@ namespace Engine {
 		io.KeyMap[ImGuiKey_X] = GLFW_KEY_X;
 		io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
 		io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
-
-		ImGui_ImplOpenGL3_Init("#version 410");
+		*/
+		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)app.getAppWindow()->getNativewindow(), true);
+		ImGui_ImplOpenGL3_Init("#version 440");
 	}
 
 	void ImGuiLayer::OnDettach()
 	{
-		//ImGui::End();
-
-		//Log::info("ON DETTACH RUNNING!");
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -75,28 +75,19 @@ namespace Engine {
 
 	void ImGuiLayer::OnUpdate(float timestep)
 	{
-		//ImGui_ImplOpenGL3_NewFrame();
-		//ImGui::NewFrame();
-		//ImGui::Begin("TEST", 0);
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
 
-
-		//float time = (float)glfwGetTime();
-		//io.DeltaTime = m_Time > 0.0f ? (time - m_Time) : (1.0f / 60.0f);
-
-		ImGuiHelper::begin();
 		ImGui::Begin("Test");
 		ImGui::Text("This is window A");
 		ImGui::End();
-		ImGuiHelper::end();
-		//static bool show = true;
-		//ImGui::ShowDemoWindow(&show);
+	
+		ImGui::Render();
+		glfwMakeContextCurrent((GLFWwindow*)app.getAppWindow()->getNativewindow());
+		glClear(GL_COLOR_BUFFER_BIT);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-
-		//ImGui::Render();
-		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		////glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//ImGui::End();
-		//ImGui::EndFrame();
 	}
 
 #pragma region -- [ GUIInputManager ] --

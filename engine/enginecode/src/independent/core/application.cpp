@@ -242,7 +242,7 @@ namespace Engine {
 		e.handle(true);
 		if (e.getButton() == 0)
 		{
-			glfwSetInputMode(reinterpret_cast<GLFWwindow*>(m_window->getNativewindow()), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			//glfwSetInputMode(reinterpret_cast<GLFWwindow*>(m_window->getNativewindow()), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		}
 		m_layerStack.onMouseBtnPressed(e);
 

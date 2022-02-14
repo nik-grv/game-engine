@@ -11,10 +11,7 @@
 
 namespace Engine
 {
-	enum class AttachmentType
-	{
-		Color, Depth, Stencil, DepthAndStencil
-	};
+
 
 	using Attachment = std::pair<AttachmentType, bool>;
 
