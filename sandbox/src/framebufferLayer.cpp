@@ -14,6 +14,8 @@ namespace Engine {
 		disableDepthCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::disableCommand, GL_DEPTH_TEST));
 		enableDepthCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::enableCommand, GL_DEPTH_TEST));
 		disableBlendCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::disableCommand, GL_BLEND));
+		disableBlendCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::disableCommand, GL_BLEND));
+		standardBlend.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::blendFuncCommand, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 		auto& window = Application::getInstance().getAppWindow();
 		{
@@ -221,14 +223,20 @@ namespace Engine {
 		defaultTarget->use();
 
 		RendererShared::actionCommand(disableDepthCommand);
-		RendererShared::actionCommand(enableBlendCommand);
+		
 
 		Renderer2D::begin(m_swu2D);
 
 		Renderer2D::submit(m_screenQuad, m_screenTexture);
-		Renderer2D::submit("2D Renderer Framebuffer", glm::vec2(500, 500), glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
-
 		Renderer2D::end();
+
+		RendererShared::actionCommand(enableBlendCommand);
+		RendererShared::actionCommand(standardBlend);
+
+		Renderer2D::begin(m_swu2D);
+		Renderer2D::submit("2D Renderer Framebuffer", glm::vec2(500, 500), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		Renderer2D::end();
+
 	}
 
 	void FramebufferLayer::onMouseMoved(MouseMovedEvent& e)
@@ -236,11 +244,18 @@ namespace Engine {
 		m_camera.mouseMovement(e.getMousePos().x, e.getMousePos().y);
 	}
 
+	bool showQuad;
 	void FramebufferLayer::onKeyPressed(KeyPressedEvent& e)
 	{
 		float rot = 0.25;
 		float scale = 0.01;
-		/*if (e.getKeyCode() == NG_KEY_KP_ADD)
+
+		if (e.getKeyCode() == NG_KEY_0)
+			showQuad = true;
+		if (e.getKeyCode() == NG_KEY_9)
+			showQuad = false;
+
+			/*if (e.getKeyCode() == NG_KEY_KP_ADD)
 		{
 			if (InputPoller::isKeyPressed(NG_KEY_X)) { m_rotation.x += rot; Log::info("X pressed"); }
 			else if (InputPoller::isKeyPressed(NG_KEY_Y)) { m_rotation.y += rot; }

@@ -48,11 +48,12 @@ namespace Engine
 				}
 			}
 
-			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-				Log::error("Framebuffer not completed...");
-
-			glBindFramebuffer(GL_FRAMEBUFFER,0);
 		}
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			Log::error("Framebuffer not completed...");
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	OpenGLFramebuffer::~OpenGLFramebuffer()

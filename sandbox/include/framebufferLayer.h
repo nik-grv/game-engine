@@ -145,6 +145,7 @@ namespace Engine {
 		std::shared_ptr<RendererCommands> disableDepthCommand;
 		std::shared_ptr<RendererCommands> enableDepthCommand;
 		std::shared_ptr<RendererCommands> disableBlendCommand;
+		std::shared_ptr<RendererCommands> standardBlend;
 
 		std::shared_ptr<Framebuffer> defaultTarget;
 		std::shared_ptr<Framebuffer> textureTarget;
