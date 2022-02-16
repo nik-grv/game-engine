@@ -186,6 +186,14 @@ namespace Engine {
 		{
 			auto& transform = group.get<TransformComponent>(entity);
 			auto& render = group.get<RenderComponent>(entity);
+			if (usePP)
+			{
+				render.m_mat->getShader()->uploadInt("setPP", 1);
+			}
+			else
+			{
+				render.m_mat->getShader()->uploadInt("setPP", 0);
+			}
 			Renderer3D::submit(render.m_vao, render.m_mat, transform.GetTransform());
 		}
 		Renderer3D::end();
@@ -226,7 +234,6 @@ namespace Engine {
 		
 
 		Renderer2D::begin(m_swu2D);
-
 		Renderer2D::submit(m_screenQuad, m_screenTexture);
 		Renderer2D::end();
 
@@ -244,18 +251,21 @@ namespace Engine {
 		m_camera.mouseMovement(e.getMousePos().x, e.getMousePos().y);
 	}
 
-	bool showQuad;
+
 	void FramebufferLayer::onKeyPressed(KeyPressedEvent& e)
 	{
 		float rot = 0.25;
 		float scale = 0.01;
 
 		if (e.getKeyCode() == NG_KEY_0)
-			showQuad = true;
-		if (e.getKeyCode() == NG_KEY_9)
-			showQuad = false;
-
-			/*if (e.getKeyCode() == NG_KEY_KP_ADD)
+		{
+			usePP = true;
+		}
+		if (e.getKeyCode() == NG_KEY_1)
+		{
+			usePP = false;
+		}
+		/*if (e.getKeyCode() == NG_KEY_KP_ADD)
 		{
 			if (InputPoller::isKeyPressed(NG_KEY_X)) { m_rotation.x += rot; Log::info("X pressed"); }
 			else if (InputPoller::isKeyPressed(NG_KEY_Y)) { m_rotation.y += rot; }

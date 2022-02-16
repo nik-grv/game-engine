@@ -153,5 +153,6 @@ namespace Engine {
 
 		Quad m_screenQuad;
 		SubTexture m_screenTexture;
+		bool usePP = false;
 	};
 }

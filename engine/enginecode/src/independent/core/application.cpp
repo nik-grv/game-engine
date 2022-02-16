@@ -188,7 +188,7 @@ namespace Engine {
 	bool Application::onKeyPressed(KeyPressedEvent& e)
 	{
 		e.handle(true);
-		Log::trace("{0} Key Pressed ", e.getKeyCode());
+		//Log::trace("{0} Key Pressed ", e.getKeyCode());
 		if (e.getKeyCode() == NG_KEY_ESCAPE)
 		{
 			glfwSetInputMode(reinterpret_cast<GLFWwindow*>(m_window->getNativewindow()), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
