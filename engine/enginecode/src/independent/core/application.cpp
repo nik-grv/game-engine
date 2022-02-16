@@ -26,6 +26,8 @@
 #include "rendering/Renderer3D.h"
 #include "rendering/Renderer2D.h"
 
+#include "../../Engine-Editor/editorcode/include/ImGuiHelper.h";
+
 namespace Engine {
 	// Set static vars
 	Application* Application::s_instance = nullptr;
@@ -116,6 +118,8 @@ namespace Engine {
 		InputPoller::setNativeWindow(m_window->getNativewindow());
 		m_timer->reset();
 
+		//ImGuiHelper::init();
+
 		Renderer2D::init();
 		//Renderer3D::init();
 
@@ -184,7 +188,7 @@ namespace Engine {
 	bool Application::onKeyPressed(KeyPressedEvent& e)
 	{
 		e.handle(true);
-		Log::trace("{0} Key Pressed ", e.getKeyCode());
+		//Log::trace("{0} Key Pressed ", e.getKeyCode());
 		if (e.getKeyCode() == NG_KEY_ESCAPE)
 		{
 			glfwSetInputMode(reinterpret_cast<GLFWwindow*>(m_window->getNativewindow()), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -238,7 +242,7 @@ namespace Engine {
 		e.handle(true);
 		if (e.getButton() == 0)
 		{
-			glfwSetInputMode(reinterpret_cast<GLFWwindow*>(m_window->getNativewindow()), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			//glfwSetInputMode(reinterpret_cast<GLFWwindow*>(m_window->getNativewindow()), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		}
 		m_layerStack.onMouseBtnPressed(e);
 
@@ -276,10 +280,14 @@ namespace Engine {
 
 	Application::~Application()
 	{
+
 		//delete world
 		m_physics->stop();
 		//stop the systems and logger
 		m_loggerSystem->stop();
+		
+		//ImGuiHelper::shutdown();
+
 		//stop windows system
 		m_windowSystem->stop();
 		

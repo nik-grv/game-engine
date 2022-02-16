@@ -19,7 +19,6 @@ EditorLayer::EditorLayer(const char* name) : Layer(name)
 	m_swu3D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_view3D)));
 	m_swu3D["u_projection"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_projection3D)));
 
-
 	Renderer3D::init();
 	std::shared_ptr<ShaderRend> shader;
 	shader.reset(ShaderRend::create("./assets/shaders/texturedPhong.glsl"));

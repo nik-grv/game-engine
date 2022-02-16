@@ -3,9 +3,9 @@
 UILayer::UILayer(const char* name) : Layer(name)
 {
 
+	blendFuncAlphaCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::blendFuncCommand, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 	enableBlendCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::enableCommand, GL_BLEND));
 	disableDepthCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::disableCommand, GL_DEPTH_TEST));
-	blendFuncAlphaCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::blendFuncCommand, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 	enableDepthCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::enableCommand, GL_DEPTH_TEST));
 	disableBlendCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::disableCommand, GL_BLEND));
 
@@ -35,7 +35,7 @@ void UILayer::OnRender()
 	RendererShared::actionCommand(disableDepthCommand);
 	RendererShared::actionCommand(enableBlendCommand);
 
-	RendererShared::actionCommand(blendFuncAlphaCommand);
+	//RendererShared::actionCommand(blendFuncAlphaCommand);
 
 	Renderer2D::begin(m_swu);
 	Renderer2D::submit(m_quad[0], glm::vec4(.5f, 1.0f, .5f, .5f));
