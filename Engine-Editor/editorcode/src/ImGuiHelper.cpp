@@ -3,12 +3,12 @@
 //#include "ImGuiGLFW.cpp";// <examples/imgui_impl_glfw.h>
 //#include "ImGuiOpenGL.cpp";// <examples/imgui_impl_opengl3.h>
 
-#include "../include/ImGuiHelper.h";
+/*#include "../include/ImGuiHelper.h";
 #include "../enginecode/include/independent/core/application.h";
-
+*/
 namespace Engine
 {
-	void ImGuiHelper::init()
+	/*	void ImGuiHelper::init()
 	{
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -55,7 +55,7 @@ namespace Engine
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 			window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
 			window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-		}*/
+		}
 
 		// When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background 
 		// and handle the pass-thru hole, so we ask Begin() to not render a background.
@@ -115,6 +115,7 @@ namespace Engine
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 	}
+	*/
 }
 
 

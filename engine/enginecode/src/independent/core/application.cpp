@@ -25,7 +25,7 @@
 
 #include "rendering/Renderer3D.h"
 #include "rendering/Renderer2D.h"
-
+#include <stb_image.h>
 #include "../../Engine-Editor/editorcode/include/ImGuiHelper.h";
 
 namespace Engine {
@@ -37,6 +37,8 @@ namespace Engine {
 	*/
 	Application::Application()
 	{
+
+
 		for (auto ent : m_entities)
 			ent = m_registry.create();
 		
@@ -98,6 +100,18 @@ namespace Engine {
 
 		WindowProperties props("My Game Engine",RendererShared::SCR_WIDTH, RendererShared::SCR_HEIGHT,m_isFullscreen);
 		m_window.reset(Window::create(props));
+		/*
+		int width, height;
+		int channels;
+		const char* a = "C:\image.png";
+		unsigned char* pixel = stbi_load("icon.png", &width, &height, &channels, 4);
+		GLFWimage img[1];
+		img[0].width = width;
+		img[0].height = height;
+		img[0].pixels = pixel;
+
+		glfwSetWindowIcon((GLFWwindow*)m_window->getNativewindow(), 0, img);
+		*/
 
 		//window callbacks
 		m_window->getEventHandler().setOnCloseCallback(std::bind(&Application::onWindowClose, this, std::placeholders::_1));
@@ -124,6 +138,7 @@ namespace Engine {
 		//Renderer3D::init();
 
 	}
+
 
 #pragma region AppEvents
 	/*!
@@ -303,13 +318,9 @@ namespace Engine {
 	*/
 	void Application::run()
 	{
-#pragma endregion RenderCommands
 		float timestep = 0.f;
 		while (m_running)
 		{
-#pragma region [History] - While Loop
-
-#pragma endregion
 			timestep = m_timer->getElapsedTime();
 			m_timer->reset();
 

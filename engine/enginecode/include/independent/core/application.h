@@ -45,6 +45,7 @@ namespace Engine {
 	protected:
 		Application(); //!< Constructor
 
+
 		std::shared_ptr<Log> m_loggerSystem; //!< logger system var
 		std::shared_ptr<System> m_windowSystem; //!< window system
 
@@ -68,6 +69,7 @@ namespace Engine {
 		bool onMouseBtnPressed(MouseButtonPressedEvent& e); //!<run when mouse button is pressed
 		bool onMouseBtnReleased(MouseButtonReleasedEvent& e); //!<run when mouse button is released
 		bool onMouseScrolled(MouseScrollEvent& e); //!<run when mouse button is released
+
 
 	private:
 		static Application* s_instance;		//!< Singleton instance of the application

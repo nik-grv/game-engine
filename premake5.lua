@@ -166,7 +166,8 @@ project "Engine-Editor"
 		{
 			"%{prj.name}/editorcode/include/**.h",
 			"%{prj.name}/editorcode/src/**.cpp",
-			"%{prj.name}/editorcode/OpenGL/**.cpp"
+			"%{prj.name}/editorcode/OpenGL/**.cpp",
+			"%{prj.name}/editorcode/OpenGL/**.h"
 		}
 	
 		includedirs
