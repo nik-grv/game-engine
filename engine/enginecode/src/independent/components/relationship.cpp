@@ -5,7 +5,7 @@ namespace Engine
 {
 
 
-	void RelationshipComponent::setChild(entt::entity parentEntity, entt::entity childEntity)
+	void HierarchySystem::setChild(entt::entity parentEntity, entt::entity childEntity)
 	{
 		entt::registry& reg = Application::getInstance().m_registry;
 
@@ -40,7 +40,7 @@ namespace Engine
 
 	}
 
-	void RelationshipComponent::UpdateChildren()
+	void HierarchySystem::UpdateChildren()
 	{
 		entt::registry& reg = Application::getInstance().m_registry;
 

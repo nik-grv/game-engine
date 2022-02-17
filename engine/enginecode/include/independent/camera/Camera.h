@@ -21,6 +21,7 @@ namespace Engine {
 	public:
 		Camera(); //!< constructor
 		void setCameraPos(glm::vec3 pos);
+		inline glm::vec3 getCameraPos() { return m_cameraPos; }
 		void mouseMovement(double xpos, double ypos); //!< move camera from mouse movement
 		void mouseScroll(double yOffset); //!< zoom camera on mouse scroll
 		void update(float deltaTime); //!< update time
