@@ -89,7 +89,7 @@ namespace Engine {
 
 		bool m_isFullscreen = false; //!< is window fullscreen
 		bool m_fullscreenSet = false; //!< is window fullscreen
-		char m_setFullScreen; //!< input for fullscreen
+		char m_setFullScreen; //!< input for full screen
 	public:
 		virtual ~Application(); //!< Deconstructor
 		inline static Application& getInstance() { return *s_instance; } //!< Instance getter from singleton pattern

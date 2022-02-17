@@ -42,6 +42,7 @@ layout(std140) uniform ubo_lights
 };
 uniform vec4 u_tint;
 uniform sampler2D u_texData;
+uniform int setPP = 0;
 void main()
 {
 	float ambientStrength = 0.4;
@@ -56,5 +57,14 @@ void main()
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 64);
 	vec3 specular = specularStrength * spec * u_lightColour;  
 	
-	colour = vec4((ambient + diffuse + specular), 1.0) * texture(u_texData, texCoord) * u_tint;
+	if(setPP == 1)
+	{
+		colour = vec4((ambient + diffuse + specular), 1.0) * texture(u_texData, texCoord) * u_tint;
+		float avg = (colour.r + colour.g + colour.b) / 3.0f;
+		colour = vec4(vec3(avg),1.0f);
+	}
+	else
+	{
+		colour = vec4((ambient + diffuse + specular), 1.0) * texture(u_texData, texCoord) * u_tint;
+	}
 }

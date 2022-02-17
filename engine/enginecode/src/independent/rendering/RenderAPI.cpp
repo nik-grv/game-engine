@@ -10,6 +10,9 @@
 #include "platform/OpenGL/OpenGLTexture.h"
 #include "platform/OpenGL/OpenGLShader.h"
 #include "platform/OpenGL/OpenGLUniformBuffer.h"
+#include "platform/OpenGL/OpenGLFramebuffer.h"
+#include "platform/OpenGL/OpenGLRenderBuffer.h"
+
 
 namespace Engine
 {
@@ -212,4 +215,72 @@ namespace Engine
 		}
 		return nullptr;
 	}
+	
+	
+	Framebuffer* Framebuffer::createDefault()
+	{
+		switch (RenderAPI::getAPI())
+		{
+		case RenderAPI::API::None:
+			Log::info("No rendering API");
+			break;
+		case RenderAPI::API::OpenGL:
+			return new OpenGLFramebuffer();
+			break;
+		case RenderAPI::API::Direct3d:
+			Log::info("Direcr3D not supported");
+			break;
+		case RenderAPI::API::Vulkan:
+			Log::info("Vulkan not supported");
+			break;
+		default:
+			break;
+		}
+		return nullptr;
+	}
+	
+	Framebuffer* Framebuffer::create(glm::ivec2 size, FramebufferLayout layout)
+	{
+		switch (RenderAPI::getAPI())
+		{
+		case RenderAPI::API::None:
+			Log::info("No rendering API");
+			break;
+		case RenderAPI::API::OpenGL:
+			return new OpenGLFramebuffer(size,layout);
+			break;
+		case RenderAPI::API::Direct3d:
+			Log::info("Direcr3D not supported");
+			break;
+		case RenderAPI::API::Vulkan:
+			Log::info("Vulkan not supported");
+			break;
+		default:
+			break;
+		}
+		return nullptr;
+	}
+
+	RenderBuffer* RenderBuffer::create(AttachmentType type, glm::ivec2 size)
+	{
+		switch (RenderAPI::getAPI())
+		{
+		case RenderAPI::API::None:
+			Log::info("No rendering API");
+			break;
+		case RenderAPI::API::OpenGL:
+			return new OpenGLRenderBuffer(type, size);
+			break;
+		case RenderAPI::API::Direct3d:
+			Log::info("Direcr3D not supported");
+			break;
+		case RenderAPI::API::Vulkan:
+			Log::info("Vulkan not supported");
+			break;
+		default:
+			break;
+		}
+		return nullptr;
+	}
+
 }

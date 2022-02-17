@@ -131,12 +131,9 @@ namespace Engine {
 
 	}
 
-	bool doit = true;
 	void EnTTLayer::OnUpdate(float timestep)
-	{		
-		if(doit)
-			NGPhyiscs::updateTransforms();
-		//doit = false;
+	{
+		NGPhyiscs::updateTransforms();
 		m_camera.update(timestep);
 
 		Log::error("POS - {0},{1},{2}", m_camera.getCameraPos().x, m_camera.getCameraPos().y, m_camera.getCameraPos().z);
