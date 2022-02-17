@@ -102,16 +102,16 @@ namespace Engine {
 		//m_registry.emplace<LabelComponent>(m_entities[5], "Slope");
 
 
-		m_registry.emplace<TransformComponent>(m_entities[0]);
-		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(0), glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[0] , glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0),glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(10.0f, 1.0f, 0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(0.2f, 10, 0), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(30.0f, 1.f, 30.0f));
 		//m_registry.emplace<TransformComponent>(m_entities[5]);
 
-		auto tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
-		auto cubeTransform = m_registry.get<TransformComponent>(m_entities[2]).GetTransform();
-		auto floorTransform = m_registry.get<TransformComponent>(m_entities[4]).GetTransform();
+		auto& tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
+		auto& cubeTransform = m_registry.get<TransformComponent>(m_entities[2]).GetTransform();
+		auto& floorTransform = m_registry.get<TransformComponent>(m_entities[4]).GetTransform();
 		//auto slopeTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
 
 		auto tank_rb = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic, tankTransform);
@@ -133,9 +133,8 @@ namespace Engine {
 
 		m_camera.setCameraPos(glm::vec3(-1.0f, 1.0f, 6.0f));
 
-		auto player = m_registry.get<TransformComponent>(m_entities[1]);
-		m_followCam.reset(new FollowPlayer(player.GetTransform()));
-		m_followCam->setOffset(glm::vec3(0.0f, 0.0f, 0.0f));
+		auto& transform = m_registry.get<TransformComponent>(m_entities[0]);
+		m_followCam.reset(new FollowPlayer(transform.GetTransform()));
 
 		if (!m_isPlayerCam)
 		{
@@ -143,6 +142,7 @@ namespace Engine {
 		}
 		else
 		{
+			glm::mat4 view = glm::mat4(1.0f);
 			m_view3D = m_followCam->getViewMatrix();
 		}
 
@@ -315,8 +315,6 @@ namespace Engine {
 
 			glm::vec3 forward = { camTransform[2][0],camTransform[2][1] ,camTransform[2][2] };
 			glm::vec3 camPos = { camTransform[3][0],camTransform[3][1] ,camTransform[3][2] };
-			Log::error("CAMPOS - {0},{1},{2}", camPos.x, camPos.y, camPos.z);
-			Log::error("POS - {0},{1},{2}", m_camera.getCameraPos().x, m_camera.getCameraPos().y, m_camera.getCameraPos().z);
 			auto projTransform = m_registry.emplace<TransformComponent>(projectileEntity, camPos - forward * 1.0f, glm::vec3(0.0f), glm::vec3(0.5f));
 
 			m_registry.emplace<RenderComponent>(projectileEntity, m_VAO2, mat2);
@@ -365,6 +363,18 @@ namespace Engine {
 		if (e.getKeyCode() == NG_KEY_SPACE)
 		{
 			m_isPlayerCam = !m_isPlayerCam;
+		}
+
+
+		if (e.getKeyCode() == NG_KEY_UP)
+		{
+
+			auto& rb = m_registry.get<RigidBodyComponent>(m_entities[1]);
+			rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(1000.0f, 0.0f, 0.0f));
+		}
+		if (e.getKeyCode() == NG_KEY_S)
+		{
+
 		}
 
 

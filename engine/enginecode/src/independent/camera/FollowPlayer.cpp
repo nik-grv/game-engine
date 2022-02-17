@@ -55,9 +55,6 @@ namespace Engine
 		glm::vec3 upVector = glm::cross(camRight, deltaPos);
 
 		m_viewMatrix = glm::lookAt(camPos, playerPos,upVector);
-
-		Log::error("FORWARD -{0},{1},{2}", camForward.x, camForward.y, camForward.z);
-		Log::error("POS -{0},{1},{2}", camPos.x, camPos.y, camPos.z);
 	}
 
 	//! Set offset between camera and the player model
