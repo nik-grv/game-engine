@@ -127,7 +127,32 @@ namespace Engine
 
 	void AudioManager::addGeometry(const std::string& label, const AudioGeometryDefinition& def)
 	{
+		FMOD::Geometry* geometry;
 
+		int32_t numPolys = def.indices->size() / 3;
+
+		errorCheck(m_lowLevelSystem->createGeometry(numPolys, def.vertices->size(), &geometry));
+
+		m_geometry[label] = geometry;
+		FMOD_VECTOR triangle[3];
+		FMOD_VECTOR vert = { 0,0,0 };
+		int32_t polygonIndex;
+
+		for (int32_t i = 0, j = 0; i < def.indices->size(); i++)
+		{
+			vert = GLMVecToFmod(def.vertices->at(def.indices->at(i)));
+			triangle[j] = vert;
+			j++;
+
+			if (j == 3)
+			{
+				geometry->addPolygon(def.directOcculsion, def.reverbOcculsion, true, 3, triangle, &polygonIndex);
+				j = 0;
+			}
+		}
+		geometry->setScale(&GLMVecToFmod(def.scale));
+		geometry->setPosition(&GLMVecToFmod(def.position));
+		geometry->setRotation(&GLMVecToFmod(def.forward), &GLMVecToFmod(def.up));
 	}
 
 	void AudioManager::moveGeometry(const std::string& label, const glm::vec3& position, const glm::vec3& forward, const glm::vec3& up, const glm::vec3& scale)
