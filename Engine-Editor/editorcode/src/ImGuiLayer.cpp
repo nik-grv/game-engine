@@ -5,12 +5,12 @@
 //#include "..\OpenGL\ImGuiOpenGL.h"
 //#include "..\OpenGL\ImGuiGLFW.h"
 //#include "GLFW/glfw3.h
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 
 namespace Engine {
-
+	static bool dem = true;
 	ImGuiLayer::ImGuiLayer(const char* name) : Layer(name)
 	{
 
@@ -23,6 +23,7 @@ namespace Engine {
 
 	void ImGuiLayer::OnAttach()
 	{
+		
 		//Log::info("ON ATTACH RUNNING!");
 		//IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -62,8 +63,9 @@ namespace Engine {
 		ImGui::Begin("Test");
 		ImGui::Text("This is window A");
 		ImGui::End();
-
+		ImGui::ShowDemoWindow(&dem);
 		ImGui::Render();
+		
 		glfwMakeContextCurrent((GLFWwindow*)app.getAppWindow()->getNativewindow());
 		glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

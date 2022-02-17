@@ -26,7 +26,6 @@
 #include "rendering/Renderer3D.h"
 #include "rendering/Renderer2D.h"
 #include <stb_image.h>
-#include "../../Engine-Editor/editorcode/include/ImGuiHelper.h";
 
 namespace Engine {
 	// Set static vars

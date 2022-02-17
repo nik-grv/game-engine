@@ -166,8 +166,6 @@ project "Engine-Editor"
 		{
 			"%{prj.name}/editorcode/include/**.h",
 			"%{prj.name}/editorcode/src/**.cpp",
-			"%{prj.name}/editorcode/OpenGL/**.cpp",
-			"%{prj.name}/editorcode/OpenGL/**.h"
 		}
 	
 		includedirs
@@ -184,6 +182,7 @@ project "Engine-Editor"
 			"vendor/json/single_include/nlohmann",
 			"vendor/freetype2/include",
 			"vendor/IMGui",
+			"vendor/IMGui/backends",
 			"vendor/enTT/single_include",
 			"vendor/luaBridge/Source",
 			"vendor/assimp/include",
