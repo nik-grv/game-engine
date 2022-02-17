@@ -137,7 +137,33 @@ namespace Engine
 
 	int32_t AudioManager::playSound(const std::string& strSoundName, const glm::vec3& vPos)
 	{
-		return int32_t();
+		int32_t channelID = m_nextChannelId++;
+		auto it = m_sounds.find(strSoundName);
+		if (it == m_sounds.end())
+		{
+			loadSound(strSoundName);
+			it = m_sounds.find(strSoundName);
+			if (it == m_sounds.end());
+			{
+				return channelID;
+			}
+		}
+		FMOD::Channel* channel = nullptr;
+		errorCheck(m_lowLevelSystem->playSound(it->second, 0, true, &channel));
+		if (channel)
+		{
+			FMOD_MODE currMode;
+			it->second->getMode(&currMode);
+			if (currMode & FMOD_3D)
+			{
+				FMOD_VECTOR FVposition = GLMVecToFmod(vPos);
+				FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
+				errorCheck(channel->set3DAttributes(&FVposition, &vel));
+			}
+			errorCheck(channel->setPaused(false));
+			m_channels[channelID] = channel;
+		}
+		return channelID;
 	}
 
 	void AudioManager::playEvent(const std::string& strEventName)
