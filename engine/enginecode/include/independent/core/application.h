@@ -72,6 +72,7 @@ namespace Engine {
 
 
 	private:
+		unsigned char* pixel;
 		static Application* s_instance;		//!< Singleton instance of the application
 		bool m_running = true;	//!< Is the application running
 		glm::mat4 projection;		//<! 3D camera projection

@@ -99,18 +99,17 @@ namespace Engine {
 
 		WindowProperties props("My Game Engine",RendererShared::SCR_WIDTH, RendererShared::SCR_HEIGHT,m_isFullscreen);
 		m_window.reset(Window::create(props));
-		/*
+		
 		int width, height;
 		int channels;
-		const char* a = "C:\image.png";
-		unsigned char* pixel = stbi_load("icon.png", &width, &height, &channels, 4);
+		pixel = stbi_load("../icon.png", &width, &height, &channels, 4);
 		GLFWimage img[1];
 		img[0].width = width;
 		img[0].height = height;
 		img[0].pixels = pixel;
 
-		glfwSetWindowIcon((GLFWwindow*)m_window->getNativewindow(), 0, img);
-		*/
+		glfwSetWindowIcon((GLFWwindow*)m_window->getNativewindow(), 1, img);
+		
 
 		//window callbacks
 		m_window->getEventHandler().setOnCloseCallback(std::bind(&Application::onWindowClose, this, std::placeholders::_1));
@@ -294,7 +293,6 @@ namespace Engine {
 
 	Application::~Application()
 	{
-
 		//delete world
 		m_physics->stop();
 		//stop the systems and logger
@@ -304,7 +302,7 @@ namespace Engine {
 
 		//stop windows system
 		m_windowSystem->stop();
-		
+		free(pixel);
 		for (auto ent : m_entities)
 			m_registry.destroy(ent);
 
