@@ -55,6 +55,9 @@ namespace Engine
 		glm::vec3 upVector = glm::cross(camRight, deltaPos);
 
 		m_viewMatrix = glm::lookAt(camPos, playerPos,upVector);
+
+		Log::error("FORWARD -{0},{1},{2}", camForward.x, camForward.y, camForward.z);
+		Log::error("POS -{0},{1},{2}", camPos.x, camPos.y, camPos.z);
 	}
 
 	//! Set offset between camera and the player model
@@ -64,5 +67,10 @@ namespace Engine
 	void FollowPlayer::setOffset(glm::vec3 offset)
 	{
 		m_offset = offset;
+	}
+	glm::vec3 FollowPlayer::getPosition()
+	{
+		glm::vec3 pos = glm::vec3(m_playerModel[3][0] + m_offset.x, m_playerModel[3][1] + m_offset.y, m_playerModel[3][2] + m_offset.z);
+		return pos;
 	}
 }

@@ -10,6 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "camera/Camera.h"
+#include "camera/FollowPlayer.h"
 #include <entt/entt.hpp>
 #include "include/independent/components/transform.h"
 #include "include/independent/components/relationship.h"
@@ -27,6 +28,7 @@ namespace Engine {
 		void OnUpdate(float timestep) override;
 		void OnRender() override;
 		void onMouseMoved(MouseMovedEvent& e) override;
+		void onMouseBtnPressed(MouseButtonPressedEvent& e) override;
 		void onKeyPressed(KeyPressedEvent& e) override;
 	private:
 		//vertices adata
@@ -136,6 +138,7 @@ namespace Engine {
 		entt::entity m_currentCamera; //Camera thing
 
 		Camera m_camera;
+		std::shared_ptr<FollowPlayer> m_followCam;
 
 		std::shared_ptr<RendererCommands> clearColorAndDepthCommand;
 		std::shared_ptr<RendererCommands> setGlLineCmd;
@@ -154,5 +157,6 @@ namespace Engine {
 		Quad m_screenQuad;
 		SubTexture m_screenTexture;
 		bool usePP = false;
+		bool m_isPlayerCam = true;
 	};
 }

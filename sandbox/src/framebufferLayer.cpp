@@ -6,6 +6,7 @@ namespace Engine {
 
 	FramebufferLayer::FramebufferLayer(const char* name) : Layer(name), m_registry(Application::getInstance().m_registry), m_entities(Application::getInstance().m_entities)
 	{
+
 		clearColorAndDepthCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::clearColorAndDepthBuffer));
 		setGlLineCmd.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::setLineMode));
 		setGlFillCmd.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::setFillMode));
@@ -35,14 +36,7 @@ namespace Engine {
 
 
 		//loading model
-		m_camera.setCameraPos(glm::vec3(-1.0f, 1.0f, 6.0f));
-		m_view3D = m_camera.getCameraViewMatrix();
-		m_projection3D =
-			glm::perspective(glm::radians(m_camera.getFOV()), (float)RendererShared::SCR_WIDTH / (float)RendererShared::SCR_HEIGHT, 0.1f, 100.f);
-
-		m_swu3D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_view3D)));
-		m_swu3D["u_projection"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_projection3D)));
-
+		
 		Renderer3D::init();
 
 		shader.reset(ShaderRend::create("./assets/shaders/texturedPhong.glsl"));
@@ -109,10 +103,10 @@ namespace Engine {
 
 
 		m_registry.emplace<TransformComponent>(m_entities[0]);
-		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(0.0f, 50.0f, 0.0f), glm::vec3(0), glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(0.0f, 20, 0), glm::vec3(0), glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(0), glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(0.2f, 10, 0), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(15.0f, 1.f, 15.0f));
+		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(30.0f, 1.f, 30.0f));
 		//m_registry.emplace<TransformComponent>(m_entities[5]);
 
 		auto tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
@@ -127,7 +121,7 @@ namespace Engine {
 
 		m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(2.72f, 1.22f, 5.f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[2], cube_rb, glm::vec3(1.0f, 1.f, 1.0f) * 0.5f);
-		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(15.0f, 1.f, 15.0f) * 0.5f);
+		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(30.0f, 1.f,30.0f) * 0.5f);
 		//auto something = m_registry.emplace<HeightmapCollider>(m_entities[5], slope_rb, 7, 7, -3, 3, heigthData);
 		//Log::error("{0}", something.collider.)
 
@@ -135,6 +129,31 @@ namespace Engine {
 		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO2, mat2);
 		m_registry.emplace<RenderComponent>(m_entities[4], m_VAO2, mat1);
 
+		//set player cam
+
+		m_camera.setCameraPos(glm::vec3(-1.0f, 1.0f, 6.0f));
+
+		auto player = m_registry.get<TransformComponent>(m_entities[1]);
+		m_followCam.reset(new FollowPlayer(player.GetTransform()));
+		m_followCam->setOffset(glm::vec3(0.0f, 0.0f, 0.0f));
+
+		if (!m_isPlayerCam)
+		{
+			m_view3D = m_camera.getCameraViewMatrix();
+		}
+		else
+		{
+			m_view3D = m_followCam->getViewMatrix();
+		}
+
+		m_projection3D =
+			glm::perspective(glm::radians(m_camera.getFOV()), (float)RendererShared::SCR_WIDTH / (float)RendererShared::SCR_HEIGHT, 0.1f, 100.f);
+
+		m_swu3D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_view3D)));
+		m_swu3D["u_projection"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_projection3D)));
+
+
+	
 
 		//framebuffer stuff...
 
@@ -160,7 +179,12 @@ namespace Engine {
 	void FramebufferLayer::OnUpdate(float timestep)
 	{
 		NGPhyiscs::updateTransforms();
-		m_camera.update(timestep);
+		if (m_isPlayerCam)
+			m_followCam->onUpdate(timestep);
+		else
+			m_camera.update(timestep);
+		Log::error("Pos Update : {0},{1},{2}", m_followCam->getPosition().x, m_followCam->getPosition().y, m_followCam->getPosition().z);
+
 	}
 
 	void FramebufferLayer::OnRender()
@@ -173,7 +197,11 @@ namespace Engine {
 		RendererShared::actionCommand(enableDepthCommand);
 		RendererShared::actionCommand(disableBlendCommand);
 
-		m_view3D = m_camera.getCameraViewMatrix();
+		if (!m_isPlayerCam)
+			m_view3D = m_camera.getCameraViewMatrix();
+		else
+			m_view3D = m_followCam->getViewMatrix();
+
 
 		m_swu3D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_view3D)));
 		m_swu3D["u_projection"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_projection3D)));
@@ -241,14 +269,65 @@ namespace Engine {
 		RendererShared::actionCommand(standardBlend);
 
 		Renderer2D::begin(m_swu2D);
-		Renderer2D::submit("2D Renderer Framebuffer", glm::vec2(500, 500), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		if(m_isPlayerCam)
+		Renderer2D::submit("Player cam", glm::vec2(500, 500), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		else
+			Renderer2D::submit("Free cam", glm::vec2(500, 500), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 		Renderer2D::end();
 
 	}
 
 	void FramebufferLayer::onMouseMoved(MouseMovedEvent& e)
 	{
-		m_camera.mouseMovement(e.getMousePos().x, e.getMousePos().y);
+		if (m_isPlayerCam)
+		{
+			//glm::rotate(e.getMousePos())
+		}
+		else
+		{
+			m_camera.mouseMovement(e.getMousePos().x, e.getMousePos().y);
+		}
+	}
+	
+	void FramebufferLayer::onMouseBtnPressed(MouseButtonPressedEvent& e)
+	{
+		//shoot projectile with mouse click
+		if (e.getButton() == 0)
+		{
+
+			bool found = false;
+			int i;
+			for (i = 0; i < m_entities.size(); i++)
+			{
+				if (m_entities[i] == entt::null)
+					continue;
+			}
+
+			entt::entity projectileEntity = m_registry.create();
+			if (i == m_entities.size())
+				m_entities.push_back(projectileEntity);
+			else
+				m_entities[i] = projectileEntity;
+
+			m_registry.emplace<LabelComponent>(projectileEntity, "Projectile");
+
+			auto camTransform = glm::inverse(m_camera.getCameraViewMatrix());
+
+			glm::vec3 forward = { camTransform[2][0],camTransform[2][1] ,camTransform[2][2] };
+			glm::vec3 camPos = { camTransform[3][0],camTransform[3][1] ,camTransform[3][2] };
+			Log::error("CAMPOS - {0},{1},{2}", camPos.x, camPos.y, camPos.z);
+			Log::error("POS - {0},{1},{2}", m_camera.getCameraPos().x, m_camera.getCameraPos().y, m_camera.getCameraPos().z);
+			auto projTransform = m_registry.emplace<TransformComponent>(projectileEntity, camPos - forward * 1.0f, glm::vec3(0.0f), glm::vec3(0.5f));
+
+			m_registry.emplace<RenderComponent>(projectileEntity, m_VAO2, mat2);
+			m_registry.emplace<RelationshipComponent>(projectileEntity);
+			//HierarchySystem::setChild(m_entities[0], projectileEntity);
+
+			auto projectiel_rb = m_registry.emplace<RigidBodyComponent>(projectileEntity, RigidBodyType::Dynamic, projTransform.GetTransform());
+			m_registry.emplace<SphereColliderComponent>(projectileEntity, projectiel_rb, 0.5f);
+			glm::vec3 force = (-forward * 500.5f);
+			projectiel_rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(force.x, force.y + 20.f, force.z + 20.f));
+		}
 	}
 
 
@@ -280,5 +359,14 @@ namespace Engine {
 			else if (InputPoller::isKeyPressed(NG_KEY_Z)) { m_rotation.z -= rot; }
 			else if (m_scale > scale) { m_scale -= scale; }
 		}*/
+
+
+		//switch camera type
+		if (e.getKeyCode() == NG_KEY_SPACE)
+		{
+			m_isPlayerCam = !m_isPlayerCam;
+		}
+
+
 	}
 }
