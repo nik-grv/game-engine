@@ -184,6 +184,8 @@ project "Engine-Editor"
 		{
 			"%{prj.name}/editorcode/include/**.h",
 			"%{prj.name}/editorcode/src/**.cpp",
+			"%{prj.name}/editorcode/panels/**.h",
+			"%{prj.name}/editorcode/panels/**.cpp",
 		}
 	
 		includedirs
@@ -193,8 +195,10 @@ project "Engine-Editor"
 			"engine/enginecode/include/independent",
 			"engine/enginecode/include/",
 			"engine/precompiled/",
-			"editor/editor-code/src/",
-			"editor/editor-code/include",
+			"engine-editor/editorcode/src/",
+			"engine-editor/editorcode/include/",
+			"engine-editor/editorcode/panels/",
+			"engine-editor/",
 			"vendor/glfw/include",
 			"vendor/glm/",
 			"vendor/glad/include",
@@ -216,6 +220,24 @@ project "Engine-Editor"
 			"Engine",
 			"IMGui",
 			"Glad"
+		}
+
+		disablewarnings 
+		{
+			2467,
+			4244,
+			4099,
+			4996,
+			4101,
+			4305,
+			4267,
+			4244,
+			4715,
+			4305,
+			4267,
+			4244,
+			4267,
+			4307,
 		}
 	
 		filter "system:windows"

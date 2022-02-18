@@ -14,8 +14,9 @@ namespace Engine {
 		void OnImGuiRender();
 	private:
 		std::filesystem::path m_CurrentDirectory;
-		//Ref<TextureRend> m_DirectoryIcon;
-		//Ref<Texture2D> m_FileIcon;
+		std::shared_ptr<TextureRend> m_DirectoryIcon;
+		std::shared_ptr<TextureRend> m_FileIcon;
+		std::shared_ptr<TextureRend> Icon;
 	};
 
 }
