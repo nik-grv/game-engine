@@ -193,6 +193,8 @@ project "Engine-Editor"
 			"engine/enginecode/include/independent",
 			"engine/enginecode/include/",
 			"engine/precompiled/",
+			"editor/editor-code/src/",
+			"editor/editor-code/include",
 			"vendor/glfw/include",
 			"vendor/glm/",
 			"vendor/glad/include",
