@@ -72,6 +72,24 @@ project "Engine"
 		
 	}
 	
+	disablewarnings 
+	{
+		2467,
+		4244,
+		4099,
+		4996,
+		4101,
+		4305,
+		4267,
+		4244,
+		4715,
+		4305,
+		4267,
+		4244,
+		4267,
+		4307,
+	}
+
 	filter "system:windows"
 		cppdialect "C++17"
 		systemversion "latest"

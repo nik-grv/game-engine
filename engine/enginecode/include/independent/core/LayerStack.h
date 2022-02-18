@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include "core/Layer.h"
+
 namespace Engine
 {
 	class LayerStack

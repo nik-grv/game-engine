@@ -100,7 +100,7 @@ namespace Engine {
 		WindowProperties props("My Game Engine",RendererShared::SCR_WIDTH, RendererShared::SCR_HEIGHT,m_isFullscreen);
 		m_window.reset(Window::create(props));
 		
-		int width, height;
+		int width, height; 
 		int channels;
 		pixel = stbi_load("../icon.png", &width, &height, &channels, 4);
 		GLFWimage img[1];
@@ -325,6 +325,7 @@ namespace Engine {
 			m_layerStack.Update(timestep);
 			m_layerStack.Render();
 			m_window->onUpdate(timestep);
+			glClear(GL_COLOR_BUFFER_BIT);
 		}
 
 	}

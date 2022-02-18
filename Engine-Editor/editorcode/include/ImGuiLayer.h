@@ -14,6 +14,11 @@ namespace Engine {
 		void OnDettach();
 		void OnUpdate(float timestep)override;
 
+		virtual void onImGuiRender() override;
+		virtual void Begin() override;
+		virtual void End() override;
+
+
 		void onKeyPressed(KeyPressedEvent& e) override;
 		void onKeyReleased(KeyReleasedEvent& e) override;
 		//void onKeyTypedEvent(KeyTypedEvent& e) override; (IMPLEMENT FUCNTION LATER)

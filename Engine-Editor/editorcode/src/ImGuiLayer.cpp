@@ -10,7 +10,7 @@
 
 
 namespace Engine {
-	static bool dem = true;
+
 	ImGuiLayer::ImGuiLayer(const char* name) : Layer(name)
 	{
 
@@ -23,15 +23,16 @@ namespace Engine {
 
 	void ImGuiLayer::OnAttach()
 	{
-		
-		//Log::info("ON ATTACH RUNNING!");
-		//IMGUI_CHECKVERSION();
+		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO(); 
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		//io.ConfigFlags |= ImGuiConfigFlags_ViewPortsNoTaskIcons;
+		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
+		
 		ImGui::StyleColorsDark();
 
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -41,8 +42,6 @@ namespace Engine {
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 
-		Application& app = Application::getInstance();
-	
 		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)app.getAppWindow()->getNativewindow(), true);
 		ImGui_ImplOpenGL3_Init("#version 440");
 	}
@@ -56,20 +55,31 @@ namespace Engine {
 
 	void ImGuiLayer::OnUpdate(float timestep)
 	{
+		
+	}
+
+	void ImGuiLayer::onImGuiRender()
+	{
+		static bool show = true;
+		ImGui::ShowDemoWindow(&show);
+
+	}
+
+	void ImGuiLayer::Begin()
+	{
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+	}
 
-		ImGui::Begin("Test");
-		ImGui::Text("This is window A");
-		ImGui::End();
-		ImGui::ShowDemoWindow(&dem);
-		ImGui::Render();
-		
-		glfwMakeContextCurrent((GLFWwindow*)app.getAppWindow()->getNativewindow());
-		glClear(GL_COLOR_BUFFER_BIT);
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	void ImGuiLayer::End()
+	{
 		ImGuiIO& io = ImGui::GetIO();
+		io.DisplaySize = ImVec2(app.getAppWindow()->getWidth(), app.getAppWindow()->getHeight());
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
 			GLFWwindow* backup_current_context = glfwGetCurrentContext();
