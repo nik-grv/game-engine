@@ -125,6 +125,7 @@ namespace Engine {
 		std::shared_ptr<ShaderRend> shader;
 		std::shared_ptr<Material> mat1, mat2;
 		std::shared_ptr<Material> wireframeMat;
+		std::shared_ptr<Material> plateMat;
 
 		glm::mat4 m_view3D,m_view2D;
 		glm::mat4 m_projection3D, m_projection2D;
@@ -158,5 +159,13 @@ namespace Engine {
 		SubTexture m_screenTexture;
 		bool usePP = false;
 		bool m_isPlayerCam = true;
+
+		bool m_firstMouse = true;
+		float m_lastX;
+		float m_lastY;
+		float m_yaw = -90.0f;	//!< initialized m_yaw as -90.0 to rotate to the left.
+		float m_pitch = 0.0f; //!< m_pitch for mouse movement
+
+		RigidBodyComponent m_tankRB;
 	};
 }

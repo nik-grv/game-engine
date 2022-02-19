@@ -29,7 +29,7 @@ namespace Engine {
 		std::shared_ptr<TextureRend> letterTexture;
 		letterTexture.reset(TextureRend::create("assets/textures/letterCube.png"));
 		std::shared_ptr<TextureRend> numberTexture;
-		numberTexture.reset(TextureRend::create("assets/textures/numberCube.png"));
+		numberTexture.reset(TextureRend::create("assets/textures/plate.jpg"));
 		std::shared_ptr<TextureRend> plainWhiteTex;
 		unsigned char whitePixel[4] = { 255,255,255,255 };
 		plainWhiteTex.reset(TextureRend::create(1, 1, 4, whitePixel));
@@ -66,7 +66,7 @@ namespace Engine {
 		m_VAO2->setIndexBuffer(m_IBO2);
 		mat2.reset(new Material(shader, Loader::output.diffusTex, glm::vec4(1.0f)));
 
-
+		plateMat.reset(new Material(shader, numberTexture));
 		// height data used for a height map later on
 		std::vector<float> heigthData;
 		heigthData.resize(49);
@@ -82,13 +82,13 @@ namespace Engine {
 
 		}
 
-		m_entities.resize(5);
+		m_entities.resize(6);
 		m_entities[0] = m_registry.create();
 		m_entities[1] = m_registry.create();
 		m_entities[2] = m_registry.create();
 		m_entities[3] = m_registry.create();
 		m_entities[4] = m_registry.create();
-		//m_entities[5] = m_registry.create();
+		m_entities[5] = m_registry.create();
 
 
 		m_registry.emplace<RootComponent>(m_entities[0]);
@@ -99,24 +99,30 @@ namespace Engine {
 		m_registry.emplace<LabelComponent>(m_entities[2], "Cube");
 		m_registry.emplace<LabelComponent>(m_entities[3], "Camera");
 		m_registry.emplace<LabelComponent>(m_entities[4], "Floor");
+		m_registry.emplace<LabelComponent>(m_entities[5], "FirePoint");
 		//m_registry.emplace<LabelComponent>(m_entities[5], "Slope");
 
 
 		m_registry.emplace<TransformComponent>(m_entities[0] , glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0),glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(10.0f, 1.0f, 0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(0.2f, 10, 0), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(30.0f, 1.f, 30.0f));
+		m_registry.emplace<TransformComponent>(m_entities[5], glm::vec3(0, 0.79f, -3.38), glm::vec3(0), glm::vec3(0.125f));
 		//m_registry.emplace<TransformComponent>(m_entities[5]);
 
 		auto& tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
 		auto& cubeTransform = m_registry.get<TransformComponent>(m_entities[2]).GetTransform();
 		auto& floorTransform = m_registry.get<TransformComponent>(m_entities[4]).GetTransform();
+		auto& firePtTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
 		//auto slopeTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
 
 		auto tank_rb = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic, tankTransform);
 		auto cube_rb = m_registry.emplace<RigidBodyComponent>(m_entities[2], RigidBodyType::Dynamic, cubeTransform);
 		auto floor_rb = m_registry.emplace<RigidBodyComponent>(m_entities[4], RigidBodyType::Static, floorTransform);
+		auto fire_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Static, firePtTransform);
+		m_tankRB = tank_rb;
+
 		//auto slope_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Static, slopeTransform);
 
 		m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(2.72f, 1.22f, 5.f) * 0.5f);
@@ -127,7 +133,12 @@ namespace Engine {
 
 		m_registry.emplace<RenderComponent>(m_entities[1], m_VAO1, mat1);
 		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO2, mat2);
-		m_registry.emplace<RenderComponent>(m_entities[4], m_VAO2, mat1);
+		m_registry.emplace<RenderComponent>(m_entities[4], m_VAO2, plateMat);
+		
+		m_registry.emplace<RelationshipComponent>(m_entities[1]);
+		m_registry.emplace<RelationshipComponent>(m_entities[5]);
+
+		HierarchySystem::setChild(m_entities[1], m_entities[5]);
 
 		//set player cam
 
@@ -183,8 +194,7 @@ namespace Engine {
 			m_followCam->onUpdate(timestep);
 		else
 			m_camera.update(timestep);
-		Log::error("Pos Update : {0},{1},{2}", m_followCam->getPosition().x, m_followCam->getPosition().y, m_followCam->getPosition().z);
-
+		HierarchySystem::UpdateChildren();
 	}
 
 	void FramebufferLayer::OnRender()
@@ -279,9 +289,53 @@ namespace Engine {
 
 	void FramebufferLayer::onMouseMoved(MouseMovedEvent& e)
 	{
+		float xpos = e.getX();
+		float ypos = e.getY();
 		if (m_isPlayerCam)
 		{
+			if (m_firstMouse)
+			{
+				m_lastX = xpos;
+				m_lastY = ypos;
+				m_firstMouse = false;
+			}
+
+			float xoffset = xpos - m_lastX;
+			float yoffset = m_lastY - ypos;
+			m_lastX = xpos;
+			m_lastY = ypos;
+
+			float sensitivity = 0.5f;
+			xoffset *= sensitivity;
+			yoffset *= sensitivity;
+
+			m_yaw += xoffset;
+			m_pitch += yoffset;
+
+			if (m_pitch > 89.0f)
+				m_pitch = 89.0f;
+			if (m_pitch < -89.0f)
+				m_pitch = -89.0f;
+
+			glm::vec3 front;
+			front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+			front.y = sin(glm::radians(m_pitch));
+			front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+			//m_cameraFront = glm::normalize(front);
+
 			//glm::rotate(e.getMousePos())
+			//Log::error("MOUSE = {0}", xoffset);
+			if (xoffset > 0.0f)
+			{
+				Log::error("MOUSE = {0}", xoffset);
+				m_tankRB.m_body->applyTorque(-rp3d::Vector3(0.0f, xoffset, 0.0f));
+			}
+			else if (xoffset < 0.0f)
+			{
+				Log::error("MOUSE = {0}", xoffset);
+				m_tankRB.m_body->applyTorque(rp3d::Vector3(0.0f, -xoffset, 0.0f));
+			}
+			
 		}
 		else
 		{
@@ -311,20 +365,20 @@ namespace Engine {
 
 			m_registry.emplace<LabelComponent>(projectileEntity, "Projectile");
 
-			auto camTransform = glm::inverse(m_camera.getCameraViewMatrix());
-
-			glm::vec3 forward = { camTransform[2][0],camTransform[2][1] ,camTransform[2][2] };
-			glm::vec3 camPos = { camTransform[3][0],camTransform[3][1] ,camTransform[3][2] };
-			auto projTransform = m_registry.emplace<TransformComponent>(projectileEntity, camPos - forward * 1.0f, glm::vec3(0.0f), glm::vec3(0.5f));
+			//auto camTransform = glm::inverse(m_camera.getCameraViewMatrix());
+			auto& fireTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
+			glm::vec3 forward = { fireTransform[2][0],fireTransform[2][1] ,fireTransform[2][2] };
+			glm::vec3 camPos = { fireTransform[3][0],fireTransform[3][1] ,fireTransform[3][2] };
+			auto projTransform = m_registry.emplace<TransformComponent>(projectileEntity, camPos - forward * 1.0f, glm::vec3(0.0f), glm::vec3(0.25f));
 
 			m_registry.emplace<RenderComponent>(projectileEntity, m_VAO2, mat2);
 			m_registry.emplace<RelationshipComponent>(projectileEntity);
 			//HierarchySystem::setChild(m_entities[0], projectileEntity);
 
 			auto projectiel_rb = m_registry.emplace<RigidBodyComponent>(projectileEntity, RigidBodyType::Dynamic, projTransform.GetTransform());
-			m_registry.emplace<SphereColliderComponent>(projectileEntity, projectiel_rb, 0.5f);
+			m_registry.emplace<SphereColliderComponent>(projectileEntity, projectiel_rb, 0.25f);
 			glm::vec3 force = (-forward * 500.5f);
-			projectiel_rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(force.x, force.y + 20.f, force.z + 20.f));
+			projectiel_rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(force.x, force.y + 20.f, force.z - 1500.f));
 		}
 	}
 
@@ -333,6 +387,7 @@ namespace Engine {
 	{
 		float rot = 0.25;
 		float scale = 0.01;
+		
 
 		if (e.getKeyCode() == NG_KEY_0)
 		{
@@ -368,13 +423,19 @@ namespace Engine {
 
 		if (e.getKeyCode() == NG_KEY_UP)
 		{
-
-			auto& rb = m_registry.get<RigidBodyComponent>(m_entities[1]);
-			rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(1000.0f, 0.0f, 0.0f));
+			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, -25.0f));
 		}
-		if (e.getKeyCode() == NG_KEY_S)
+		if (e.getKeyCode() == NG_KEY_DOWN)
 		{
-
+			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, 25.0f));
+		}
+		if (e.getKeyCode() == NG_KEY_LEFT)
+		{
+			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(-25.0f, 0.0f, 0.0f));
+		}
+		if (e.getKeyCode() == NG_KEY_RIGHT)
+		{
+			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(25.0f, 0.0f, 0.0f));
 		}
 
 
