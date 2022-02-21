@@ -14,12 +14,19 @@ namespace Engine
 	void GLFW_OpenGL_GC::init()
 	{
 		glfwMakeContextCurrent(m_window);
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		auto result = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
 		if (!result)
 		{
 			Log::error("Could not create OPEN GL Context for current GLFW Window {0}", result);
 		}
 
+		Log::info("OpenGL Info:");
+		Log::info(" Vendor: {0}", glGetString(GL_VENDOR));
+		Log::info(" Renderer: {0}", glGetString(GL_RENDERER));
+		Log::info(" Version: {0}", glGetString(GL_VERSION));
+		Log::info("");
+		
 		//OpenGL Error Callback
 		glEnable(GL_DEBUG_OUTPUT);
 		glDebugMessageCallback(
@@ -34,7 +41,8 @@ namespace Engine
 			const void* userParam
 			)
 		{
-			switch (source)
+
+			/*switch (source)
 			{
 			case GL_DEBUG_SOURCE_API:
 				Log::info(source); 
@@ -85,7 +93,7 @@ namespace Engine
 			case GL_DEBUG_TYPE_OTHER:
 				Log::info(type);
 				break;
-			}
+			} 
 
 			switch (severity)
 			{
@@ -103,7 +111,7 @@ namespace Engine
 				break;
 			default:
 				break;
-			}
+			}*/
 		}, nullptr);
 	}
 
