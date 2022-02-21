@@ -5,21 +5,23 @@
 */
 //
 #include "../include/editorApp.h"
-
-EditorApp::EditorApp()
+namespace Engine
 {
-	Application& app = Application::getInstance();
-	glfwSetWindowTitle(((GLFWwindow*)app.getAppWindow()->getNativewindow()),"Tankery Editor V1");
+	EditorApp::EditorApp()
+	{
+		Log::e_info("Starting Application...");
+		Application& app = Application::getInstance();
+		glfwSetWindowTitle(((GLFWwindow*)app.getAppWindow()->getNativewindow()), "Tankery Editor V1");
+		m_layerStack.Push(new Engine::ImGuiLayer("ImGUI Layer"));
+	}
 
-	m_layerStack.Push(new Engine::ImGuiLayer("ImGUI Layer"));
-}
+	EditorApp::~EditorApp()
+	{
 
-EditorApp::~EditorApp()
-{
+	}
 
-}
-
-EditorApp::Application* Engine::startApplication()
-{
-	return new EditorApp();
+	EditorApp::Application* Engine::startApplication()
+	{
+		return new EditorApp();
+	}
 }

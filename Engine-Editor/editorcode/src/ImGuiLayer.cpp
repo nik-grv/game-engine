@@ -44,6 +44,8 @@ namespace Engine {
 
 		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)app.getAppWindow()->getNativewindow(), true);
 		ImGui_ImplOpenGL3_Init("#version 440");
+		Log::e_info("== Application Started ==");
+		Log::e_info("");
 	}
 
 	void ImGuiLayer::OnDettach()
@@ -114,23 +116,21 @@ namespace Engine {
 
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::BeginMenu("Options"))
+			if (ImGui::BeginMenu("File"))
 			{
-				// Disabling fullscreen would allow the window to be moved to the front of other windows,
+				// Disabling fullscreen would allow the window to be moved to the front of other windows, 
 				// which we can't undo at the moment without finer window depth/z control.
-				ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
-				ImGui::MenuItem("Padding", NULL, &opt_padding);
-				ImGui::Separator();
+				//ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);1
+				if (ImGui::MenuItem("New", "Ctrl+N"))
+					NewScene();
 
-				if (ImGui::MenuItem("Flag: NoSplit", "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoSplit; }
-				if (ImGui::MenuItem("Flag: NoResize", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
-				if (ImGui::MenuItem("Flag: NoDockingInCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_NoDockingInCentralNode) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoDockingInCentralNode; }
-				if (ImGui::MenuItem("Flag: AutoHideTabBar", "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar; }
-				if (ImGui::MenuItem("Flag: PassthruCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }
-				ImGui::Separator();
+				if (ImGui::MenuItem("Open...", "Ctrl+O"))
+					OpenScene();
 
-				if (ImGui::MenuItem("Close", NULL, false))
-					dockspaceOpen = false;
+				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+					SaveSceneAs();
+
+				if (ImGui::MenuItem("Exit"));
 				ImGui::EndMenu();
 			}
 
@@ -219,6 +219,65 @@ namespace Engine {
 		//Log::info("Mouse Scrolled GUI");
 	}
 #pragma endregion
+
+	void ImGuiLayer::NewScene()
+	{
+		/*m_ActiveScene = CreateRef<Scene>();
+		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+		*/
+	}
+
+	void ImGuiLayer::OpenScene()
+	{
+		/*
+		std::string filepath = FileDialogs::OpenFile("Hazel Scene (*.hazel)\0*.hazel\0");
+		if (!filepath.empty())
+			OpenScene(filepath);
+		*/
+	}
+
+	void ImGuiLayer::OpenScene(const std::filesystem::path& path)
+	{
+		if (path.extension().string() != ".hazel")
+		{
+			/*
+			HZ_WARN("Could not load {0} - not a scene file", path.filename().string());
+			return;
+			*/
+		}
+
+		/*Ref<Scene> newScene = CreateRef<Scene>();
+		SceneSerializer serializer(newScene);*/
+		/*if (serializer.Deserialize(path.string()))
+		{
+			m_ActiveScene = newScene;
+			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+		}*/
+	}
+
+	void ImGuiLayer::SaveSceneAs()
+	{
+		/*std::string filepath = FileDialogs::SaveFile("Hazel Scene (*.hazel)\0*.hazel\0");
+		if (!filepath.empty())
+		{
+			SceneSerializer serializer(m_ActiveScene);
+			serializer.Serialize(filepath);
+		}
+		*/
+	}
+
+	void ImGuiLayer::OnScenePlay()
+	{
+		//m_SceneState = SceneState::Play;
+	}
+
+	void ImGuiLayer::OnSceneStop()
+	{
+		//m_SceneState = SceneState::Edit;
+
+	}
 
 }
 

@@ -12,8 +12,9 @@
 #endif
 
 #include <glm/gtc/matrix_transform.hpp>
-# include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
+#include <memory>
 
 #include "rendering/subTexture.h"
 
@@ -37,7 +38,6 @@ namespace Engine {
 	Application::Application()
 	{
 
-
 		for (auto ent : m_entities)
 			ent = m_registry.create();
 		
@@ -48,6 +48,10 @@ namespace Engine {
 		//Start system and logger
 		m_loggerSystem.reset(new Log); 
 		m_loggerSystem->start();
+
+		Log::info("Core Starting...");
+		Log::info("");
+
 
 		//start windows system
 #ifdef NG_PLATFORM_WINDOWS
@@ -129,12 +133,13 @@ namespace Engine {
 
 		InputPoller::setNativeWindow(m_window->getNativewindow());
 		m_timer->reset();
-
 		//ImGuiHelper::init();
+
 
 		Renderer2D::init();
 		//Renderer3D::init();
-
+		Log::info("== Core Running ==");
+		Log::info("");
 	}
 
 
@@ -168,7 +173,7 @@ namespace Engine {
 	{
 		e.handle(true);
 		auto& size = e.getPos();
-		Log::trace("Window Moved : {0} / {1}", size.x, size.y);
+		//Log::trace("Window Moved : {0} / {1}", size.x, size.y);
 		return e.isHandled();
 	}
 
@@ -201,7 +206,7 @@ namespace Engine {
 	bool Application::onKeyPressed(KeyPressedEvent& e)
 	{
 		e.handle(true);
-		Log::trace("{0} Key Pressed ", e.getKeyCode());
+		//Log::trace("{0} Key Pressed ", e.getKeyCode());
 		if (e.getKeyCode() == NG_KEY_ESCAPE)
 		{
 			glfwSetInputMode(reinterpret_cast<GLFWwindow*>(m_window->getNativewindow()), GLFW_CURSOR, GLFW_CURSOR_NORMAL);

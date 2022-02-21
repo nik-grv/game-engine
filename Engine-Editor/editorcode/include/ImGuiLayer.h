@@ -28,6 +28,15 @@ namespace Engine {
 		void onMouseBtnPressed(MouseButtonPressedEvent& e) override;
 		void onMouseBtnReleased(MouseButtonReleasedEvent& e) override;
 		void onMouseScrolled(MouseScrollEvent& e) override;
+
+		void NewScene();
+		void OpenScene();
+		void OpenScene(const std::filesystem::path& path);
+		void SaveSceneAs();
+
+		void OnScenePlay();
+		void OnSceneStop();
+
 		Application& app = Application::getInstance();
 	private:
 

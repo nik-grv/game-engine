@@ -62,13 +62,12 @@ namespace Engine {
 
 
 				// Log part - assume postion, normal and UV coords
-				//Log::info("VERTEX DATA");
-				//if(texCoords.size()>0)Log::info("P x:{0}, y:{1}, z:{2}, N x:{3}, y:{4}, z:{5}, T u:{6}, v{7}", position.x, position.y, position.z, normal.x, normal.y, normal.z, texCoords[0].x, texCoords[0].y);
-				//Log::info("P x:{0}, y:{1}, z:{2}, N x:{3}, y:{4}, z:{5}, NO TEXTURE", position.x, position.y, position.z, normal.x, normal.y, normal.z );
+				//Log::s_info("VERTEX DATA");
+				//if(texCoords.size()>0)Log::s_info("P x:{0}, y:{1}, z:{2}, N x:{3}, y:{4}, z:{5}, T u:{6}, v{7}", position.x, position.y, position.z, normal.x, normal.y, normal.z, texCoords[0].x, texCoords[0].y);
+				//Log::s_info("P x:{0}, y:{1}, z:{2}, N x:{3}, y:{4}, z:{5}, NO TEXTURE", position.x, position.y, position.z, normal.x, normal.y, normal.z );
 			}
 
-
-			Log::info("INDICES");
+			//Log::s_info("INDICES");
 			//uint32_t elementCount = 0;
 			for (uint32_t i = 0; i < mesh->mNumFaces; i++)
 			{
@@ -81,9 +80,9 @@ namespace Engine {
 				}
 
 				// Log part - assume all faces are trinalge and therefore ahve 3 indices
-				//Log::info("Face {0}: {1} {2} {3}", i, face.mIndices[0], face.mIndices[1], face.mIndices[2]);
+				//Log::s_info("Face {0}: {1} {2} {3}", i, face.mIndices[0], face.mIndices[1], face.mIndices[2]);
 			}
-			//Log::info("Num vertices {0} Num indices {1}", mesh->mNumVertices, elementCount);
+			//Log::s_info("Num vertices {0} Num indices {1}", mesh->mNumVertices, elementCount);
 
 
 
@@ -131,7 +130,7 @@ namespace Engine {
 						}
 						//std::string texturepath(pwd + "\\assets\\models\\" + fn);
 						std::string texturepath(pwd + s_workingDir + fn);
-						Log::info("Texture type:{0} filepath:{1}", type, texturepath.c_str());
+						//Log::s_s_s_info("Texture type:{0} filepath:{1}", type, texturepath.c_str());
 						output.diffusTex.reset(TextureRend::create(texturepath.c_str()));
 
 					}
@@ -148,7 +147,7 @@ namespace Engine {
 
 			if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, colorValue))
 			{
-				Log::info("Material name: {0}", stringValue.C_Str());
+				//Log::s_info("Material name: {0}", stringValue.C_Str());
 				output.defuseTint = { (float)colorValue.r,(float)colorValue.g, (float)colorValue.b };
 			}
 
@@ -169,16 +168,16 @@ namespace Engine {
 		{
 			std::string parentName = "Null";
 			if (node->mParent != nullptr) parentName = node->mParent->mName.C_Str();
-			if (node->mNumMeshes > 0) Log::info("MESHED NODE: {0} PARENT: {1}", node->mName.C_Str(), parentName);
-			if (node->mNumMeshes == 0) Log::info("UNMESHED NODE: {0} PARENT: {1}", node->mName.C_Str(), parentName);
+			//if (node->mNumMeshes > 0) Log::s_info("MESHED NODE: {0} PARENT: {1}", node->mName.C_Str(), parentName);
+			//if (node->mNumMeshes == 0) Log::s_info("UNMESHED NODE: {0} PARENT: {1}", node->mName.C_Str(), parentName);
 
 			aiMatrix4x4 *transform = &node->mTransformation;
 
-			Log::info("TRANSFORM");
-			Log::info("{0} {1} {2} {3}", transform->a1, transform->a2, transform->a3, transform->a4);
-			Log::info("{0} {1} {2} {3}", transform->b1, transform->b2, transform->b3, transform->b4);
-			Log::info("{0} {1} {2} {3}", transform->c1, transform->c2, transform->c3, transform->c4);
-			Log::info("{0} {1} {2} {3}", transform->d1, transform->d2, transform->d3, transform->d4);
+			//Log::s_info("TRANSFORM");
+			//Log::s_info("{0} {1} {2} {3}", transform->a1, transform->a2, transform->a3, transform->a4);
+			//Log::s_info("{0} {1} {2} {3}", transform->b1, transform->b2, transform->b3, transform->b4);
+			//Log::s_info("{0} {1} {2} {3}", transform->c1, transform->c2, transform->c3, transform->c4);
+			//Log::s_info("{0} {1} {2} {3}", transform->d1, transform->d2, transform->d3, transform->d4);
 
 			// process all the node's meshes
 			for (uint32_t i = 0; i < node->mNumMeshes; i++)
@@ -207,10 +206,10 @@ namespace Engine {
 
 			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 			{
-				Log::error("Cannot load: {0}, ASSIMP Error {1}", filepath, importer.GetErrorString());
+				Log::s_error("Cannot load: {0}, ASSIMP s_error {1}", filepath, importer.GetErrorString());
 				return;
 			}
-			Log::info("Loaded: {0} ", filepath);
+			Log::s_info("Loaded: {0} ", filepath);
 			ASSIMPProcessNode(scene->mRootNode, scene);
 
 		}
