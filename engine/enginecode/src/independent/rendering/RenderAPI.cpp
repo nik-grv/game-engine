@@ -282,5 +282,8 @@ namespace Engine
 		}
 		return nullptr;
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> TG-45-frame-buffers
 }
