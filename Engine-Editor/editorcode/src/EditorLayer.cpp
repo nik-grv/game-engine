@@ -5,6 +5,7 @@
 
 EditorLayer::EditorLayer(const char* name) : Layer(name)
 {
+	/*
 	clearColorAndDepthCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::clearColorAndDepthBuffer));
 	std::shared_ptr<RendererCommands> setclearCommand;
 	setclearCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::setClearColor, 1.0f, 1.0f, 1.0f, 1.0f));
@@ -47,11 +48,12 @@ EditorLayer::EditorLayer(const char* name) : Layer(name)
 	m_VAO2->addVertexBuffer(m_VBO2);
 	m_VAO2->setIndexBuffer(m_IBO2);
 	mat2.reset(new Material(shader, Loader::output.diffusTex, glm::vec4(1.0f)));
-
+	*/
 }
 
 void EditorLayer::OnUpdate(float timestep)
 {
+	/*
 	glm::mat4 rotX = glm::rotate(glm::mat4(1.0f), m_rotation.x, { 1.f, 0.f, 0.f });
 	glm::mat4 rotY = glm::rotate(glm::mat4(1.0f), m_rotation.y, { 0.f, 1.f, 0.f });
 	glm::mat4 rotZ = glm::rotate(glm::mat4(1.0f), m_rotation.z, { 0.f, 0.f, 1.f });
@@ -65,11 +67,12 @@ void EditorLayer::OnUpdate(float timestep)
 	m_model2 = glm::translate(glm::mat4(1.0f), glm::vec3(-5.f, 0.f, 0.f));
 
 	m_camera.update(timestep);
+	*/
 }
 
 void EditorLayer::OnRender()
 {
-
+	/*
 	RendererShared::actionCommand(clearColorAndDepthCommand);
 	m_view3D = m_camera.getCameraViewMatrix();
 
@@ -103,6 +106,7 @@ void EditorLayer::OnRender()
 
 
 	Renderer3D::end();
+	*/
 }
 
 void EditorLayer::onMouseMoved(MouseMovedEvent& e)

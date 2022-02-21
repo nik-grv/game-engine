@@ -1,7 +1,7 @@
 #pragma once
 
 #include "engine.h"
-
+#include "../panels/ContentBrowserPanel.h"
 namespace Engine {
 
 	class ImGuiLayer : public Layer
@@ -13,6 +13,12 @@ namespace Engine {
 		void OnAttach();
 		void OnDettach();
 		void OnUpdate(float timestep)override;
+
+		virtual void onImGuiRender() override;
+		virtual void Begin() override;
+		virtual void End() override;
+
+		ContentBrowserPanel m_ContentBrowserPanel;
 
 		void onKeyPressed(KeyPressedEvent& e) override;
 		void onKeyReleased(KeyReleasedEvent& e) override;

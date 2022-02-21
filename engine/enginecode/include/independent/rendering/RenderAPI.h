@@ -18,6 +18,7 @@ namespace Engine {
 		inline static API getAPI() { return s_API; }	//!< get render api
 	private:
 		static API s_API;	//!< render api
+		
 	};
 
 }

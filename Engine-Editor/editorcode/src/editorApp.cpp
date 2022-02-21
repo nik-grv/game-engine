@@ -8,6 +8,9 @@
 
 EditorApp::EditorApp()
 {
+	Application& app = Application::getInstance();
+	glfwSetWindowTitle(((GLFWwindow*)app.getAppWindow()->getNativewindow()),"Tankery Editor V1");
+
 	m_layerStack.Push(new Engine::ImGuiLayer("ImGUI Layer"));
 }
 
