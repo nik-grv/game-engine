@@ -11,14 +11,7 @@
 
 namespace Engine
 {
-<<<<<<< HEAD
 
-=======
-	enum class AttachmentType
-	{
-		Color, Depth, Stencil, DepthAndStencil
-	};
->>>>>>> TG-45-frame-buffers
 
 	using Attachment = std::pair<AttachmentType, bool>;
 
