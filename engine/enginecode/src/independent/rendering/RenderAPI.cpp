@@ -48,7 +48,7 @@ namespace Engine
 			Log::info("No rendering API");
 			break;
 		case RenderAPI::API::OpenGL:
-			return new OpenGLVertexBuffer(verts,size,layout);
+			return new OpenGLVertexBuffer(verts, size, layout);
 			break;
 		case RenderAPI::API::Direct3d:
 			Log::info("Direcr3D not supported");
@@ -127,7 +127,7 @@ namespace Engine
 		}
 		return nullptr;
 	}
-	
+
 	TextureRend* TextureRend::create(uint32_t width, uint32_t height, uint32_t channels, unsigned char* data)
 	{
 		switch (RenderAPI::getAPI())
@@ -136,7 +136,7 @@ namespace Engine
 			Log::info("No rendering API");
 			break;
 		case RenderAPI::API::OpenGL:
-			return new OpenGLTexture(width,height,channels,data);
+			return new OpenGLTexture(width, height, channels, data);
 			break;
 		case RenderAPI::API::Direct3d:
 			Log::info("Direcr3D not supported");
@@ -149,7 +149,7 @@ namespace Engine
 		}
 		return nullptr;
 	}
-	
+
 	ShaderRend* ShaderRend::create(const char* filePath)
 	{
 		switch (RenderAPI::getAPI())
@@ -171,7 +171,7 @@ namespace Engine
 		}
 		return nullptr;
 	}
-	
+
 	ShaderRend* ShaderRend::create(const char* vertexFilePath, const char* fragmentFilePath)
 	{
 		switch (RenderAPI::getAPI())
@@ -193,7 +193,7 @@ namespace Engine
 		}
 		return nullptr;
 	}
-	
+
 	UniformBuffer* UniformBuffer::create(const UniformBufferLayout& layout)
 	{
 		switch (RenderAPI::getAPI())
@@ -215,8 +215,8 @@ namespace Engine
 		}
 		return nullptr;
 	}
-	
-	
+
+
 	Framebuffer* Framebuffer::createDefault()
 	{
 		switch (RenderAPI::getAPI())
@@ -238,7 +238,7 @@ namespace Engine
 		}
 		return nullptr;
 	}
-	
+
 	Framebuffer* Framebuffer::create(glm::ivec2 size, FramebufferLayout layout)
 	{
 		switch (RenderAPI::getAPI())
@@ -247,7 +247,7 @@ namespace Engine
 			Log::info("No rendering API");
 			break;
 		case RenderAPI::API::OpenGL:
-			return new OpenGLFramebuffer(size,layout);
+			return new OpenGLFramebuffer(size, layout);
 			break;
 		case RenderAPI::API::Direct3d:
 			Log::info("Direcr3D not supported");

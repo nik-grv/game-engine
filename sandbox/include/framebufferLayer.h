@@ -124,7 +124,7 @@ namespace Engine {
 		std::shared_ptr<Material> mat1, mat2;
 		std::shared_ptr<Material> wireframeMat;
 
-		glm::mat4 m_view3D,m_view2D;
+		glm::mat4 m_view3D, m_view2D;
 		glm::mat4 m_projection3D, m_projection2D;
 		using SceneWideUniforms = std::unordered_map<const char*, std::pair<ShaderDataType, void*>>; //!< sceen wide uniform 
 		SceneWideUniforms m_swu3D, m_swu2D;
@@ -145,6 +145,7 @@ namespace Engine {
 		std::shared_ptr<RendererCommands> disableDepthCommand;
 		std::shared_ptr<RendererCommands> enableDepthCommand;
 		std::shared_ptr<RendererCommands> disableBlendCommand;
+		std::shared_ptr<RendererCommands> standardBlend;
 
 		std::shared_ptr<Framebuffer> defaultTarget;
 		std::shared_ptr<Framebuffer> textureTarget;
@@ -152,5 +153,6 @@ namespace Engine {
 
 		Quad m_screenQuad;
 		SubTexture m_screenTexture;
+		bool usePP = false;
 	};
 }

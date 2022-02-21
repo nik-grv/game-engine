@@ -17,7 +17,7 @@ namespace Engine
 		glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 
 		uint32_t colAttachmentCount = 0;
-		for (auto& [type, isSampled] : m_layout)
+		for (auto&[type, isSampled] : m_layout)
 		{
 			if (isSampled)
 			{
@@ -48,11 +48,12 @@ namespace Engine
 				}
 			}
 
-			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-				Log::error("Framebuffer not completed...");
-
-			glBindFramebuffer(GL_FRAMEBUFFER,0);
 		}
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			Log::error("Framebuffer not completed...");
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	OpenGLFramebuffer::~OpenGLFramebuffer()

@@ -14,6 +14,8 @@ namespace Engine {
 		disableDepthCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::disableCommand, GL_DEPTH_TEST));
 		enableDepthCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::enableCommand, GL_DEPTH_TEST));
 		disableBlendCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::disableCommand, GL_BLEND));
+		disableBlendCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::disableCommand, GL_BLEND));
+		standardBlend.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::blendFuncCommand, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 		auto& window = Application::getInstance().getAppWindow();
 		{
@@ -136,7 +138,7 @@ namespace Engine {
 
 		//framebuffer stuff...
 
-		FramebufferLayout fbLayout = { {AttachmentType::Color,true},{AttachmentType::Depth,false }  };
+		FramebufferLayout fbLayout = { {AttachmentType::Color,true},{AttachmentType::Depth,false } };
 
 		textureTarget.reset(Framebuffer::create(glm::ivec2(window->getWidth(), window->getHeight()), fbLayout));
 		defaultTarget.reset(Framebuffer::createDefault());
@@ -154,7 +156,7 @@ namespace Engine {
 		m_screenTexture = SubTexture(textureTarget->getTexture(0), glm::vec2(0, 1), glm::vec2(1, 0));
 	}
 
-	
+
 	void FramebufferLayer::OnUpdate(float timestep)
 	{
 		NGPhyiscs::updateTransforms();
@@ -162,7 +164,7 @@ namespace Engine {
 	}
 
 	void FramebufferLayer::OnRender()
-	{	
+	{
 		textureTarget->use();
 
 		//render 3d scene...
@@ -184,6 +186,14 @@ namespace Engine {
 		{
 			auto& transform = group.get<TransformComponent>(entity);
 			auto& render = group.get<RenderComponent>(entity);
+			if (usePP)
+			{
+				render.m_mat->getShader()->uploadInt("setPP", 1);
+			}
+			else
+			{
+				render.m_mat->getShader()->uploadInt("setPP", 0);
+			}
 			Renderer3D::submit(render.m_vao, render.m_mat, transform.GetTransform());
 		}
 		Renderer3D::end();
@@ -221,14 +231,19 @@ namespace Engine {
 		defaultTarget->use();
 
 		RendererShared::actionCommand(disableDepthCommand);
-		RendererShared::actionCommand(enableBlendCommand);
+
 
 		Renderer2D::begin(m_swu2D);
-
 		Renderer2D::submit(m_screenQuad, m_screenTexture);
-		Renderer2D::submit("2D Renderer Framebuffer", glm::vec2(500, 500), glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
-
 		Renderer2D::end();
+
+		RendererShared::actionCommand(enableBlendCommand);
+		RendererShared::actionCommand(standardBlend);
+
+		Renderer2D::begin(m_swu2D);
+		Renderer2D::submit("2D Renderer Framebuffer", glm::vec2(500, 500), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		Renderer2D::end();
+
 	}
 
 	void FramebufferLayer::onMouseMoved(MouseMovedEvent& e)
@@ -236,10 +251,20 @@ namespace Engine {
 		m_camera.mouseMovement(e.getMousePos().x, e.getMousePos().y);
 	}
 
+
 	void FramebufferLayer::onKeyPressed(KeyPressedEvent& e)
 	{
 		float rot = 0.25;
 		float scale = 0.01;
+
+		if (e.getKeyCode() == NG_KEY_0)
+		{
+			usePP = true;
+		}
+		if (e.getKeyCode() == NG_KEY_1)
+		{
+			usePP = false;
+		}
 		/*if (e.getKeyCode() == NG_KEY_KP_ADD)
 		{
 			if (InputPoller::isKeyPressed(NG_KEY_X)) { m_rotation.x += rot; Log::info("X pressed"); }
