@@ -49,6 +49,15 @@ namespace Engine
 
 	void AudioManager::stop(SystemSignal close, ...)
 	{
+		for (auto& pair : m_events) errorCheck(pair.second->release());
+		for (auto& pair : m_banks) errorCheck(pair.second->unload());
+		errorCheck(m_studioSystem->unloadAll());
+		errorCheck(m_studioSystem->flushCommands());
+		errorCheck(m_studioSystem->release());
+
+		for (auto& pair : m_sounds) errorCheck(pair.second->release());
+		errorCheck(m_lowLevelSystem->close());
+		errorCheck(m_lowLevelSystem->release());
 	}
 
 	void AudioManager::update()
@@ -69,14 +78,35 @@ namespace Engine
 		}
 	}
 
-	void AudioManager::loadBank(const std::string& strBankName, FMOD_STUDIO_LOAD_BANK_FLAGS)
+	void AudioManager::loadBank(const std::string& strBankName, FMOD_STUDIO_LOAD_BANK_FLAGS flags)
 	{
-
+		auto it = m_banks.find(strBankName);
+		if (it != m_banks.end())
+			return;
+		FMOD::Studio::Bank* bank;
+		errorCheck(m_studioSystem->loadBankFile(strBankName.c_str(), flags, &bank));
+		if (bank) 
+		{
+			m_banks[strBankName] = bank;
+		}
 	}
 
 	void AudioManager::loadEvent(const std::string& strEventName)
 	{
-
+		auto it = m_events.find(strEventName);
+		if (it != m_events.end())
+			return;
+		FMOD::Studio::EventDescription* eventDescription = NULL;
+		errorCheck(m_studioSystem->getEvent(strEventName.c_str(), &eventDescription));
+		if (eventDescription)
+		{
+			FMOD::Studio::EventInstance* eventInstance = NULL;
+			errorCheck(eventDescription->createInstance(&eventInstance));
+			if (eventInstance)
+			{
+				m_events[strEventName] = eventInstance;
+			}
+		}
 	}
 
 	void AudioManager::loadSound(const std::string& strSoundName, bool b3d, bool bLooping, bool bStream, float minDist, float maxDist, RollOff rollOff)
@@ -117,12 +147,34 @@ namespace Engine
 
 	void AudioManager::unLoadSound(const std::string& strSoundName)
 	{
-
+		auto it = m_sounds.find(strSoundName);
+		if (it != m_sounds.end())
+			return;
+		errorCheck(it->second->release());
+		m_sounds.erase(it);
 	}
 
 	void AudioManager::set3dListenerAndOrientation(const glm::mat4& transform, const glm::vec3& velocity)
 	{
+		FMOD_VECTOR lastPos, lastVel, lastForward, lastUp;
 
+		glm::vec3 up = { transform[1][0], transform[1][1], transform[1][2] };
+		glm::vec3 forward = { transform[2][0], transform[2][1], transform[2][2] };
+		glm::vec3 position = { transform[3][0], transform[3][1], transform[3][2] };
+
+		auto listenerPos = GLMVecToFmod(position);
+		auto listenerForward = GLMVecToFmod(forward);
+		auto listenerUp = GLMVecToFmod(up);
+		auto listenerVelocity = GLMVecToFmod(velocity);
+
+		FMOD_3D_ATTRIBUTES f;
+		f.position = listenerPos;
+		f.forward = listenerForward;
+		f.up = listenerUp;
+		f.velocity = listenerVelocity;
+
+		errorCheck(m_lowLevelSystem->set3DListenerAttributes(0, &listenerPos, &listenerVelocity, &listenerForward, &listenerUp));
+		errorCheck(m_studioSystem->setListenerAttributes(0, &f));
 	}
 
 	void AudioManager::addGeometry(const std::string& label, const AudioGeometryDefinition& def)
@@ -157,7 +209,9 @@ namespace Engine
 
 	void AudioManager::moveGeometry(const std::string& label, const glm::vec3& position, const glm::vec3& forward, const glm::vec3& up, const glm::vec3& scale)
 	{
-
+		m_geometry[label]->setScale(&GLMVecToFmod(scale));
+		m_geometry[label]->setPosition(&GLMVecToFmod(position));
+		m_geometry[label]->setRotation(&GLMVecToFmod(forward), &GLMVecToFmod(up));
 	}
 
 	int32_t AudioManager::playSound(const std::string& strSoundName, const glm::vec3& vPos)
@@ -193,12 +247,26 @@ namespace Engine
 
 	void AudioManager::playEvent(const std::string& strEventName)
 	{
-
+		auto it = m_events.find(strEventName);
+		if (it == m_events.end())
+		{
+			loadEvent(strEventName);
+			it = m_events.find(strEventName);
+			if (it == m_events.end())
+				return;
+		}
+		it->second->start();
 	}
 
 	void AudioManager::toggleChannelPause(int32_t nChannelId)
 	{
-
+		auto it = m_channels.find(nChannelId);
+		if (it == m_channels.end())
+			return;
+		bool paused;
+		errorCheck(it->second->getPaused(&paused));
+		paused = !paused;
+		errorCheck(it->second->setPaused(paused));
 	}
 
 	void AudioManager::stopEvent(const std::string& strEventName, bool bImmediate)
@@ -211,9 +279,12 @@ namespace Engine
 
 	}
 
-	void AudioManager::setEventParameter(const std::string& strEventName, const std::string& strParameterName, float* value)
+	void AudioManager::setEventParameter(const std::string& strEventName, const std::string& strParameterName, float value)
 	{
-
+		auto it = m_events.find(strEventName);
+		if (it == m_events.end())
+			return;
+		errorCheck(it->second->setParameterByName(strParameterName.c_str(), value));
 	}
 
 	void AudioManager::setEvent3DAttributes(const std::string& strEventName, const glm::mat4& transform, const glm::vec3& velocity)

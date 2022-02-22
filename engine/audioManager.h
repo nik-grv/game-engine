@@ -53,7 +53,7 @@ namespace Engine
 		void start(SystemSignal init = SystemSignal::None, ...); //!< start the system
 		void stop(SystemSignal close = SystemSignal::None, ...); //!< stop the system
 		void update();
-		void loadBank(const std::string& strBankName, FMOD_STUDIO_LOAD_BANK_FLAGS);
+		void loadBank(const std::string& strBankName, FMOD_STUDIO_LOAD_BANK_FLAGS flags);
 		void loadEvent(const std::string& strEventName);
 		void loadSound(const std::string &strSoundName, bool b3d = true, bool bLooping = false, bool bStream = false, float minDist = 0.25f, float maxDist = 10000.f, RollOff rollOff = RollOff::Inverse);
 		void unLoadSound(const std::string &strSoundName);
@@ -65,7 +65,7 @@ namespace Engine
 		void toggleChannelPause(int32_t nChannelId);
 		void stopEvent(const std::string& strEventName, bool bImmediate = false);
 		void getEventParameter(const std::string& strEventName, const std::string& strEventParameter, float* value);
-		void setEventParameter(const std::string& strEventName, const std::string& strParameterName, float* value);
+		void setEventParameter(const std::string& strEventName, const std::string& strParameterName, float value);
 		void setEvent3DAttributes(const std::string& strEventName, const glm::mat4& transform, const glm::vec3& velocity);
 		void togglePauseAllChannels();
 		void setChannel3dAttributes(int32_t nChannelId, const glm::vec3& position, const glm::vec3& velocity);
