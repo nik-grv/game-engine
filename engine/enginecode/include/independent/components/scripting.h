@@ -10,7 +10,7 @@ namespace Engine {
 		NativeScript() : m_entity(entt::null) {};
 		NativeScript(entt::entity& entity) : m_entity(entity) {};
 		virtual ~NativeScript() = default;
-		virtual void OnCreate() {};
+		virtual void OnCreate(entt::entity entity) { m_entity = entity; };
 		virtual void OnDestroy() {};
 		virtual void OnUpdate(float timestep) {};
 		virtual void OnKeyPress(KeyPressedEvent& e) {};
@@ -31,7 +31,7 @@ namespace Engine {
 			m_instance->OnCreate();
 		};
 	protected:
-		std::shared_ptr<NativeScript> m_instance;
+		std::shared_ptr<NativeScript> m_instance = nullptr;
 	};
 
 	namespace ScriptSystem {
