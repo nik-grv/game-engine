@@ -56,16 +56,16 @@ project "Engine"
 		"vendor/assimp/include",
 		"vendor/box2d/include",
 		"vendor/lua",
-		"vendor/react3d/include"
-		"vendor/FMOD/core/inc"
-		"vendor/FMOD/fsbank/inc"
+		"vendor/react3d/include",
+		"vendor/FMOD/core/inc",
+		"vendor/FMOD/fsbank/inc",
 		"vendor/FMOD/studio/inc"
 	}
 	
 	libdirs
 	{
-		"vendor/FMOD/core/lib/x64"
-		"vendor/FMOD/fsbank/lib/x64"
+		"vendor/FMOD/core/lib/x64",
+		"vendor/FMOD/fsbank/lib/x64",
 		"vendor/FMOD/studio/lib/x64"
 	}
 	
@@ -98,7 +98,7 @@ project "Engine"
 		
 		links
 		{
-			"fmodL_vc.lib"
+			"fmodL_vc.lib",
 			"fmodstudioL_vc.lib"		
 		}
 
@@ -109,8 +109,8 @@ project "Engine"
 		
 		links
 		{
-			"Engine"
-			"fmodL_vc.lib"
+			"Engine",
+			"fmodL_vc.lib",
 			"fmodstudioL_vc.lib"		
 		}
 
@@ -147,9 +147,9 @@ project "Sandbox"
 		"vendor/assimp/include",
 		"vendor/box2d/include",
 		"vendor/lua",
-		"vendor/react3d/include"
-		"vendor/FMOD/core/inc"
-		"vendor/FMOD/fsbank/inc"
+		"vendor/react3d/include",
+		"vendor/FMOD/core/inc",
+		"vendor/FMOD/fsbank/inc",
 		"vendor/FMOD/studio/inc"
 	}
 

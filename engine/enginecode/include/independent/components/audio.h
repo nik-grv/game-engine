@@ -33,8 +33,8 @@ namespace Engine
 	class AudioOcculsionComponent
 	{
 	public:
-		AudioOcculsionComponent(const char* Pname, const AudioGeometryDefinition& geometryDef);
-		const char* name;
+		//AudioOcculsionComponent(const char* Pname, const AudioGeometryDefinition& geometryDef);
+		//onst char* name;
 	};
 
 	namespace AudioSystem {
