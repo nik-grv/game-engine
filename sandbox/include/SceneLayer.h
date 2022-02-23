@@ -28,41 +28,6 @@ private:
 
 #pragma region RAW_DATA
 
-	////vertices data when using texture atlast
-//float cubeVertices[8 * 24] = {
-//	//	 <------ Pos ------>  <--- normal --->  <-- UV -->
-//		 0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterSubTex.transformU(0.f),  letterSubTex.transformV(0.f),
-//		 0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterSubTex.transformU(0.f),  letterSubTex.transformV(0.5f),
-//		-0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(0.5f),
-//		-0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(0.f),
-
-//		-0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(0.5f),
-//		 0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(0.5f),
-//		 0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(0.f),
-//		-0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterSubTex.transformU(0.33), letterSubTex.transformV(0.f),
-
-//		-0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterSubTex.transformU(1.f),  letterSubTex.transformV(0.f),
-//		 0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(0.f),
-//		 0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(0.5f),
-//		-0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterSubTex.transformU(1.0f), letterSubTex.transformV(0.5f),
-
-//		0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,	letterSubTex.transformU(0.f),  letterSubTex.transformV(0.5f),
-//		 0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterSubTex.transformU(0.f),  letterSubTex.transformV(1.0f),
-//		-0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(1.0f),
-//		-0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  letterSubTex.transformU(0.3f), letterSubTex.transformV(0.5f),
-
-//		-0.5f,  0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(0.5f),
-//		-0.5f,  0.5f, -0.5f, -1.f,  0.f,  0.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(0.5f),
-//		-0.5f, -0.5f, -0.5f, -1.f,  0.f,  0.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(1.0f),
-//		-0.5f, -0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(1.0f),
-
-//		0.5f, -0.5f, -0.5f,  1.f,  0.f,  0.f,   letterSubTex.transformU(1.0f), letterSubTex.transformV(1.0f),
-//		0.5f,  0.5f, -0.5f,  1.f,  0.f,  0.f,   letterSubTex.transformU(1.0f), letterSubTex.transformV(0.5f),
-//		0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,   letterSubTex.transformU(0.66f),letterSubTex.transformV(0.5f),
-//		0.5f, -0.5f, 0.5f,   1.f,  0.f,  0.f,   letterSubTex.transformU(0.66f),letterSubTex.transformV(1.0f)
-//};
-
-
 
 	float cubeVertices[8 * 24] = {
 		//	 <------ Pos ------>  <--- normal --->  <-- UV -->

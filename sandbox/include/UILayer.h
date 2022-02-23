@@ -19,8 +19,9 @@ class UILayer : public Layer
 public:
 	UILayer(const char* name);
 	void OnRender() override;
+	void OnUpdate(float timeStep) override;
 private:
-
+	float m_timestep;
 	std::shared_ptr<RendererCommands> enableBlendCommand;
 	std::shared_ptr<RendererCommands> disableDepthCommand;
 	std::shared_ptr<RendererCommands> blendFuncAlphaCommand;
