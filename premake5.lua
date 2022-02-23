@@ -41,6 +41,8 @@ project "Engine"
 	{
 		"%{prj.name}/enginecode/",
 		"%{prj.name}/enginecode/include/independent",
+		"%{prj.name}/enginecode/include/Utilities",
+		"%{prj.name}/enginecode/src/platform/Windows",
 		"%{prj.name}/enginecode/include/",
 		"%{prj.name}/precompiled/",
 		"vendor/spdlog/include",

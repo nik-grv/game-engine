@@ -11,6 +11,8 @@
 */
 engineApp::engineApp()
 {
+	Application& app = Application::getInstance();
+	glfwSetWindowTitle(((GLFWwindow*)app.getAppWindow()->getNativewindow()), "Tankery Sandbox");
 	Log::s_info("Starting Sandbox...");
 	Log::s_info("");
 	//m_layerStack.Push(new SceneLayer("Scene Layer"));

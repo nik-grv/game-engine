@@ -6,6 +6,11 @@ namespace Engine {
 
 	class ImGuiLayer : public Layer
 	{
+		enum class SceneState
+		{
+			Edit = 0, Play = 1
+		};
+
 	public:
 		ImGuiLayer(const char* name);
 		~ImGuiLayer();
@@ -18,7 +23,12 @@ namespace Engine {
 		virtual void Begin() override;
 		virtual void End() override;
 
+		SceneState m_SceneState = SceneState::Edit;
+
 		ContentBrowserPanel m_ContentBrowserPanel;
+
+
+		void UI_Toolbar();
 
 		void onKeyPressed(KeyPressedEvent& e) override;
 		void onKeyReleased(KeyReleasedEvent& e) override;
@@ -36,6 +46,9 @@ namespace Engine {
 
 		void OnScenePlay();
 		void OnSceneStop();
+
+		std::shared_ptr<TextureRend> m_IconPlay;
+		std::shared_ptr<TextureRend> m_IconStop;
 
 		Application& app = Application::getInstance();
 	private:

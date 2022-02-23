@@ -1,7 +1,7 @@
+#include "engine_pch.h"
 #include <glad/glad.h>
 #include "../include/ImGuiLayer.h"
-
-
+#include <Utilities/PlatformUtils.h>
 //#include "..\OpenGL\ImGuiOpenGL.h"
 //#include "..\OpenGL\ImGuiGLFW.h"
 //#include "GLFW/glfw3.h
@@ -34,6 +34,9 @@ namespace Engine {
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 		
 		ImGui::StyleColorsDark();
+
+		m_IconPlay.reset(TextureRend::create("Resources/Icons/PlayButton.png"));
+		m_IconStop.reset(TextureRend::create("Resources/Icons/StopButton.png"));
 
 		ImGuiStyle& style = ImGui::GetStyle();
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -124,7 +127,7 @@ namespace Engine {
 				if (ImGui::MenuItem("New", "Ctrl+N"))
 					NewScene();
 
-				if (ImGui::MenuItem("Open...", "Ctrl+O"))
+				if (ImGui::MenuItem("Open...", "Ctrl+O")) 
 					OpenScene();
 
 				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
@@ -136,6 +139,8 @@ namespace Engine {
 
 			ImGui::EndMenuBar();
 		}
+		UI_Toolbar();
+
 		m_ContentBrowserPanel.OnImGuiRender();
 		ImGui::End();
 
@@ -163,6 +168,34 @@ namespace Engine {
 			ImGui::RenderPlatformWindowsDefault();
 			glfwMakeContextCurrent(backup_current_context);
 		}
+	}
+
+	void ImGuiLayer::UI_Toolbar()
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		auto& colors = ImGui::GetStyle().Colors;
+		const auto& buttonHovered = colors[ImGuiCol_ButtonHovered];
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+		const auto& buttonActive = colors[ImGuiCol_ButtonActive];
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+
+		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+		float size = ImGui::GetWindowHeight() - 4.0f;
+		std::shared_ptr<TextureRend> icon = m_SceneState == SceneState::Edit ? m_IconPlay : m_IconStop;
+		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+		if (ImGui::ImageButton((ImTextureID)icon->getRenderID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
+		{
+			if (m_SceneState == SceneState::Edit)
+				OnScenePlay();
+			else if (m_SceneState == SceneState::Play)
+				OnSceneStop();
+		}
+		ImGui::PopStyleVar(2);
+		ImGui::PopStyleColor(3);
+		ImGui::End();
 	}
 
 #pragma region -- [ GUIInputManager ] --
@@ -230,52 +263,36 @@ namespace Engine {
 
 	void ImGuiLayer::OpenScene()
 	{
-		/*
-		std::string filepath = FileDialogs::OpenFile("Hazel Scene (*.hazel)\0*.hazel\0");
-		if (!filepath.empty())
-			OpenScene(filepath);
-		*/
+
 	}
 
 	void ImGuiLayer::OpenScene(const std::filesystem::path& path)
 	{
-		if (path.extension().string() != ".hazel")
+		if (path.extension().string() != ".tanky")
 		{
-			/*
-			HZ_WARN("Could not load {0} - not a scene file", path.filename().string());
-			return;
-			*/
+			Log::e_error("Could not load {0} -not a scene file", path.filename().string());
 		}
-
-		/*Ref<Scene> newScene = CreateRef<Scene>();
-		SceneSerializer serializer(newScene);*/
-		/*if (serializer.Deserialize(path.string()))
-		{
-			m_ActiveScene = newScene;
-			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-			m_SceneHierarchyPanel.SetContext(m_ActiveScene);
-		}*/
 	}
 
 	void ImGuiLayer::SaveSceneAs()
 	{
-		/*std::string filepath = FileDialogs::SaveFile("Hazel Scene (*.hazel)\0*.hazel\0");
+		std::string filepath = FileDialogs::SaveFile("Hazel Scene (*.hazel)\0*.hazel\0");
 		if (!filepath.empty())
 		{
-			SceneSerializer serializer(m_ActiveScene);
-			serializer.Serialize(filepath);
+			Log::e_debug("== Saving File ==");
 		}
-		*/
 	}
 
 	void ImGuiLayer::OnScenePlay()
 	{
-		//m_SceneState = SceneState::Play;
+		Log::e_debug("== Scene Started ==");
+		m_SceneState = SceneState::Play;
 	}
 
 	void ImGuiLayer::OnSceneStop()
 	{
-		//m_SceneState = SceneState::Edit;
+		Log::e_debug("== Scene Stopped ==");
+		m_SceneState = SceneState::Edit;
 
 	}
 
