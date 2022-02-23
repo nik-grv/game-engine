@@ -10,11 +10,11 @@ namespace Engine {
 		NativeScript() : m_entity(entt::null) {};
 		NativeScript(entt::entity& entity) : m_entity(entity) {};
 		virtual ~NativeScript() = default;
-		virtual void OnCreate(entt::entity entity) { m_entity = entity; };
+		virtual void OnCreate() {};
 		virtual void OnDestroy() {};
 		virtual void OnUpdate(float timestep) {};
 		virtual void OnKeyPress(KeyPressedEvent& e) {};
-	private:
+	protected:
 		entt::entity m_entity;
 	};
 

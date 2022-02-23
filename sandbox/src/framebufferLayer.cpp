@@ -115,6 +115,8 @@ namespace Engine {
 		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(15.0f, 1.f, 15.0f));
 		//m_registry.emplace<TransformComponent>(m_entities[5]);
 
+		auto& script = m_registry.emplace<NativeScriptComponent>(m_entities[1]);
+
 		auto tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
 		auto cubeTransform = m_registry.get<TransformComponent>(m_entities[2]).GetTransform();
 		auto floorTransform = m_registry.get<TransformComponent>(m_entities[4]).GetTransform();
@@ -158,6 +160,7 @@ namespace Engine {
 	
 	void FramebufferLayer::OnUpdate(float timestep)
 	{
+		ScriptSystem::UpdateScripts(timestep);
 		NGPhyiscs::updateTransforms();
 		m_camera.update(timestep);
 	}

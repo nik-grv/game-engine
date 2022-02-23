@@ -16,6 +16,9 @@
 #include "include/independent/components/render.h"
 #include "include/independent/components/label.h"
 #include "include/independent/components/rigidBody.h"
+#include "include/independent/components/scripting.h"
+
+#include "behaviorScripts/tankController.h"
 #include <assimpLoader.h>
 #include <rendering/framebuffer.h>
 
