@@ -14,6 +14,8 @@ namespace Engine {
 		virtual void OnDestroy() {};
 		virtual void OnUpdate(float timestep) {};
 		virtual void OnKeyPress(KeyPressedEvent& e) {};
+		virtual void OnMouseBtnPressed(MouseButtonPressedEvent& e) {};
+		virtual void OnMouseMoved(MouseMovedEvent& e) {};
 	protected:
 		entt::entity m_entity;
 	};
@@ -24,6 +26,8 @@ namespace Engine {
 		~NativeScriptComponent() = default;
 		void OnUpdate(float timestep) { m_instance->OnUpdate(timestep); };
 		void OnKeyPress(KeyPressedEvent& e) { m_instance->OnKeyPress(e); };
+		void OnMouseBtnPressed(MouseButtonPressedEvent& e) { m_instance->OnMouseBtnPressed(e); };
+		void OnMouseMoved(MouseMovedEvent& e) { m_instance->OnMouseMoved(e); };
 
 		template <typename G, typename ...Args> void create(Args && ... args) {
 			G* ptr = new G(std::forward<Args>(args) ...);
@@ -37,5 +41,8 @@ namespace Engine {
 	namespace ScriptSystem {
 		void UpdateScripts(float timestep);
 		void OnKeyPressed(KeyPressedEvent& e);
+		void OnMouseBtnPressed(MouseButtonPressedEvent& e);
+		//void OnMouseMoved(MouseMovedEvent& e);
+
 	}
 }

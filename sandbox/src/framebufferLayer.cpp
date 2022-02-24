@@ -45,7 +45,7 @@ namespace Engine {
 		//1st model
 		//Loader::ASSIMPLoad("./assets/models/zard/mesh.3DS", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
 		//Loader::ASSIMPLoad("./assets/models/bob/boblampclean.md5mesh", aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace );
-		Loader::ASSIMPLoad("./assets/models/tank_flipper.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
+		Loader::ASSIMPLoad("./assets/models/Tank/tank_flipper.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
 
 		m_VAO1.reset(VertexArray::create());
 		VertexBufferLayout cubeBufferLayout = { ShaderDataType::Float3,ShaderDataType::Float3 ,ShaderDataType::Float2 };
@@ -104,19 +104,18 @@ namespace Engine {
 
 
 		m_registry.emplace<TransformComponent>(m_entities[0]);
-		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(0), glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(0.0f, 25.0f, 0.0f), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(10.0f, 0.f, 0), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(30.0f, 1.f, 30.0f));
 		m_registry.emplace<TransformComponent>(m_entities[5], glm::vec3(0, 0.79f, -3.38), glm::vec3(0), glm::vec3(0.125f));
 		//m_registry.emplace<TransformComponent>(m_entities[5]);
 
-		auto& script = m_registry.emplace<NativeScriptComponent>(m_entities[1]);
-		script.create<TankController>(m_entities[1], 5.f, true);
-
+		
 		auto tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
 		auto cubeTransform = m_registry.get<TransformComponent>(m_entities[2]).GetTransform();
 		auto floorTransform = m_registry.get<TransformComponent>(m_entities[4]).GetTransform();
+		auto firePtTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
 		//auto slopeTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
 
 		auto tank_rb = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic, tankTransform);
@@ -140,6 +139,11 @@ namespace Engine {
 		m_registry.emplace<RelationshipComponent>(m_entities[5]);
 
 		HierarchySystem::setChild(m_entities[1], m_entities[5]);
+
+		//set tank script
+		auto& script = m_registry.emplace<NativeScriptComponent>(m_entities[1]);
+		script.create<TankController>(m_entities[1], 5.f, true);
+
 
 		//set player cam
 
@@ -344,46 +348,13 @@ namespace Engine {
 			m_camera.mouseMovement(e.getMousePos().x, e.getMousePos().y);
 		}
 	}
-	
+
 	void FramebufferLayer::onMouseBtnPressed(MouseButtonPressedEvent& e)
 	{
-		//shoot projectile with mouse click
-		if (e.getButton() == 0)
-		{
-
-			bool found = false;
-			int i;
-			for (i = 0; i < m_entities.size(); i++)
-			{
-				if (m_entities[i] == entt::null)
-					continue;
-			}
-
-			entt::entity projectileEntity = m_registry.create();
-			if (i == m_entities.size())
-				m_entities.push_back(projectileEntity);
-			else
-				m_entities[i] = projectileEntity;
-
-			m_registry.emplace<LabelComponent>(projectileEntity, "Projectile");
-
-			//auto camTransform = glm::inverse(m_camera.getCameraViewMatrix());
-			auto& fireTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
-			glm::vec3 forward = { fireTransform[2][0],fireTransform[2][1] ,fireTransform[2][2] };
-			glm::vec3 camPos = { fireTransform[3][0],fireTransform[3][1] ,fireTransform[3][2] };
-			auto projTransform = m_registry.emplace<TransformComponent>(projectileEntity, camPos - forward * 1.0f, glm::vec3(0.0f), glm::vec3(0.25f));
-
-			m_registry.emplace<RenderComponent>(projectileEntity, m_VAO2, mat2);
-			m_registry.emplace<RelationshipComponent>(projectileEntity);
-			//HierarchySystem::setChild(m_entities[0], projectileEntity);
-
-			auto projectiel_rb = m_registry.emplace<RigidBodyComponent>(projectileEntity, RigidBodyType::Dynamic, projTransform.GetTransform());
-			m_registry.emplace<SphereColliderComponent>(projectileEntity, projectiel_rb, 0.25f);
-			glm::vec3 force = (-forward * 500.5f);
-			projectiel_rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(force.x, force.y + 20.f, force.z - 1500.f));
-		}
+		ScriptSystem::OnMouseBtnPressed(e);
+		
 	}
-
+	
 
 	void FramebufferLayer::onKeyPressed(KeyPressedEvent& e)
 	{
@@ -416,29 +387,29 @@ namespace Engine {
 		}*/
 
 
-		//switch camera type
-		if (e.getKeyCode() == NG_KEY_SPACE)
-		{
-			m_isPlayerCam = !m_isPlayerCam;
-		}
+		////switch camera type
+		//if (e.getKeyCode() == NG_KEY_SPACE)
+		//{
+		//	m_isPlayerCam = !m_isPlayerCam;
+		//}
 
 
-		if (e.getKeyCode() == NG_KEY_UP)
-		{
-			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, -25.0f));
-		}
-		if (e.getKeyCode() == NG_KEY_DOWN)
-		{
-			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, 25.0f));
-		}
-		if (e.getKeyCode() == NG_KEY_LEFT)
-		{
-			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(-25.0f, 0.0f, 0.0f));
-		}
-		if (e.getKeyCode() == NG_KEY_RIGHT)
-		{
-			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(25.0f, 0.0f, 0.0f));
-		}
+		//if (e.getKeyCode() == NG_KEY_UP)
+		//{
+		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, -25.0f));
+		//}
+		//if (e.getKeyCode() == NG_KEY_DOWN)
+		//{
+		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, 25.0f));
+		//}
+		//if (e.getKeyCode() == NG_KEY_LEFT)
+		//{
+		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(-25.0f, 0.0f, 0.0f));
+		//}
+		//if (e.getKeyCode() == NG_KEY_RIGHT)
+		//{
+		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(25.0f, 0.0f, 0.0f));
+		//}
 
 
 	}

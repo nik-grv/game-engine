@@ -26,5 +26,16 @@ namespace Engine {
 			nsc.OnKeyPress(e);
 		}
 	}
+	
+	void ScriptSystem::OnMouseBtnPressed(MouseButtonPressedEvent& e) {
+		entt::registry& registry = Application::getInstance().m_registry;
+
+		auto scriptView = registry.view<NativeScriptComponent>();
+
+		for (auto entity : scriptView) {
+			auto& nsc = registry.get<NativeScriptComponent>(entity);
+			nsc.OnMouseBtnPressed(e);
+		}
+	}
 
 }
