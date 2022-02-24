@@ -1,8 +1,8 @@
 #pragma once
-#include "components/scripting.h"
-#include "events/events.h"
-#include "engineApp.h"
-#include "include/platform/GLFW/GLFWCodes.h"
+
+#include "engine.h"
+
+using namespace Engine;
 
 class TankController : public Engine::NativeScript {
 public:
@@ -18,28 +18,45 @@ public:
 
 	virtual void OnUpdate(float time)
 	{
+		float desRotVel = 0.f;
+		rp3d::Vector3 desSpeed = rp3d::Vector3(0.f, 0.f, 0.f);
+
 		entt::registry& registry = Application::getInstance().m_registry;
 		auto& rb = registry.get<RigidBodyComponent>(m_entity);
+		auto& tc = registry.get<TransformComponent>(m_entity);
+		auto& t = tc.GetTransform();
+		rp3d::Vector3 forward(t[2][0], t[2][1], t[2][2]);
 
-		if (InputPoller::isKeyPressed(NG_KEY_W))
+		if (InputPoller::isKeyPressed(NG_KEY_UP))
 		{
-			rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.f, 0.f, 1.f) * m_movementSpeed);
+			desSpeed = forward * m_movementSpeed;
 		}
 
-		if (InputPoller::isKeyPressed(NG_KEY_S))
+		if (InputPoller::isKeyPressed(NG_KEY_DOWN))
 		{
-			rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.f, 0.f, -1.f) * m_movementSpeed);
+			desSpeed = forward * -m_movementSpeed;
 		}
 
-		if (InputPoller::isKeyPressed(NG_KEY_A))
+		if (InputPoller::isKeyPressed(NG_KEY_LEFT))
 		{
-			rb.m_body->applyTorque(rp3d::Vector3(0.f, -1.f, 0.f));
+			desRotVel = -3.f;
 		}
 
-		if (InputPoller::isKeyPressed(NG_KEY_D))
+		if (InputPoller::isKeyPressed(NG_KEY_RIGHT))
 		{
-			rb.m_body->applyTorque(rp3d::Vector3(0.f, 1.f, 0.f));
+			desRotVel = 3.f;
 		}
+
+		float mass = rb.m_body->getMass();
+
+		float deltaRotV = desRotVel - rb.m_body->getAngularVelocity().y;
+		float rotForceY = mass * (deltaRotV / time);
+
+		rp3d::Vector3 deltaV = desSpeed - rb.m_body->getLinearVelocity();
+		rp3d::Vector3 moveForce =  (deltaV / time) * mass;
+
+		rb.m_body->applyTorque(rp3d::Vector3(0.f, rotForceY, 0.f));
+		rb.m_body->applyForceToCenterOfMass(moveForce);
 	}
 
 protected:
