@@ -1,24 +1,13 @@
 /** framebufferLayer.h */
 #pragma once
 
-#include <rendering/Renderer3D.h>
-#include <rendering/Renderer2D.h>
-
-#include <rendering/shaderDataType.h>
 #include "engine.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "camera/Camera.h"
-#include "camera/FollowPlayer.h"
-#include <entt/entt.hpp>
-#include "include/independent/components/transform.h"
-#include "include/independent/components/relationship.h"
-#include "include/independent/components/render.h"
-#include "include/independent/components/label.h"
-#include "include/independent/components/rigidBody.h"
+
+#include "behaviorScripts/tankController.h"
 #include <assimpLoader.h>
-#include <rendering/framebuffer.h>
 
 namespace Engine {
 

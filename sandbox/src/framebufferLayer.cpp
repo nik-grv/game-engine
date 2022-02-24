@@ -103,18 +103,20 @@ namespace Engine {
 		//m_registry.emplace<LabelComponent>(m_entities[5], "Slope");
 
 
-		m_registry.emplace<TransformComponent>(m_entities[0] , glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0),glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(0.2f, 10, 0), glm::vec3(0), glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[0]);
+		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(0), glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(10.0f, 0.f, 0), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(30.0f, 1.f, 30.0f));
 		m_registry.emplace<TransformComponent>(m_entities[5], glm::vec3(0, 0.79f, -3.38), glm::vec3(0), glm::vec3(0.125f));
 		//m_registry.emplace<TransformComponent>(m_entities[5]);
 
-		auto& tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
-		auto& cubeTransform = m_registry.get<TransformComponent>(m_entities[2]).GetTransform();
-		auto& floorTransform = m_registry.get<TransformComponent>(m_entities[4]).GetTransform();
-		auto& firePtTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
+		auto& script = m_registry.emplace<NativeScriptComponent>(m_entities[1]);
+		script.create<TankController>(m_entities[1], 5.f, true);
+
+		auto tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
+		auto cubeTransform = m_registry.get<TransformComponent>(m_entities[2]).GetTransform();
+		auto floorTransform = m_registry.get<TransformComponent>(m_entities[4]).GetTransform();
 		//auto slopeTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
 
 		auto tank_rb = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic, tankTransform);
@@ -129,7 +131,6 @@ namespace Engine {
 		m_registry.emplace<BoxColliderComponent>(m_entities[2], cube_rb, glm::vec3(1.0f, 1.f, 1.0f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(30.0f, 1.f,30.0f) * 0.5f);
 		//auto something = m_registry.emplace<HeightmapCollider>(m_entities[5], slope_rb, 7, 7, -3, 3, heigthData);
-		//Log::error("{0}", something.collider.)
 
 		m_registry.emplace<RenderComponent>(m_entities[1], m_VAO1, mat1);
 		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO2, mat2);
@@ -189,6 +190,7 @@ namespace Engine {
 	
 	void FramebufferLayer::OnUpdate(float timestep)
 	{
+		ScriptSystem::UpdateScripts(timestep);
 		NGPhyiscs::updateTransforms();
 		if (m_isPlayerCam)
 			m_followCam->onUpdate(timestep);
