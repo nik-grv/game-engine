@@ -109,14 +109,13 @@ namespace Engine {
 
 
 		m_registry.emplace<TransformComponent>(m_entities[0]);
-		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(0), glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(10.0f, 0.f, 0), glm::vec3(0), glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(0.0f, 50.0f, 0.0f), glm::vec3(0), glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(0.0f, 20, 0), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(15.0f, 1.f, 15.0f));
 		//m_registry.emplace<TransformComponent>(m_entities[5]);
 
 		auto& script = m_registry.emplace<NativeScriptComponent>(m_entities[1]);
-		script.create<TankController>(m_entities[1], 20.f, true);
 
 		auto tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
 		auto cubeTransform = m_registry.get<TransformComponent>(m_entities[2]).GetTransform();
