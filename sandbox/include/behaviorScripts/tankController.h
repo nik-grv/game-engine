@@ -1,8 +1,8 @@
 #pragma once
-#include "components/scripting.h"
-#include "events/events.h"
-#include "engineApp.h"
-#include "include/platform/GLFW/GLFWCodes.h"
+
+#include "engine.h"
+
+using namespace Engine;
 
 class TankController : public Engine::NativeScript {
 public:
