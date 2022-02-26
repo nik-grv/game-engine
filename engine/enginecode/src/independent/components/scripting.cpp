@@ -23,7 +23,7 @@ namespace Engine {
 
 		for (auto entity : scriptView) {
 			auto& nsc = registry.get<NativeScriptComponent>(entity);
-			nsc.OnKeyPress(e);
+			nsc.OnKeyPressed(e);
 		}
 	}
 	
@@ -35,6 +35,17 @@ namespace Engine {
 		for (auto entity : scriptView) {
 			auto& nsc = registry.get<NativeScriptComponent>(entity);
 			nsc.OnMouseBtnPressed(e);
+		}
+	}
+	
+	void ScriptSystem::OnMouseMoved(MouseMovedEvent& e) {
+		entt::registry& registry = Application::getInstance().m_registry;
+
+		auto scriptView = registry.view<NativeScriptComponent>();
+
+		for (auto entity : scriptView) {
+			auto& nsc = registry.get<NativeScriptComponent>(entity);
+			nsc.OnMouseMoved(e);
 		}
 	}
 

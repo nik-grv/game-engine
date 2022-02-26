@@ -13,7 +13,7 @@ namespace Engine {
 		virtual void OnCreate() {};
 		virtual void OnDestroy() {};
 		virtual void OnUpdate(float timestep) {};
-		virtual void OnKeyPress(KeyPressedEvent& e) {};
+		virtual void OnKeyPressed(KeyPressedEvent& e) {};
 		virtual void OnMouseBtnPressed(MouseButtonPressedEvent& e) {};
 		virtual void OnMouseMoved(MouseMovedEvent& e) {};
 	protected:
@@ -25,7 +25,7 @@ namespace Engine {
 		NativeScriptComponent() = default;
 		~NativeScriptComponent() = default;
 		void OnUpdate(float timestep) { m_instance->OnUpdate(timestep); };
-		void OnKeyPress(KeyPressedEvent& e) { m_instance->OnKeyPress(e); };
+		void OnKeyPressed(KeyPressedEvent& e) { m_instance->OnKeyPressed(e); };
 		void OnMouseBtnPressed(MouseButtonPressedEvent& e) { m_instance->OnMouseBtnPressed(e); };
 		void OnMouseMoved(MouseMovedEvent& e) { m_instance->OnMouseMoved(e); };
 
@@ -42,7 +42,7 @@ namespace Engine {
 		void UpdateScripts(float timestep);
 		void OnKeyPressed(KeyPressedEvent& e);
 		void OnMouseBtnPressed(MouseButtonPressedEvent& e);
-		//void OnMouseMoved(MouseMovedEvent& e);
+		void OnMouseMoved(MouseMovedEvent& e);
 
 	}
 }

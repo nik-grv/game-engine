@@ -26,6 +26,7 @@ namespace  Engine
 	{
 		void setChild(entt::entity parentEntity, entt::entity childEntity);
 		void UpdateChildren();
+		entt::entity GetChildEntity(entt::entity parentEntity, int childNumber);
 	}
 
 }

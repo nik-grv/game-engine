@@ -56,7 +56,7 @@ namespace Engine {
 		}
 
 		//Constructor with body type and transfortm
-		RigidBodyComponent(RigidBodyType type, glm::mat4& transform)
+		RigidBodyComponent(RigidBodyType type, glm::mat4& transform,bool gravityEnabled = true)
 		{
 			rp3d::PhysicsWorld* world = Application::getInstance().GetWorld();		//Give application a world for this to work.
 			rp3d::Transform RPtransform;
@@ -67,7 +67,7 @@ namespace Engine {
 			RPtransform.setOrientation(quat);
 
 			m_body = world->createRigidBody(RPtransform);
-
+			m_body->enableGravity(gravityEnabled);
 			switch (type)
 			{
 			case Engine::RigidBodyType::Static:

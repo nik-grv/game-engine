@@ -108,9 +108,9 @@ namespace Engine {
 		//
 
 
-		std::shared_ptr<VertexArray> m_VAO1, m_VAO2;
-		std::shared_ptr<VertexBuffer> m_VBO1, m_VBO2;
-		std::shared_ptr<IndexBuffer> m_IBO1, m_IBO2;
+		std::shared_ptr<VertexArray> m_VAO1, m_VAO2, m_VAO3, m_VAO4;
+		std::shared_ptr<VertexBuffer> m_VBO1, m_VBO2, m_VBO3, m_VBO4;
+		std::shared_ptr<IndexBuffer> m_IBO1, m_IBO2, m_IBO3, m_IBO4;
 		std::shared_ptr<ShaderRend> shader;
 		std::shared_ptr<Material> mat1, mat2;
 		std::shared_ptr<Material> wireframeMat;
@@ -147,14 +147,9 @@ namespace Engine {
 		Quad m_screenQuad;
 		SubTexture m_screenTexture;
 		bool usePP = false;
-		bool m_isPlayerCam = true;
+		bool m_isPlayerCam = false;
 
-		bool m_firstMouse = true;
-		float m_lastX;
-		float m_lastY;
-		float m_yaw = -90.0f;	//!< initialized m_yaw as -90.0 to rotate to the left.
-		float m_pitch = 0.0f; //!< m_pitch for mouse movement
-
+	
 		RigidBodyComponent m_tankRB;
 	};
 }

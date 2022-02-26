@@ -45,25 +45,40 @@ namespace Engine {
 		//1st model
 		//Loader::ASSIMPLoad("./assets/models/zard/mesh.3DS", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
 		//Loader::ASSIMPLoad("./assets/models/bob/boblampclean.md5mesh", aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace );
-		Loader::ASSIMPLoad("./assets/models/Tank/tank_flipper.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
-
-		m_VAO1.reset(VertexArray::create());
 		VertexBufferLayout cubeBufferLayout = { ShaderDataType::Float3,ShaderDataType::Float3 ,ShaderDataType::Float2 };
+
+
+		Loader::ASSIMPLoad("./assets/models/Tank/TankBody.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
+		m_VAO1.reset(VertexArray::create());
 		m_VBO1.reset(VertexBuffer::create(Loader::output.vertices.data(), sizeof(Renderer3DVertex) * Loader::output.vertices.size(), cubeBufferLayout));
 		m_IBO1.reset(IndexBuffer::create(Loader::output.indicies.data(), Loader::output.indicies.size()));
 		m_VAO1->addVertexBuffer(m_VBO1);
 		m_VAO1->setIndexBuffer(m_IBO1);
+
+
+		Loader::ASSIMPLoad("./assets/models/Tank/TankHead.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
+		m_VAO2.reset(VertexArray::create());
+		m_VBO2.reset(VertexBuffer::create(Loader::output.vertices.data(), sizeof(Renderer3DVertex) * Loader::output.vertices.size(), cubeBufferLayout));
+		m_IBO2.reset(IndexBuffer::create(Loader::output.indicies.data(), Loader::output.indicies.size()));
+		m_VAO2->addVertexBuffer(m_VBO2);
+		m_VAO2->setIndexBuffer(m_IBO2);
+
+		Loader::ASSIMPLoad("./assets/models/Tank/TankBarrel.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
+		m_VAO3.reset(VertexArray::create());
+		m_VBO3.reset(VertexBuffer::create(Loader::output.vertices.data(), sizeof(Renderer3DVertex) * Loader::output.vertices.size(), cubeBufferLayout));
+		m_IBO3.reset(IndexBuffer::create(Loader::output.indicies.data(), Loader::output.indicies.size()));
+		m_VAO3->addVertexBuffer(m_VBO3);
+		m_VAO3->setIndexBuffer(m_IBO3);
+
 		mat1.reset(new Material(shader, Loader::output.diffusTex, glm::vec4(1.0f)));
 
 		//2nd model
 		Loader::ASSIMPLoad("./assets/models/lettercube/lettercube.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
-
-		m_VAO2.reset(VertexArray::create());
-		VertexBufferLayout cubeBufferLayout2 = { ShaderDataType::Float3,ShaderDataType::Float3 ,ShaderDataType::Float2 };
-		m_VBO2.reset(VertexBuffer::create(Loader::output.vertices.data(), sizeof(Renderer3DVertex) * Loader::output.vertices.size(), cubeBufferLayout2));
-		m_IBO2.reset(IndexBuffer::create(Loader::output.indicies.data(), Loader::output.indicies.size()));
-		m_VAO2->addVertexBuffer(m_VBO2);
-		m_VAO2->setIndexBuffer(m_IBO2);
+		m_VAO4.reset(VertexArray::create());
+		m_VBO4.reset(VertexBuffer::create(Loader::output.vertices.data(), sizeof(Renderer3DVertex) * Loader::output.vertices.size(), cubeBufferLayout));
+		m_IBO4.reset(IndexBuffer::create(Loader::output.indicies.data(), Loader::output.indicies.size()));
+		m_VAO4->addVertexBuffer(m_VBO4);
+		m_VAO4->setIndexBuffer(m_IBO4);
 		mat2.reset(new Material(shader, Loader::output.diffusTex, glm::vec4(1.0f)));
 
 		plateMat.reset(new Material(shader, numberTexture));
@@ -82,63 +97,86 @@ namespace Engine {
 
 		}
 
-		m_entities.resize(6);
+		m_entities.resize(8);
 		m_entities[0] = m_registry.create();
 		m_entities[1] = m_registry.create();
 		m_entities[2] = m_registry.create();
 		m_entities[3] = m_registry.create();
 		m_entities[4] = m_registry.create();
 		m_entities[5] = m_registry.create();
+		m_entities[6] = m_registry.create();
+		m_entities[7] = m_registry.create();
 
 
 		m_registry.emplace<RootComponent>(m_entities[0]);
 
 
 		m_registry.emplace<LabelComponent>(m_entities[0], "Root Component");
-		m_registry.emplace<LabelComponent>(m_entities[1], "Tank");
+		m_registry.emplace<LabelComponent>(m_entities[1], "TankBody");
 		m_registry.emplace<LabelComponent>(m_entities[2], "Cube");
 		m_registry.emplace<LabelComponent>(m_entities[3], "Camera");
 		m_registry.emplace<LabelComponent>(m_entities[4], "Floor");
 		m_registry.emplace<LabelComponent>(m_entities[5], "FirePoint");
+		m_registry.emplace<LabelComponent>(m_entities[6], "TankHead");
+		m_registry.emplace<LabelComponent>(m_entities[7], "TankBarrel");
 		//m_registry.emplace<LabelComponent>(m_entities[5], "Slope");
 
 
-		m_registry.emplace<TransformComponent>(m_entities[0]);
-		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(0.0f, 25.0f, 0.0f), glm::vec3(0), glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(10.0f, 0.f, 0), glm::vec3(0), glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(30.0f, 1.f, 30.0f));
-		m_registry.emplace<TransformComponent>(m_entities[5], glm::vec3(0, 0.79f, -3.38), glm::vec3(0), glm::vec3(0.125f));
+		m_registry.emplace<TransformComponent>(m_entities[0],glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0),glm::vec3(1));//ROOT
+		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(2.0f, 2.f, 0.0f), glm::vec3(0), glm::vec3(1));//TANK BODY
+		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(10.0f, 20.f, 0), glm::vec3(0), glm::vec3(1));//CUBE
+		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));//CAMERA (NOT IN USE)
+		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(30.0f, 1.f, 30.0f));//FLOOR
+		m_registry.emplace<TransformComponent>(m_entities[5], glm::vec3(0, 1.525f, -2.3f), glm::vec3(0), glm::vec3(0.125f));//FIRE POINT
+		m_registry.emplace<TransformComponent>(m_entities[6], glm::vec3(0.0f, 0.8f, 1.0f), glm::vec3(0), glm::vec3(1));//TANK HEAD
+		m_registry.emplace<TransformComponent>(m_entities[7], glm::vec3(0.0f, 1.25f, -1.0f), glm::vec3(0), glm::vec3(1));//TANK BARREL
 		//m_registry.emplace<TransformComponent>(m_entities[5]);
 
 		
-		auto tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
-		auto cubeTransform = m_registry.get<TransformComponent>(m_entities[2]).GetTransform();
-		auto floorTransform = m_registry.get<TransformComponent>(m_entities[4]).GetTransform();
-		auto firePtTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
+		auto& tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
+		auto& cubeTransform = m_registry.get<TransformComponent>(m_entities[2]).GetTransform();
+		auto& floorTransform = m_registry.get<TransformComponent>(m_entities[4]).GetTransform();
+		auto& firePtTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
+		auto& tankHeadTransform = m_registry.get<TransformComponent>(m_entities[6]).GetTransform();
+		auto& tankBarrelTransform = m_registry.get<TransformComponent>(m_entities[7]).GetTransform();
 		//auto slopeTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
 
 		auto tank_rb = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic, tankTransform);
 		auto cube_rb = m_registry.emplace<RigidBodyComponent>(m_entities[2], RigidBodyType::Dynamic, cubeTransform);
 		auto floor_rb = m_registry.emplace<RigidBodyComponent>(m_entities[4], RigidBodyType::Static, floorTransform);
-		auto fire_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Static, firePtTransform);
+		auto tankHead_rb = m_registry.emplace<RigidBodyComponent>(m_entities[6], RigidBodyType::Kinematic, tankHeadTransform);
+		auto tankBarrel_rb = m_registry.emplace<RigidBodyComponent>(m_entities[7], RigidBodyType::Kinematic, tankBarrelTransform);
+		auto fire_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Kinematic, firePtTransform);
 		m_tankRB = tank_rb;
 
 		//auto slope_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Static, slopeTransform);
 
-		m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(2.72f, 1.22f, 5.f) * 0.5f);
+		m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(2.72f, 1.15f, 5.f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[2], cube_rb, glm::vec3(1.0f, 1.f, 1.0f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(30.0f, 1.f,30.0f) * 0.5f);
+		//m_registry.emplace<BoxColliderComponent>(m_entities[6], tankHead_rb, glm::vec3(2.0f, 0.5f,2.9f) * 0.5f);
 		//auto something = m_registry.emplace<HeightmapCollider>(m_entities[5], slope_rb, 7, 7, -3, 3, heigthData);
 
 		m_registry.emplace<RenderComponent>(m_entities[1], m_VAO1, mat1);
-		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO2, mat2);
-		m_registry.emplace<RenderComponent>(m_entities[4], m_VAO2, plateMat);
+		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO4, mat2);
+		m_registry.emplace<RenderComponent>(m_entities[4], m_VAO4, plateMat);
+		m_registry.emplace<RenderComponent>(m_entities[6], m_VAO2, mat1);
+		m_registry.emplace<RenderComponent>(m_entities[7], m_VAO3, mat1);
+		m_registry.emplace<RenderComponent>(m_entities[5], m_VAO4, mat2);
 		
 		m_registry.emplace<RelationshipComponent>(m_entities[1]);
 		m_registry.emplace<RelationshipComponent>(m_entities[5]);
+		m_registry.emplace<RelationshipComponent>(m_entities[6]);
+		m_registry.emplace<RelationshipComponent>(m_entities[7]);
 
-		HierarchySystem::setChild(m_entities[1], m_entities[5]);
+
+		//PARENTING....
+		HierarchySystem::setChild(m_entities[1], m_entities[6]); //TANK IS PARENT --> TANK HEAD IS CHILD
+		HierarchySystem::setChild(m_entities[1], m_entities[7]); //TANK IS PARENT --> TANK BARREL IS CHILD
+		HierarchySystem::setChild(m_entities[1], m_entities[5]); //TANK IS PARENT --> TANK FIRE POINT IS CHILD
+		HierarchySystem::setChild(m_entities[6], m_entities[5]); //TANK HEAD IS PARENT --> TANK BARREL IS CHILD
+		HierarchySystem::setChild(m_entities[7], m_entities[5]); //TANK HEAD IS PARENT --> TANK FIRE POINT IS CHILD
+		//HierarchySystem::setChild(m_entities[7], m_entities[5]); //TANK BARREL IS PARENT --> TANK FIRE POINT IS CHILD
 
 		//set tank script
 		auto& script = m_registry.emplace<NativeScriptComponent>(m_entities[1]);
@@ -263,7 +301,7 @@ namespace Engine {
 			glm::vec3 scale = glm::vec3(s.x, s.y, s.z);
 
 			glm::mat4 transformMat = glm::translate(glm::mat4(1.f), t) * glm::toMat4(r) * glm::scale(glm::mat4(1.f), scale);
-			Renderer3D::submit(m_VAO2, wireframeMat, transformMat);
+			Renderer3D::submit(m_VAO4, wireframeMat, transformMat);
 		}
 		Renderer3D::end();
 
@@ -295,58 +333,14 @@ namespace Engine {
 
 	void FramebufferLayer::onMouseMoved(MouseMovedEvent& e)
 	{
-		float xpos = e.getX();
-		float ypos = e.getY();
-		if (m_isPlayerCam)
-		{
-			if (m_firstMouse)
-			{
-				m_lastX = xpos;
-				m_lastY = ypos;
-				m_firstMouse = false;
-			}
-
-			float xoffset = xpos - m_lastX;
-			float yoffset = m_lastY - ypos;
-			m_lastX = xpos;
-			m_lastY = ypos;
-
-			float sensitivity = 0.5f;
-			xoffset *= sensitivity;
-			yoffset *= sensitivity;
-
-			m_yaw += xoffset;
-			m_pitch += yoffset;
-
-			if (m_pitch > 89.0f)
-				m_pitch = 89.0f;
-			if (m_pitch < -89.0f)
-				m_pitch = -89.0f;
-
-			glm::vec3 front;
-			front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-			front.y = sin(glm::radians(m_pitch));
-			front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-			//m_cameraFront = glm::normalize(front);
-
-			//glm::rotate(e.getMousePos())
-			//Log::error("MOUSE = {0}", xoffset);
-			if (xoffset > 0.0f)
-			{
-				Log::error("MOUSE = {0}", xoffset);
-				m_tankRB.m_body->applyTorque(-rp3d::Vector3(0.0f, xoffset, 0.0f));
-			}
-			else if (xoffset < 0.0f)
-			{
-				Log::error("MOUSE = {0}", xoffset);
-				m_tankRB.m_body->applyTorque(rp3d::Vector3(0.0f, -xoffset, 0.0f));
-			}
-			
-		}
-		else
-		{
+		ScriptSystem::OnMouseMoved(e);
+		//	
+		//}
+		//else
+		//{
+		if(!m_isPlayerCam)
 			m_camera.mouseMovement(e.getMousePos().x, e.getMousePos().y);
-		}
+		//}
 	}
 
 	void FramebufferLayer::onMouseBtnPressed(MouseButtonPressedEvent& e)
@@ -370,6 +364,8 @@ namespace Engine {
 		{
 			usePP = false;
 		}
+
+		ScriptSystem::OnKeyPressed(e);
 		/*if (e.getKeyCode() == NG_KEY_KP_ADD)
 		{
 			if (InputPoller::isKeyPressed(NG_KEY_X)) { m_rotation.x += rot; Log::info("X pressed"); }
@@ -388,10 +384,10 @@ namespace Engine {
 
 
 		////switch camera type
-		//if (e.getKeyCode() == NG_KEY_SPACE)
-		//{
-		//	m_isPlayerCam = !m_isPlayerCam;
-		//}
+		if (e.getKeyCode() == NG_KEY_SPACE)
+		{
+			m_isPlayerCam = !m_isPlayerCam;
+		}
 
 
 		//if (e.getKeyCode() == NG_KEY_UP)

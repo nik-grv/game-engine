@@ -1,5 +1,6 @@
 #include "engine_pch.h"
 #include "components/relationship.h"
+#include "components/label.h"
 
 namespace Engine
 {
@@ -26,7 +27,7 @@ namespace Engine
 		{
 			//loop through all children
 			auto currentEntity = parentComp.first;
-			for (int i = 0; i < parentComp.children; i++)
+			for (int i = 1; i < parentComp.children; i++)
 			{
 				currentEntity = reg.get<RelationshipComponent>(currentEntity).next;
 			}
@@ -61,4 +62,28 @@ namespace Engine
 			}
 		}
 	}
+
+	entt::entity HierarchySystem::GetChildEntity(entt::entity parentEntity, int childNumber)
+	{
+		entt::registry& reg = Application::getInstance().m_registry;
+
+		auto parentComp = reg.get<RelationshipComponent>(parentEntity);
+
+		if (childNumber == 0)
+		{
+			auto currentEntity = parentComp.first;
+			return currentEntity;
+		}
+		else
+		{
+			auto currentEntity = parentComp.first;
+			for (int i = 0; i < childNumber; i++)
+			{
+				currentEntity = reg.get<RelationshipComponent>(currentEntity).next;
+			}
+			return currentEntity;
+		}
+	}
+
+
 }

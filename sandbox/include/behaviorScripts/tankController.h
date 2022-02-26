@@ -13,6 +13,7 @@ public:
 		m_active(active)
 	{
 	
+		entt::registry& registry = Application::getInstance().m_registry;
 		Loader::ASSIMPLoad("./assets/models/Tank/shell.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
 
 		m_shellVAO.reset(VertexArray::create());
@@ -22,7 +23,6 @@ public:
 		m_shellVAO->addVertexBuffer(m_shellVBO);
 		m_shellVAO->setIndexBuffer(m_shellIBO);
 
-		entt::registry& registry = Application::getInstance().m_registry;
 		std::shared_ptr<ShaderRend> shader = registry.get<RenderComponent>(entity).m_mat->getShader();
 
 		shellMat.reset(new Material(shader, Loader::output.diffusTex, glm::vec4(.5f)));
@@ -40,7 +40,9 @@ public:
 		auto& t = tc.GetTransform();
 		rp3d::Vector3 forward(t[2][0], t[2][1], t[2][2]);
 		fwd = -forward;
-		if (InputPoller::isKeyPressed(NG_KEY_UP))
+
+
+		/*if (InputPoller::isKeyPressed(NG_KEY_UP))
 		{
 			desSpeed = fwd * m_movementSpeed;
 		}
@@ -69,7 +71,7 @@ public:
 		rp3d::Vector3 moveForce =  (deltaV / time) * mass;
 
 		rb.m_body->applyTorque(rp3d::Vector3(0.f, rotForceY, 0.f));
-		rb.m_body->applyForceToCenterOfMass(moveForce);
+		rb.m_body->applyForceToCenterOfMass(moveForce);*/
 	}
 
 
@@ -103,7 +105,7 @@ public:
 			auto& fireTransform = registry.get<TransformComponent>(m_entities[5]).GetTransform();
 			glm::vec3 forward = { fwd.x,fwd.y ,fwd.z };
 			glm::vec3 camPos = { fireTransform[3][0],fireTransform[3][1] ,fireTransform[3][2] };
-			auto projTransform = registry.emplace<TransformComponent>(projectileEntity, camPos - forward * 1.0f, glm::vec3(0.0f), glm::vec3(0.25f));
+			auto projTransform = registry.emplace<TransformComponent>(projectileEntity, camPos + forward * 1.0f, glm::vec3(0.0f), glm::vec3(0.25f));
 
 			registry.emplace<RenderComponent>(projectileEntity, m_shellVAO, shellMat);
 			registry.emplace<RelationshipComponent>(projectileEntity);
@@ -116,8 +118,97 @@ public:
 		}
 	}
 	
-	virtual void OnMouseMoved(MouseMovedEvent& e) 
+	virtual void OnMouseMoved(MouseMovedEvent& e)
 	{
+		entt::registry& registry = Application::getInstance().m_registry;
+		auto& m_tankHead = registry.get<RigidBodyComponent>(HierarchySystem::GetChildEntity(m_entity,0));
+		auto& m_tankBarrel = registry.get<RigidBodyComponent>(HierarchySystem::GetChildEntity(m_entity,1));
+		float xpos = e.getX();
+		float ypos = e.getY();
+
+		if (m_firstMouse)
+		{
+			m_lastX = xpos;
+			m_lastY = ypos;
+			m_firstMouse = false;
+		}
+
+		float xoffset = xpos - m_lastX;
+		float yoffset = m_lastY - ypos;
+		m_lastX = xpos;
+		m_lastY = ypos;
+
+		float sensitivity = 0.5f;
+		xoffset *= sensitivity;
+		yoffset *= sensitivity;
+
+		m_yaw += xoffset;
+		m_pitch += yoffset;
+
+		if (m_pitch > 89.0f)
+			m_pitch = 89.0f;
+		if (m_pitch < -89.0f)
+			m_pitch = -89.0f;
+
+		glm::vec3 front;
+		front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+		front.y = sin(glm::radians(m_pitch));
+		front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+		//m_cameraFront = glm::normalize(front);
+
+		//glm::rotate(e.getMousePos())
+		if (xoffset > 0.5f)
+		{
+			m_tankHead.m_body->setAngularVelocity(rp3d::Vector3(0, -1.0f, 0.0f));
+			//m_tankBarrel.m_body->setAngularVelocity(rp3d::Vector3(0, -1.0f, 0.0f));
+			m_tankHead.m_body->setAngularDamping(0.9f);
+		//	m_tankBarrel.m_body->setAngularDamping(0.9f);
+			//m_tankRB.m_body->applyTorque(-rp3d::Vector3(0.0f, xoffset, 0.0f));
+		}
+		else if (xoffset < -0.5f)
+		{
+			m_tankHead.m_body->setAngularVelocity(rp3d::Vector3(0, 1.0f, 0.0f));
+			//m_tankBarrel.m_body->setAngularVelocity(rp3d::Vector3(0, 1.0f, 0.0f));
+			m_tankHead.m_body->setAngularDamping(0.9f);
+			//m_tankBarrel.m_body->setAngularDamping(0.9f);
+			//Log::error("MOUSE = {0}", xoffset);
+			//m_tankRB.m_body->applyTorque(rp3d::Vector3(0.0f, -xoffset, 0.0f));
+		}
+		
+		if (yoffset > 0.5f)
+		{
+		//	m_tankBarrel.m_body->setAngularVelocity(rp3d::Vector3(0.5f, 0.0f, 0.0f));
+		//	m_tankBarrel.m_body->setAngularDamping(0.9f);
+
+		}
+		else if (yoffset < -0.5f)
+		{
+			//m_tankBarrel.m_body->setAngularVelocity(rp3d::Vector3(-0.5f, 0.0f, 0.0f));
+			//m_tankBarrel.m_body->setAngularDamping(0.9f);
+		}
+	}
+
+	virtual void OnKeyPressed(KeyPressedEvent& e)
+	{
+		entt::registry& registry = Application::getInstance().m_registry;
+		auto& m_tankRB = registry.get<RigidBodyComponent>(m_entity);
+
+		if (e.getKeyCode() == NG_KEY_UP)
+		{
+			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, -25.0f));
+		}
+		if (e.getKeyCode() == NG_KEY_DOWN)
+		{
+			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, 25.0f));
+		}
+		if (e.getKeyCode() == NG_KEY_LEFT)
+		{
+			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(-25.0f, 0.0f, 0.0f));
+		}
+		if (e.getKeyCode() == NG_KEY_RIGHT)
+		{
+			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(25.0f, 0.0f, 0.0f));
+		}
 
 	}
 
@@ -130,5 +221,11 @@ protected:
 	std::shared_ptr<IndexBuffer> m_shellIBO;
 	std::shared_ptr<Material> shellMat;
 	rp3d::Vector3 fwd;
+
+	bool m_firstMouse = true;
+	float m_lastX;
+	float m_lastY;
+	float m_yaw = -90.0f;	//!< initialized m_yaw as -90.0 to rotate to the left.
+	float m_pitch = 0.0f; //!< m_pitch for mouse movement
 
 };
