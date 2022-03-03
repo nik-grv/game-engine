@@ -42,7 +42,7 @@ public:
 		fwd = -forward;
 
 
-		/*if (InputPoller::isKeyPressed(NG_KEY_UP))
+		if (InputPoller::isKeyPressed(NG_KEY_UP))
 		{
 			desSpeed = fwd * m_movementSpeed;
 		}
@@ -71,7 +71,9 @@ public:
 		rp3d::Vector3 moveForce =  (deltaV / time) * mass;
 
 		rb.m_body->applyTorque(rp3d::Vector3(0.f, rotForceY, 0.f));
-		rb.m_body->applyForceToCenterOfMass(moveForce);*/
+		rb.m_body->applyForceToCenterOfMass(moveForce);
+		//rb.m_body->setLinearDamping(2.0);
+
 	}
 
 
@@ -193,22 +195,22 @@ public:
 		entt::registry& registry = Application::getInstance().m_registry;
 		auto& m_tankRB = registry.get<RigidBodyComponent>(m_entity);
 
-		if (e.getKeyCode() == NG_KEY_UP)
-		{
-			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, -25.0f));
-		}
-		if (e.getKeyCode() == NG_KEY_DOWN)
-		{
-			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, 25.0f));
-		}
-		if (e.getKeyCode() == NG_KEY_LEFT)
-		{
-			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(-25.0f, 0.0f, 0.0f));
-		}
-		if (e.getKeyCode() == NG_KEY_RIGHT)
-		{
-			m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(25.0f, 0.0f, 0.0f));
-		}
+		//if (e.getKeyCode() == NG_KEY_UP)
+		//{
+		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, -25.0f));
+		//}
+		//if (e.getKeyCode() == NG_KEY_DOWN)
+		//{
+		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, 25.0f));
+		//}
+		//if (e.getKeyCode() == NG_KEY_LEFT)
+		//{
+		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(-25.0f, 0.0f, 0.0f));
+		//}
+		//if (e.getKeyCode() == NG_KEY_RIGHT)
+		//{
+		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(25.0f, 0.0f, 0.0f));
+		//}
 
 	}
 

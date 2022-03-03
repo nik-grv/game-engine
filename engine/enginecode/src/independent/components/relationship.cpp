@@ -41,31 +41,55 @@ namespace Engine
 
 	}
 
-	void HierarchySystem::UpdateChildren()
+	void HierarchySystem::UpdateChildren(entt::entity root)
 	{
 		entt::registry& reg = Application::getInstance().m_registry;
 		std::vector<entt::entity>& m_entities = Application::getInstance().m_entities;
 		//get all objects with relationship and transform component excluding root
 		auto view = reg.view<RelationshipComponent, TransformComponent>(entt::exclude<RootComponent>);
-		Log::error("START");
-
-		//loop through all entities
-		for (auto entity : view)
+		
+		//get the root entity eg Tank Body
+			//for loop -update transforms for all its children
+					//for loop - for each child , update transforms for its children
+		
+		auto& tankBodyRoot = reg.get<RelationshipComponent>(root);
+		if (tankBodyRoot.children > 0)
 		{
-			auto& relationship = reg.get<RelationshipComponent>(entity);
-			auto& transform = reg.get<TransformComponent>(entity);
-			//update the position of any children
-			if (relationship.parent != entt::null)
+			for (int i = 0; i < tankBodyRoot.children; i++)
 			{
-				auto t = reg.get<TransformComponent>(relationship.parent).translation;
-				auto& parentTransform = reg.get<TransformComponent>(relationship.parent);
-				transform.SetTransform(parentTransform, transform.translation, transform.rotation, transform.scale);
+				auto& parentTransform = reg.get<TransformComponent>(root);
+				auto& nextChild = reg.get<RelationshipComponent>(tankBodyRoot.first);
+				auto& transform = reg.get<TransformComponent>(tankBodyRoot.first);
 				transform.UpdateTransform(parentTransform.GetTransform());
-				Log::error("{0}-{1},{2},{3}", reg.get<LabelComponent>(relationship.parent).m_label, parentTransform.translation.x, parentTransform.translation.y, parentTransform.translation.z);
+				  if (nextChild.children)
+				  {
+					  UpdateChildren(tankBodyRoot.first);
+				  }
 			}
 		}
+	
+		//Log::info("START");
 
-		Log::error("END");
+		////loop through all entities
+		//for (auto entity : view)
+		//{
+		//	auto& relationship = reg.get<RelationshipComponent>(entity);
+		//	auto& transform = reg.get<TransformComponent>(entity);
+		//	//update the position of any children
+		//	if (relationship.parent != entt::null)
+		//	{
+		//		if (entity == m_entities[6])
+		//		{
+		//			Log::info("HEADD");
+		//		}
+		//		auto& parentTransform = reg.get<TransformComponent>(relationship.parent);
+		//		//transform.SetTransform(parentTransform.GetTransform(), transform.translation, transform.rotation, transform.scale);
+		//		transform.UpdateTransform(parentTransform.GetTransform());
+		//		Log::error("{0}-{1},{2},{3}", reg.get<LabelComponent>(entity).m_label, transform.translation.x, transform.translation.y, transform.translation.z);
+		//	}
+		//}
+
+		//Log::info("---END----");
 
 	}
 

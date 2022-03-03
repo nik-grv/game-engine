@@ -48,6 +48,14 @@ namespace Engine {
 			scale = s;
 			return UpdateTransform(parentTransform);
 		}
+		
+		
+		glm::mat4& SetTransform(glm::mat4 parentTransform, glm::vec3 t, glm::quat r, glm::vec3 s) {
+			translation = t;
+			rotation = r;
+			scale = s;
+			return UpdateTransform(parentTransform);
+		}
 
 
 		glm::mat4& UpdateTransform() {

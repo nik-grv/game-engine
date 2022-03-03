@@ -124,12 +124,12 @@ namespace Engine {
 
 		m_registry.emplace<TransformComponent>(m_entities[0],glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0),glm::vec3(1));//ROOT
 		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(2.0f, 2.f, 0.0f), glm::vec3(0), glm::vec3(1));//TANK BODY
+		m_registry.emplace<TransformComponent>(m_entities[6], glm::vec3(0.0f, 0.8f, 1.0f), glm::vec3(0), glm::vec3(1));//TANK HEAD
+		m_registry.emplace<TransformComponent>(m_entities[7], glm::vec3(0.0f, 1.25f, -1.0f), glm::vec3(0), glm::vec3(1));//TANK BARREL
+		m_registry.emplace<TransformComponent>(m_entities[5], glm::vec3(0, 1.525f, -2.3f), glm::vec3(0), glm::vec3(0.125f));//FIRE POINT
 		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(10.0f, 20.f, 0), glm::vec3(0), glm::vec3(1));//CUBE
 		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));//CAMERA (NOT IN USE)
 		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(30.0f, 1.f, 30.0f));//FLOOR
-		m_registry.emplace<TransformComponent>(m_entities[5], glm::vec3(0, 1.525f, -2.3f), glm::vec3(0), glm::vec3(0.125f));//FIRE POINT
-		m_registry.emplace<TransformComponent>(m_entities[6], glm::vec3(0.0f, 0.8f, 1.0f), glm::vec3(0), glm::vec3(1));//TANK HEAD
-		m_registry.emplace<TransformComponent>(m_entities[7], glm::vec3(0.0f, 1.25f, -1.0f), glm::vec3(0), glm::vec3(1));//TANK BARREL
 		//m_registry.emplace<TransformComponent>(m_entities[5]);
 
 		
@@ -142,11 +142,11 @@ namespace Engine {
 		//auto slopeTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
 
 		auto tank_rb = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic, tankTransform);
-		auto cube_rb = m_registry.emplace<RigidBodyComponent>(m_entities[2], RigidBodyType::Dynamic, cubeTransform);
-		auto floor_rb = m_registry.emplace<RigidBodyComponent>(m_entities[4], RigidBodyType::Static, floorTransform);
 		auto tankHead_rb = m_registry.emplace<RigidBodyComponent>(m_entities[6], RigidBodyType::Kinematic, tankHeadTransform);
 		auto tankBarrel_rb = m_registry.emplace<RigidBodyComponent>(m_entities[7], RigidBodyType::Kinematic, tankBarrelTransform);
 		auto fire_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Kinematic, firePtTransform);
+		auto cube_rb = m_registry.emplace<RigidBodyComponent>(m_entities[2], RigidBodyType::Dynamic, cubeTransform);
+		auto floor_rb = m_registry.emplace<RigidBodyComponent>(m_entities[4], RigidBodyType::Static, floorTransform);
 		m_tankRB = tank_rb;
 
 		//auto slope_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Static, slopeTransform);
@@ -172,17 +172,8 @@ namespace Engine {
 
 
 		//PARENTING....
-		//moves all the children correctly...
-		HierarchySystem::setChild(m_entities[0], m_entities[1]); //ROOT IS PARENT --> TANK IS CHILD
-		HierarchySystem::setChild(m_entities[0], m_entities[6]); //ROOT IS PARENT --> TANK HEAD IS CHILD
-		HierarchySystem::setChild(m_entities[0], m_entities[7]); //ROOT IS PARENT --> TANK BARREL IS CHILD
-		HierarchySystem::setChild(m_entities[0], m_entities[5]); //ROOT IS PARENT --> TANK FIRE POINT IS CHILD
-
 		HierarchySystem::setChild(m_entities[1], m_entities[6]); //TANK BODY IS PARENT --> TANK HEAD IS CHILD
-		//HierarchySystem::setChild(m_entities[1], m_entities[7]); //TANK HEAD IS PARENT --> TANK BARREL IS CHILD
-		HierarchySystem::setChild(m_entities[6], m_entities[7]); //TANK IS PARENT --> TANK FIRE POINT IS CHILD
-	
-		//rotation
+		HierarchySystem::setChild(m_entities[6], m_entities[7]); //TANK HEAD IS PARENT --> TANK BARREL IS CHILD
 		HierarchySystem::setChild(m_entities[7], m_entities[5]); //TANK BARREL IS PARENT --> TANK FIRE POINT IS CHILD
 
 
@@ -246,7 +237,7 @@ namespace Engine {
 			m_followCam->onUpdate(timestep);
 		else
 			m_camera.update(timestep);
-		HierarchySystem::UpdateChildren();
+		HierarchySystem::UpdateChildren(m_entities[1]);
 	}
 
 	void FramebufferLayer::OnRender()
