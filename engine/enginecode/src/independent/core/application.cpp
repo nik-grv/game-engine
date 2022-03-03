@@ -28,6 +28,8 @@
 
 #include "../../Engine-Editor/editorcode/include/ImGuiHelper.h";
 
+
+
 namespace Engine {
 	// Set static vars
 	Application* Application::s_instance = nullptr;
@@ -275,6 +277,10 @@ namespace Engine {
 
 		return e.isHandled();
 	}
+
+#pragma endregion
+
+#pragma region audiosetup
 
 #pragma endregion
 

@@ -271,7 +271,12 @@ namespace Engine
 
 	void AudioManager::stopEvent(const std::string& strEventName, bool bImmediate)
 	{
-
+		auto it = m_events.find(strEventName);
+		if (it == m_events.end())
+			return;
+		FMOD_STUDIO_STOP_MODE eMode;
+		eMode = bImmediate ? FMOD_STUDIO_STOP_IMMEDIATE : FMOD_STUDIO_STOP_ALLOWFADEOUT;
+		errorCheck(it->second->stop(eMode));
 	}
 
 	void AudioManager::getEventParameter(const std::string& strEventName, const std::string& strEventParameter, float* value)
