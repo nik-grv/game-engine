@@ -1,10 +1,4 @@
-newmtl initialShadingGroup1
-illum 4
-Kd 0.50 0.50 0.50
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-Ni 1.00
-newmtl tank_flipper:orig_01___Default
+newmtl orig_01___Default
 illum 4
 Kd 0.00 0.00 0.00
 Ka 1.00 1.00 1.00

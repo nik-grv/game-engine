@@ -54,12 +54,12 @@ public:
 
 		if (InputPoller::isKeyPressed(NG_KEY_LEFT))
 		{
-			desRotVel = -3.f;
+			desRotVel = 3.f;
 		}
 
 		if (InputPoller::isKeyPressed(NG_KEY_RIGHT))
 		{
-			desRotVel = 3.f;
+			desRotVel = -3.f;
 		}
 
 		float mass = rb.m_body->getMass();
@@ -84,7 +84,6 @@ public:
 		//shoot projectile with mouse click
 		if (e.getButton() == 0)
 		{
-
 			std::vector<entt::entity>& m_entities = Application::getInstance().m_entities;
 			entt::registry& registry = Application::getInstance().m_registry;
 			bool found = false;
@@ -104,10 +103,14 @@ public:
 			registry.emplace<LabelComponent>(projectileEntity, "Projectile");
 
 			//auto camTransform = glm::inverse(m_camera.getCameraViewMatrix());
-			auto& fireTransform = registry.get<TransformComponent>(m_entities[5]).GetTransform();
-			glm::vec3 forward = { fwd.x,fwd.y ,fwd.z };
-			glm::vec3 camPos = { fireTransform[3][0],fireTransform[3][1] ,fireTransform[3][2] };
-			auto projTransform = registry.emplace<TransformComponent>(projectileEntity, camPos + forward * 1.0f, glm::vec3(0.0f), glm::vec3(0.25f));
+			auto fireTransform = registry.get<TransformComponent>(m_entities[5]);
+			auto fireTransformMatrix = registry.get<TransformComponent>(m_entities[5]).GetTransform();
+			
+			//glm::mat4 inverted = glm::inverse(fireTransformMatrix);
+			glm::vec3 forward = glm::vec3(fireTransformMatrix[2][0], fireTransformMatrix[2][1], fireTransformMatrix[2][2]);
+			glm::vec3 camPos = { fireTransformMatrix[3][0],fireTransformMatrix[3][1] ,fireTransformMatrix[3][2] };
+			
+			auto projTransform = registry.emplace<TransformComponent>(projectileEntity, camPos - forward * 1.0f, glm::vec3(0.0f), glm::vec3(0.25f));
 
 			registry.emplace<RenderComponent>(projectileEntity, m_shellVAO, shellMat);
 			registry.emplace<RelationshipComponent>(projectileEntity);

@@ -125,8 +125,8 @@ namespace Engine {
 		m_registry.emplace<TransformComponent>(m_entities[0],glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0),glm::vec3(1));//ROOT
 		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(2.0f, 2.f, 0.0f), glm::vec3(0), glm::vec3(1));//TANK BODY
 		m_registry.emplace<TransformComponent>(m_entities[6], glm::vec3(0.0f, 0.8f, 1.0f), glm::vec3(0), glm::vec3(1));//TANK HEAD
-		m_registry.emplace<TransformComponent>(m_entities[7], glm::vec3(0.0f, 1.25f, -1.0f), glm::vec3(0), glm::vec3(1));//TANK BARREL
-		m_registry.emplace<TransformComponent>(m_entities[5], glm::vec3(0, 1.525f, -2.3f), glm::vec3(0), glm::vec3(0.125f));//FIRE POINT
+		m_registry.emplace<TransformComponent>(m_entities[7], glm::vec3(0.0f, 0.f, -.8f), glm::vec3(0), glm::vec3(1));//TANK BARREL
+		m_registry.emplace<TransformComponent>(m_entities[5], glm::vec3(0, 0.f, -3.2f), glm::vec3(0), glm::vec3(0.125f));//FIRE POINT
 		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(10.0f, 20.f, 0), glm::vec3(0), glm::vec3(1));//CUBE
 		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));//CAMERA (NOT IN USE)
 		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(30.0f, 1.f, 30.0f));//FLOOR
@@ -184,7 +184,7 @@ namespace Engine {
 
 		//set player cam
 
-		m_camera.setCameraPos(glm::vec3(-1.0f, 1.0f, 6.0f));
+		m_camera.setCameraPos(glm::vec3(-1.0f, 1.0f, 8.0f));
 
 		auto& transform = m_registry.get<TransformComponent>(m_entities[0]);
 		m_followCam.reset(new FollowPlayer(transform.GetTransform()));

@@ -19,7 +19,7 @@ namespace Engine
 	*/
 	FollowPlayer::FollowPlayer(glm::mat4& playerModel) : m_playerModel(playerModel)
 	{
-		m_offset = glm::vec3(0.0f, 2.0f, 5.0f);
+		m_offset = glm::vec3(0.0f, 2.5f, 7.0f);
 	}
 
 	//! Separate function to set the players' model matrix to be followed
