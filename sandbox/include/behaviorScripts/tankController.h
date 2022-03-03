@@ -122,7 +122,7 @@ public:
 	{
 		entt::registry& registry = Application::getInstance().m_registry;
 		auto& m_tankHead = registry.get<RigidBodyComponent>(HierarchySystem::GetChildEntity(m_entity,0));
-		auto& m_tankBarrel = registry.get<RigidBodyComponent>(HierarchySystem::GetChildEntity(m_entity,1));
+		//auto& m_tankBarrel = registry.get<RigidBodyComponent>(HierarchySystem::GetChildEntity(m_entity,1));
 		float xpos = e.getX();
 		float ypos = e.getY();
 

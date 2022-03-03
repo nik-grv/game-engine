@@ -13,7 +13,7 @@ namespace Engine
 		entt::registry& reg = Application::getInstance().m_registry;
 		std::vector<entt::entity>& m_entities = Application::getInstance().m_entities;
 		auto group = reg.view<TransformComponent,RigidBodyComponent>();
-
+		
 		for (auto entity : group)
 		{
 			auto& transform = group.get<TransformComponent>(entity);

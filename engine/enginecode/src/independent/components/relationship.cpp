@@ -44,23 +44,29 @@ namespace Engine
 	void HierarchySystem::UpdateChildren()
 	{
 		entt::registry& reg = Application::getInstance().m_registry;
-
+		std::vector<entt::entity>& m_entities = Application::getInstance().m_entities;
 		//get all objects with relationship and transform component excluding root
 		auto view = reg.view<RelationshipComponent, TransformComponent>(entt::exclude<RootComponent>);
+		Log::error("START");
 
 		//loop through all entities
 		for (auto entity : view)
 		{
 			auto& relationship = reg.get<RelationshipComponent>(entity);
 			auto& transform = reg.get<TransformComponent>(entity);
-
 			//update the position of any children
 			if (relationship.parent != entt::null)
 			{
+				auto t = reg.get<TransformComponent>(relationship.parent).translation;
 				auto& parentTransform = reg.get<TransformComponent>(relationship.parent);
+				transform.SetTransform(parentTransform, transform.translation, transform.rotation, transform.scale);
 				transform.UpdateTransform(parentTransform.GetTransform());
+				Log::error("{0}-{1},{2},{3}", reg.get<LabelComponent>(relationship.parent).m_label, parentTransform.translation.x, parentTransform.translation.y, parentTransform.translation.z);
 			}
 		}
+
+		Log::error("END");
+
 	}
 
 	entt::entity HierarchySystem::GetChildEntity(entt::entity parentEntity, int childNumber)

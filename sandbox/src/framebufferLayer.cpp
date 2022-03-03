@@ -164,19 +164,27 @@ namespace Engine {
 		m_registry.emplace<RenderComponent>(m_entities[7], m_VAO3, mat1);
 		m_registry.emplace<RenderComponent>(m_entities[5], m_VAO4, mat2);
 		
+		m_registry.emplace<RelationshipComponent>(m_entities[0]);
 		m_registry.emplace<RelationshipComponent>(m_entities[1]);
-		m_registry.emplace<RelationshipComponent>(m_entities[5]);
 		m_registry.emplace<RelationshipComponent>(m_entities[6]);
 		m_registry.emplace<RelationshipComponent>(m_entities[7]);
+		m_registry.emplace<RelationshipComponent>(m_entities[5]);
 
 
 		//PARENTING....
-		HierarchySystem::setChild(m_entities[1], m_entities[6]); //TANK IS PARENT --> TANK HEAD IS CHILD
-		HierarchySystem::setChild(m_entities[1], m_entities[7]); //TANK IS PARENT --> TANK BARREL IS CHILD
-		HierarchySystem::setChild(m_entities[1], m_entities[5]); //TANK IS PARENT --> TANK FIRE POINT IS CHILD
-		HierarchySystem::setChild(m_entities[6], m_entities[5]); //TANK HEAD IS PARENT --> TANK BARREL IS CHILD
-		HierarchySystem::setChild(m_entities[7], m_entities[5]); //TANK HEAD IS PARENT --> TANK FIRE POINT IS CHILD
-		//HierarchySystem::setChild(m_entities[7], m_entities[5]); //TANK BARREL IS PARENT --> TANK FIRE POINT IS CHILD
+		//moves all the children correctly...
+		HierarchySystem::setChild(m_entities[0], m_entities[1]); //ROOT IS PARENT --> TANK IS CHILD
+		HierarchySystem::setChild(m_entities[0], m_entities[6]); //ROOT IS PARENT --> TANK HEAD IS CHILD
+		HierarchySystem::setChild(m_entities[0], m_entities[7]); //ROOT IS PARENT --> TANK BARREL IS CHILD
+		HierarchySystem::setChild(m_entities[0], m_entities[5]); //ROOT IS PARENT --> TANK FIRE POINT IS CHILD
+
+		HierarchySystem::setChild(m_entities[1], m_entities[6]); //TANK BODY IS PARENT --> TANK HEAD IS CHILD
+		//HierarchySystem::setChild(m_entities[1], m_entities[7]); //TANK HEAD IS PARENT --> TANK BARREL IS CHILD
+		HierarchySystem::setChild(m_entities[6], m_entities[7]); //TANK IS PARENT --> TANK FIRE POINT IS CHILD
+	
+		//rotation
+		HierarchySystem::setChild(m_entities[7], m_entities[5]); //TANK BARREL IS PARENT --> TANK FIRE POINT IS CHILD
+
 
 		//set tank script
 		auto& script = m_registry.emplace<NativeScriptComponent>(m_entities[1]);
