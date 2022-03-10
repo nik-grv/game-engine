@@ -1,13 +1,14 @@
 #pragma once
 
-#include "engine.h"
-#include "../panels/ContentBrowserPanel.h"
-#include "json.hpp"
+#include <filesystem>
+#include "include/independent/rendering/TextureRend.h"
+#include "rendering/subTexture.h"
 
 #include <rendering/Renderer3D.h>
 #include <rendering/Renderer2D.h>
 
 #include <rendering/shaderDataType.h>
+#include "engine.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -21,66 +22,19 @@
 #include <assimpLoader.h>
 #include <rendering/framebuffer.h>
 
-using json = nlohmann::json;
-
 namespace Engine {
 
-	class ImGuiLayer : public Layer
+	class ContentBrowser
 	{
-		enum class SceneState
-		{
-			Edit = 0, Play = 1
-		};
-
 	public:
-		ImGuiLayer(const char* name);
-		~ImGuiLayer();
+		ContentBrowser();
 
-		void OnAttach();
-		void OnDettach();
-		void OnUpdate(float timestep)override;
+		void OnImGuiRender();
 
-		void OnRender() override;
-		static void Begin();
-		static void End();
-
-		SceneState m_SceneState = SceneState::Edit;
-
-		ContentBrowserPanel m_ContentBrowserPanel;
-
-
-		void UI_Toolbar();
-
-		void onKeyPressed(KeyPressedEvent& e) override;
-		void cameraUpdate(MouseMovedEvent e);
-		void moveUpdate(KeyPressedEvent e);
-		void onKeyReleased(KeyReleasedEvent& e) override;
-		//void onKeyTypedEvent(KeyTypedEvent& e) override; (IMPLEMENT FUCNTION LATER)
-
-		void onMouseMoved(MouseMovedEvent& e) override;
-		void onMouseBtnPressed(MouseButtonPressedEvent& e) override;
-		void onMouseBtnReleased(MouseButtonReleasedEvent& e) override;
-		void onMouseScrolled(MouseScrollEvent& e) override;
-
-		void NewScene();
-		void OpenScene();
-		void OpenScene(const std::filesystem::path& path);
-		void SaveSceneAs();
-		void Exit();
-
-		void OnScenePlay();
-		void OnSceneStop();
-
-		std::shared_ptr<TextureRend> m_IconPlay;
-		std::shared_ptr<TextureRend> m_IconStop;
-
-		Application& app = Application::getInstance();
+		static void begin();
+		static void end();
+		static void shutdown();
 	private:
-
-	private:
-		float m_Time = 0.0f;
-
-		//vertices adata
 		float cubeVertices[8 * 24] = {
 			//	 <------ Pos ------>  <--- normal --->  <-- UV -->
 				 0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  0.f,  0.f,
@@ -176,7 +130,7 @@ namespace Engine {
 
 		glm::mat4 m_view3D, m_view2D;
 		glm::mat4 m_projection3D, m_projection2D;
-		using SceneWideUniforms = std::unordered_map<const char*, std::pair<ShaderDataType, void*>>; //!< sceen wide uniform 
+		using SceneWideUniforms = std::unordered_map<const char*, std::pair<ShaderDataType, void*>>; //!< scene wide uniform 
 		SceneWideUniforms m_swu3D, m_swu2D;
 		glm::mat4 m_model1, m_model2;
 
@@ -208,4 +162,5 @@ namespace Engine {
 		SubTexture m_screenTexture;
 		bool usePP = false, m_ViewportFocused = false;
 	};
+
 }

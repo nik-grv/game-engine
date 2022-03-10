@@ -229,9 +229,10 @@ namespace Engine {
 	{
 		e.handle(true);
 		//reset speed multiplier for both cameras on key release
-		if (e.getKeyCode() == NG_KEY_W || e.getKeyCode() == NG_KEY_A || e.getKeyCode() == NG_KEY_S || e.getKeyCode() == NG_KEY_D
+		/*if (e.getKeyCode() == NG_KEY_W || e.getKeyCode() == NG_KEY_A || e.getKeyCode() == NG_KEY_S || e.getKeyCode() == NG_KEY_D
 			|| e.getKeyCode() == NG_KEY_Q || e.getKeyCode() == NG_KEY_E || e.getKeyCode() == NG_KEY_Z || e.getKeyCode() == NG_KEY_X)
 			m_SpeedMultiplier = 2.5f;
+			*/
 
 		m_layerStack.onKeyReleased(e);
 

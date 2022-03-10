@@ -4,7 +4,8 @@
 
 #include "include/independent/core/entrypoint.h"
 //#include "EditorLayer.h"
-#include "../include/ImGuiLayer.h"
+#include "ImGuiLayer.h"
+#include "EditorLayer.h"
 #include "systems/log.h"
 #include "engine_pch.h"
 /**

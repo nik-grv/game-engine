@@ -58,7 +58,8 @@ project "Engine"
 		"vendor/assimp/include",
 		"vendor/box2d/include",
 		"vendor/lua",
-		"vendor/react3d/include"
+		"vendor/react3d/include",
+		"vendor/yaml_cpp"
 	}
 	
 	links 
@@ -70,7 +71,8 @@ project "Engine"
 		"assimp",
 		"box2d",
 		"lua",
-		"ReactPhysics3d"
+		"ReactPhysics3d",
+		"yaml-cpp"
 		
 	}
 	
@@ -144,7 +146,7 @@ project "Sandbox"
 		"vendor/assimp/include",
 		"vendor/box2d/include",
 		"vendor/lua",
-		"vendor/react3d/include"
+		"vendor/react3d/include",
 	}
 
 	links
@@ -201,6 +203,7 @@ project "Engine-Editor"
 			"engine-editor/editorcode/include/",
 			"engine-editor/editorcode/panels/",
 			"engine-editor/",
+			"sandbox/include",
 			"vendor/glfw/include",
 			"vendor/glm/",
 			"vendor/glad/include",
@@ -378,9 +381,6 @@ project "Spike"
 		optimize "On"
 
 group "Vendor"
-
-
-
 	include "vendor/glfw"
 	include "vendor/googletest"
 	include "vendor/Glad"
@@ -390,4 +390,5 @@ group "Vendor"
 	include "vendor/box2d"
 	include "vendor/lua"
 	include "vendor/react3d"
-
+	include "vendor/yaml-cpp"
+group ""
