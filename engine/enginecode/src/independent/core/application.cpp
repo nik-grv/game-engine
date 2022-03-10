@@ -316,6 +316,8 @@ namespace Engine {
 
 			m_timer->reset();
 
+			timestep = std::min(timestep, 1.f / 8.f);
+
 			if (!isFirstFrame)
 			{
 				m_physics->m_world->update(timestep);

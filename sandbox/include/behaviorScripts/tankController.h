@@ -102,27 +102,23 @@ public:
 
 			registry.emplace<LabelComponent>(projectileEntity, "Projectile");
 
-			//auto camTransform = glm::inverse(m_camera.getCameraViewMatrix());
-			auto& fireTransform = registry.get<TransformComponent>(m_entities[7]);
-			auto& fireTransformMatrix = registry.get<TransformComponent>(m_entities[5]).GetTransform();
-			auto& t = fireTransform.GetTransform();
+			auto& barrelTC = registry.get<TransformComponent>(m_entities[7]);
 
-			glm::vec3 Tforward(t[2][0], t[2][1], t[2][2]);
+			auto& firePointTransform = registry.get<TransformComponent>(m_entities[5]).GetTransform();
+			auto& barrelTransform = barrelTC.GetTransform();
 
-			//glm::mat4 inverted = glm::inverse(fireTransformMatrix);
-			glm::vec3 forward = Tforward; // glm::vec3(fireTransformMatrix[2][0], fireTransformMatrix[2][1], fireTransformMatrix[2][2]);
-			glm::vec3 camPos = { fireTransformMatrix[3][0],fireTransformMatrix[3][1] ,fireTransformMatrix[3][2] };
 
-			auto projTransform = registry.emplace<TransformComponent>(projectileEntity, camPos - forward * 1.0f, glm::vec3(0.0f), glm::vec3(0.25f));
+			glm::vec3 firePosition = glm::vec3(firePointTransform[3][0], firePointTransform[3][1], firePointTransform[3][2]);
 
+			glm::vec3 forward(-barrelTransform[2][0], -barrelTransform[2][1], -barrelTransform[2][2]);
+
+			auto projTransform = registry.emplace<TransformComponent>(projectileEntity, firePosition, barrelTC.rotation, glm::vec3(0.25f));
 			registry.emplace<RenderComponent>(projectileEntity, m_shellVAO, shellMat);
-			registry.emplace<RelationshipComponent>(projectileEntity);
-			//HierarchySystem::setChild(m_entities[0], projectileEntity);
 
 			auto projectiel_rb = registry.emplace<RigidBodyComponent>(projectileEntity, RigidBodyType::Dynamic, projTransform.GetTransform());
 			registry.emplace<SphereColliderComponent>(projectileEntity, projectiel_rb, 0.25f);
-			glm::vec3 force = (glm::vec3(fwd.x,fwd.y,fwd.z) * 500.5f);
-			projectiel_rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(force.x, force.y + 20.f, force.z - 1500.f));
+			glm::vec3 force = (forward) * 500.5f;
+			projectiel_rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(force.x, force.y, force.z));
 		}
 	}
 
@@ -209,7 +205,7 @@ public:
 			t.setOrientation(quat);
 		}
 
-		Log::warn(m_tankBarrel.m_body->getTransform().getOrientation().x);
+		//Log::warn(m_tankBarrel.m_body->getTransform().getOrientation().x);
 
 	}
 
