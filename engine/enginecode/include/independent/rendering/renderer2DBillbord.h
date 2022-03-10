@@ -33,7 +33,7 @@ namespace Engine {
 	public:
 		static void init(uint32_t batchSize);
 		static void submit(const BillboardQuad& quad, const glm::vec4& tint, const SubTexture& texture);
-		static void being(const SceneWideUniforms& swu);
+		static void begin(const SceneWideUniforms& swu);
 		static void end();
 		static void flush();
 

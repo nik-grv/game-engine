@@ -44,4 +44,14 @@ namespace Engine {
 		s_data->VAO.reset(VertexArray::create());
 
 	}
+
+	void Renderer2DBillboard::begin(const SceneWideUniforms& swu) {
+		s_data->drawCount = 0;
+
+		glUseProgram(s_data->shader->getRenderID());
+
+		/*s_data->shader->uploadIntArray("u_texData", RendererShared::, 32);*/
+
+		glBindBuffer(GL_UNIFORM_BUFFER, s_data->UBO->getRenderID());
+	}
 }
