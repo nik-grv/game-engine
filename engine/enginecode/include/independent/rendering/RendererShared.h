@@ -35,6 +35,7 @@ namespace Engine
 		static TextureUnitManager s_tum; //!< texture unit manager
 		static const unsigned int SCR_WIDTH = 1280; //!< screen width
 		static const unsigned int SCR_HEIGHT = 720; //!< screen height
+		static uint32_t pack(const glm::vec4& tint); //!< pack tint 
 
 	};
 
