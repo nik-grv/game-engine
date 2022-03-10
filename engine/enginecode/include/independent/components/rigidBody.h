@@ -56,7 +56,7 @@ namespace Engine {
 		}
 
 		//Constructor with body type and transfortm
-		RigidBodyComponent(RigidBodyType type, glm::mat4& transform,bool gravityEnabled = true)
+		RigidBodyComponent(RigidBodyType type, glm::mat4& transform, bool gravityEnabled = true)
 		{
 			rp3d::PhysicsWorld* world = Application::getInstance().GetWorld();		//Give application a world for this to work.
 			rp3d::Transform RPtransform;
@@ -84,7 +84,34 @@ namespace Engine {
 				break;
 			}
 		}
-    
+
+		RigidBodyComponent(RigidBodyType type, glm::vec3& position, glm::quat& orientation, bool gravityEnabled = true)
+		{
+			rp3d::PhysicsWorld* world = Application::getInstance().GetWorld();		//Give application a world for this to work.
+			rp3d::Transform RPtransform;
+
+			RPtransform.setOrientation(rp3d::Quaternion(orientation.x, orientation.y, orientation.z, orientation.w));
+			RPtransform.setPosition(rp3d::Vector3(position.x, position.y, position.z));
+
+			m_body = world->createRigidBody(RPtransform);
+			m_body->enableGravity(gravityEnabled);
+			switch (type)
+			{
+			case Engine::RigidBodyType::Static:
+				m_body->setType(rp3d::BodyType::STATIC);
+				break;
+			case Engine::RigidBodyType::Kinematic:
+				m_body->setType(rp3d::BodyType::KINEMATIC);
+				break;
+			case Engine::RigidBodyType::Dynamic:
+				m_body->setType(rp3d::BodyType::DYNAMIC);
+				break;
+			default:
+				m_body->setType(rp3d::BodyType::DYNAMIC);
+				break;
+			}
+		}
+
 		rp3d::RigidBody* m_body;
 
 	};

@@ -106,19 +106,27 @@ public:
 
 			auto& firePointTransform = registry.get<TransformComponent>(m_entities[5]).GetTransform();
 			auto& barrelTransform = barrelTC.GetTransform();
+			glm::quat NinetyCC = glm::angleAxis(glm::radians(-90.f), glm::vec3(0.f, 1.f, 0.f));
+			glm::quat projOrientation = barrelTC.rotation;
 
+			glm::vec3 eulerAngles = glm::eulerAngles(projOrientation);
+			Log::info("{0}, {1}, {2}", eulerAngles.x, eulerAngles.y, eulerAngles.z);
+
+			Log::debug("{0}, {1}, {2}, {3}", projOrientation.w, projOrientation.x, projOrientation.y, projOrientation.z);
 
 			glm::vec3 firePosition = glm::vec3(firePointTransform[3][0], firePointTransform[3][1], firePointTransform[3][2]);
 
 			glm::vec3 forward(-barrelTransform[2][0], -barrelTransform[2][1], -barrelTransform[2][2]);
 
-			auto projTransform = registry.emplace<TransformComponent>(projectileEntity, firePosition, barrelTC.rotation, glm::vec3(0.25f));
+			auto projTransform = registry.emplace<TransformComponent>(projectileEntity, firePosition, projOrientation, glm::vec3(0.25f));
 			registry.emplace<RenderComponent>(projectileEntity, m_shellVAO, shellMat);
 
-			auto projectiel_rb = registry.emplace<RigidBodyComponent>(projectileEntity, RigidBodyType::Dynamic, projTransform.GetTransform());
+			auto projectiel_rb = registry.emplace<RigidBodyComponent>(projectileEntity, RigidBodyType::Static, firePosition, projOrientation);
+			Log::error("{0}, {1}, {2}, {3}", projectiel_rb.m_body->getTransform().getOrientation().w, projectiel_rb.m_body->getTransform().getOrientation().x, projectiel_rb.m_body->getTransform().getOrientation().y, projectiel_rb.m_body->getTransform().getOrientation().z);
 			registry.emplace<SphereColliderComponent>(projectileEntity, projectiel_rb, 0.25f);
 			glm::vec3 force = (forward) * 500.5f;
-			projectiel_rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(force.x, force.y, force.z));
+			//projectiel_rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(force.x, force.y, force.z));
+
 		}
 	}
 
@@ -193,7 +201,7 @@ public:
 
 		if (m_tankBarrel.m_body->getTransform().getOrientation().x > 0.12f)
 		{
-			Log::error("Clamping,,...");
+			//Log::error("Clamping,,...");
 			rp3d::Vector3 ve = { 0.12f,0,0 };
 			rp3d::Quaternion quat = { 0,ve };
 			t.setOrientation(quat);

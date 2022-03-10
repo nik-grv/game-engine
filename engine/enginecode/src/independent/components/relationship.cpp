@@ -67,29 +67,6 @@ namespace Engine
 				  }
 			}
 		}
-	
-		//Log::info("START");
-
-		////loop through all entities
-		//for (auto entity : view)
-		//{
-		//	auto& relationship = reg.get<RelationshipComponent>(entity);
-		//	auto& transform = reg.get<TransformComponent>(entity);
-		//	//update the position of any children
-		//	if (relationship.parent != entt::null)
-		//	{
-		//		if (entity == m_entities[6])
-		//		{
-		//			Log::info("HEADD");
-		//		}
-		//		auto& parentTransform = reg.get<TransformComponent>(relationship.parent);
-		//		//transform.SetTransform(parentTransform.GetTransform(), transform.translation, transform.rotation, transform.scale);
-		//		transform.UpdateTransform(parentTransform.GetTransform());
-		//		Log::error("{0}-{1},{2},{3}", reg.get<LabelComponent>(entity).m_label, transform.translation.x, transform.translation.y, transform.translation.z);
-		//	}
-		//}
-
-		//Log::info("---END----");
 
 	}
 

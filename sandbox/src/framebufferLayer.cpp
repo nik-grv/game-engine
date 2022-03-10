@@ -146,7 +146,6 @@ namespace Engine {
 
 		m_registry.emplace<RootComponent>(m_entities[0]);
 
-
 		m_registry.emplace<LabelComponent>(m_entities[0], "Root Component");
 		m_registry.emplace<LabelComponent>(m_entities[1], "TankBody");
 		m_registry.emplace<LabelComponent>(m_entities[2], "Cube");
