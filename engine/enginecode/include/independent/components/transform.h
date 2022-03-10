@@ -79,6 +79,7 @@ namespace Engine {
 			return transform;
 		}
 
+		
 		glm::mat4& GetTransform() { return transform; }
 	private:
 		glm::mat4 transform;

@@ -342,6 +342,7 @@ namespace Engine {
 				render.m_mat->getShader()->uploadInt("setPP", 0);
 			}
 			Renderer3D::submit(render.m_vao, render.m_mat, transform.GetTransform());
+
 		}
 		Renderer3D::end();
 
