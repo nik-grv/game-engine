@@ -30,6 +30,9 @@ namespace Engine {
 		letterTexture.reset(TextureRend::create("assets/textures/letterCube.png"));
 		std::shared_ptr<TextureRend> numberTexture;
 		numberTexture.reset(TextureRend::create("assets/textures/plate.jpg"));
+
+		std::shared_ptr<TextureRend> crateTexture;
+		crateTexture.reset(TextureRend::create("assets/models/Environment/crate2/Diffuse.png"));
 		std::shared_ptr<TextureRend> plainWhiteTex;
 		unsigned char whitePixel[4] = { 255,255,255,255 };
 		plainWhiteTex.reset(TextureRend::create(1, 1, 4, whitePixel));
@@ -81,6 +84,34 @@ namespace Engine {
 		m_VAO4->setIndexBuffer(m_IBO4);
 		mat2.reset(new Material(shader, Loader::output.diffusTex, glm::vec4(1.0f)));
 
+
+		//CRATE model
+		Loader::ASSIMPLoad("./assets/models/Environment/crate2/crate.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
+		m_crateVAO.reset(VertexArray::create());
+		m_crateVBO.reset(VertexBuffer::create(Loader::output.vertices.data(), sizeof(Renderer3DVertex) * Loader::output.vertices.size(), cubeBufferLayout));
+		m_crateIBO.reset(IndexBuffer::create(Loader::output.indicies.data(), Loader::output.indicies.size()));
+		m_crateVAO->addVertexBuffer(m_crateVBO);
+		m_crateVAO->setIndexBuffer(m_crateIBO);
+		crateMat.reset(new Material(shader, Loader::output.diffusTex, glm::vec4(1.0f)));
+		
+		//CRATE - 2 model
+		Loader::ASSIMPLoad("./assets/models/Environment/crate/crate1.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
+		m_crate2VAO.reset(VertexArray::create());
+		m_crate2VBO.reset(VertexBuffer::create(Loader::output.vertices.data(), sizeof(Renderer3DVertex) * Loader::output.vertices.size(), cubeBufferLayout));
+		m_crate2IBO.reset(IndexBuffer::create(Loader::output.indicies.data(), Loader::output.indicies.size()));
+		m_crate2VAO->addVertexBuffer(m_crate2VBO);
+		m_crate2VAO->setIndexBuffer(m_crate2IBO);
+		crate2Mat.reset(new Material(shader, Loader::output.diffusTex, glm::vec4(1.0f)));
+
+		//BARREL model
+		Loader::ASSIMPLoad("./assets/models/Environment/barrel/Barrel.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
+		m_BarrelVAO.reset(VertexArray::create());
+		m_BarrelVBO.reset(VertexBuffer::create(Loader::output.vertices.data(), sizeof(Renderer3DVertex) * Loader::output.vertices.size(), cubeBufferLayout));
+		m_BarrelIBO.reset(IndexBuffer::create(Loader::output.indicies.data(), Loader::output.indicies.size()));
+		m_BarrelVAO->addVertexBuffer(m_BarrelVBO);
+		m_BarrelVAO->setIndexBuffer(m_BarrelIBO);
+		barrelMat.reset(new Material(shader, Loader::output.diffusTex, glm::vec4(1.0f)));
+
 		plateMat.reset(new Material(shader, numberTexture));
 		// height data used for a height map later on
 		std::vector<float> heigthData;
@@ -97,7 +128,7 @@ namespace Engine {
 
 		}
 
-		m_entities.resize(8);
+		m_entities.resize(13);
 		m_entities[0] = m_registry.create();
 		m_entities[1] = m_registry.create();
 		m_entities[2] = m_registry.create();
@@ -106,6 +137,11 @@ namespace Engine {
 		m_entities[5] = m_registry.create();
 		m_entities[6] = m_registry.create();
 		m_entities[7] = m_registry.create();
+		m_entities[8] = m_registry.create();
+		m_entities[9] = m_registry.create();
+		m_entities[10] = m_registry.create();
+		m_entities[11] = m_registry.create();
+		m_entities[12] = m_registry.create();
 
 
 		m_registry.emplace<RootComponent>(m_entities[0]);
@@ -119,6 +155,11 @@ namespace Engine {
 		m_registry.emplace<LabelComponent>(m_entities[5], "FirePoint");
 		m_registry.emplace<LabelComponent>(m_entities[6], "TankHead");
 		m_registry.emplace<LabelComponent>(m_entities[7], "TankBarrel");
+		m_registry.emplace<LabelComponent>(m_entities[8], "Cratev1-1");
+		m_registry.emplace<LabelComponent>(m_entities[9], "Cratev1-2");
+		m_registry.emplace<LabelComponent>(m_entities[10], "Cratev1-3");
+		m_registry.emplace<LabelComponent>(m_entities[11], "Cratev2-1");
+		m_registry.emplace<LabelComponent>(m_entities[12], "Barrel");
 		//m_registry.emplace<LabelComponent>(m_entities[5], "Slope");
 
 
@@ -129,7 +170,12 @@ namespace Engine {
 		m_registry.emplace<TransformComponent>(m_entities[5], glm::vec3(0, 0.f, -3.2f), glm::vec3(0), glm::vec3(0.125f));//FIRE POINT
 		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(10.0f, 20.f, 0), glm::vec3(0), glm::vec3(1));//CUBE
 		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));//CAMERA (NOT IN USE)
-		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(30.0f, 1.f, 30.0f));//FLOOR
+		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(50.0f, 1.f, 50.0f));//FLOOR
+		m_registry.emplace<TransformComponent>(m_entities[8], glm::vec3(-5.0f, 2.f, 0), glm::vec3(0), glm::vec3(0.25f));//CRATE 1 - 1
+		m_registry.emplace<TransformComponent>(m_entities[9], glm::vec3(-5.0f, 5.f, 0), glm::vec3(0), glm::vec3(0.25f));//CRATE 1 - 2
+		m_registry.emplace<TransformComponent>(m_entities[10], glm::vec3(-5.0f, 7.f, 0), glm::vec3(0), glm::vec3(0.25f));//CRATE 1 - 3
+		m_registry.emplace<TransformComponent>(m_entities[11], glm::vec3(-10.0f, 2.f, 0), glm::vec3(0), glm::vec3(0.02f));//CRATE 2
+		m_registry.emplace<TransformComponent>(m_entities[12], glm::vec3(5.0f, 2.f, 0), glm::vec3(0), glm::vec3(0.5f));//BARREL 
 		//m_registry.emplace<TransformComponent>(m_entities[5]);
 
 		
@@ -139,6 +185,11 @@ namespace Engine {
 		auto& firePtTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
 		auto& tankHeadTransform = m_registry.get<TransformComponent>(m_entities[6]).GetTransform();
 		auto& tankBarrelTransform = m_registry.get<TransformComponent>(m_entities[7]).GetTransform();
+		auto& crateTransform1 = m_registry.get<TransformComponent>(m_entities[8]).GetTransform();
+		auto& crateTransform2 = m_registry.get<TransformComponent>(m_entities[9]).GetTransform();
+		auto& crateTransform3 = m_registry.get<TransformComponent>(m_entities[10]).GetTransform();
+		auto& crate2Transform = m_registry.get<TransformComponent>(m_entities[11]).GetTransform();
+		auto& barrelTransform = m_registry.get<TransformComponent>(m_entities[12]).GetTransform();
 		//auto slopeTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
 
 		auto tank_rb = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic, tankTransform);
@@ -147,13 +198,24 @@ namespace Engine {
 		auto fire_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Kinematic, firePtTransform);
 		auto cube_rb = m_registry.emplace<RigidBodyComponent>(m_entities[2], RigidBodyType::Dynamic, cubeTransform);
 		auto floor_rb = m_registry.emplace<RigidBodyComponent>(m_entities[4], RigidBodyType::Static, floorTransform);
+		auto crate_rb1 = m_registry.emplace<RigidBodyComponent>(m_entities[8], RigidBodyType::Dynamic, crateTransform1);
+		auto crate_rb2 = m_registry.emplace<RigidBodyComponent>(m_entities[9], RigidBodyType::Dynamic, crateTransform2);
+		auto crate_rb3 = m_registry.emplace<RigidBodyComponent>(m_entities[10], RigidBodyType::Dynamic, crateTransform3);
+		auto crate2_rb = m_registry.emplace<RigidBodyComponent>(m_entities[11], RigidBodyType::Dynamic, crate2Transform);
+		auto  barrel_rb = m_registry.emplace<RigidBodyComponent>(m_entities[12], RigidBodyType::Dynamic, barrelTransform);
+
 		m_tankRB = tank_rb;
 
 		//auto slope_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Static, slopeTransform);
 
-		m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(2.72f, 1.15f, 5.f) * 0.5f);
+		m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(2.72f, 1.25f, 5.f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[2], cube_rb, glm::vec3(1.0f, 1.f, 1.0f) * 0.5f);
-		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(30.0f, 1.f,30.0f) * 0.5f);
+		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(50.0f, 1.f,50.0f) * 0.5f);
+		m_registry.emplace<BoxColliderComponent>(m_entities[8], crate_rb1, glm::vec3(2.f, 2.f, 2.f) * 0.5f);
+		m_registry.emplace<BoxColliderComponent>(m_entities[9], crate_rb2, glm::vec3(2.f, 2.f, 2.f) * 0.5f);
+		m_registry.emplace<BoxColliderComponent>(m_entities[10], crate_rb3, glm::vec3(2.f, 2.f, 2.f) * 0.5f);
+		m_registry.emplace<BoxColliderComponent>(m_entities[11], crate2_rb, glm::vec3(2.f, 2.f, 2.f) * 0.5f);
+		m_registry.emplace<BoxColliderComponent>(m_entities[12], barrel_rb, glm::vec3(1.f, 1.5f, 1.f) * 0.5f);
 		//m_registry.emplace<BoxColliderComponent>(m_entities[6], tankHead_rb, glm::vec3(2.0f, 0.5f,2.9f) * 0.5f);
 		//auto something = m_registry.emplace<HeightmapCollider>(m_entities[5], slope_rb, 7, 7, -3, 3, heigthData);
 
@@ -163,6 +225,11 @@ namespace Engine {
 		m_registry.emplace<RenderComponent>(m_entities[6], m_VAO2, mat1);
 		m_registry.emplace<RenderComponent>(m_entities[7], m_VAO3, mat1);
 		m_registry.emplace<RenderComponent>(m_entities[5], m_VAO4, mat2);
+		m_registry.emplace<RenderComponent>(m_entities[8], m_crateVAO, crateMat);
+		m_registry.emplace<RenderComponent>(m_entities[9], m_crateVAO, crateMat);
+		m_registry.emplace<RenderComponent>(m_entities[10], m_crateVAO, crateMat);
+		m_registry.emplace<RenderComponent>(m_entities[11], m_crate2VAO, crate2Mat);
+		m_registry.emplace<RenderComponent>(m_entities[12], m_BarrelVAO, barrelMat);
 		
 		m_registry.emplace<RelationshipComponent>(m_entities[0]);
 		m_registry.emplace<RelationshipComponent>(m_entities[1]);

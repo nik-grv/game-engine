@@ -123,6 +123,9 @@ namespace Engine {
 
 		m_physics.reset(new PhysicsSystem);
 		m_physics->start(); // reset first? we need?
+
+		m_physics->m_world->setGravity(rp3d::Vector3(0.0f, -9.8f, 0.0f));
+		m_physics->m_world->setIsGravityEnabled(true);
 	}
 
 #pragma region AppEvents
@@ -315,9 +318,8 @@ namespace Engine {
 
 			if (!isFirstFrame)
 			{
-				m_physics->m_world->setGravity(rp3d::Vector3(0.0f, -9.8f, 0.0f));
+				m_physics->m_world->update(timestep);
 			}
-			m_physics->m_world->update(timestep);
 			m_layerStack.Update(timestep);
 			m_layerStack.Render();
 			m_window->onUpdate(timestep);

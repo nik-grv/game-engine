@@ -12,7 +12,7 @@ namespace Engine {
 		rp3d::PhysicsWorld::WorldSettings worldSettings;
 		//<! Starts the world "system" and creates a new world
 		void start(SystemSignal init = SystemSignal::None, ...) override {
-			worldSettings.gravity = rp3d::Vector3(0,0, 0);
+			worldSettings.gravity = rp3d::Vector3(0,-9.8f, 0);
 			worldSettings.worldName = "Game World";
 			m_world = m_rp3dCommon.createPhysicsWorld(worldSettings);
 		}
