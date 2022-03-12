@@ -42,7 +42,7 @@ namespace Engine {
 			std::shared_ptr<ShaderRend> shader;
 			std::shared_ptr<VertexArray> VAO;
 			std::shared_ptr<UniformBuffer> UBO;
-
+			std::array<int32_t, 32> textUnits;
 			std::array<glm::vec4, 4> quad;
 			uint32_t batchCount;
 			uint32_t batchSize;
