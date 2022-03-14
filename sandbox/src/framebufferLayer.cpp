@@ -197,13 +197,11 @@ namespace Engine {
 		auto fire_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Kinematic, firePtTransform);
 		auto cube_rb = m_registry.emplace<RigidBodyComponent>(m_entities[2], RigidBodyType::Dynamic, cubeTransform);
 		auto floor_rb = m_registry.emplace<RigidBodyComponent>(m_entities[4], RigidBodyType::Static, floorTransform);
-		auto crate_rb1 = m_registry.emplace<RigidBodyComponent>(m_entities[8], RigidBodyType::Dynamic, crateTransform1);
-		auto crate_rb2 = m_registry.emplace<RigidBodyComponent>(m_entities[9], RigidBodyType::Dynamic, crateTransform2);
-		auto crate_rb3 = m_registry.emplace<RigidBodyComponent>(m_entities[10], RigidBodyType::Dynamic, crateTransform3);
+		auto crate_rb1 = m_registry.emplace<RigidBodyComponent>(m_entities[8], RigidBodyType::Dynamic, crateTransform1,10.0);
+		auto crate_rb2 = m_registry.emplace<RigidBodyComponent>(m_entities[9], RigidBodyType::Dynamic, crateTransform2, 10.0);
+		auto crate_rb3 = m_registry.emplace<RigidBodyComponent>(m_entities[10], RigidBodyType::Dynamic, crateTransform3,10.0);
 		auto crate2_rb = m_registry.emplace<RigidBodyComponent>(m_entities[11], RigidBodyType::Dynamic, crate2Transform);
-		auto  barrel_rb = m_registry.emplace<RigidBodyComponent>(m_entities[12], RigidBodyType::Dynamic, barrelTransform);
-
-		m_tankRB = tank_rb;
+		auto  barrel_rb = m_registry.emplace<RigidBodyComponent>(m_entities[12], RigidBodyType::Dynamic, barrelTransform,10.0);
 
 		//auto slope_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Static, slopeTransform);
 
@@ -292,6 +290,9 @@ namespace Engine {
 			glm::vec2(RendererShared::SCR_WIDTH * 0.5f, RendererShared::SCR_HEIGHT * 0.5f));
 
 		m_screenTexture = SubTexture(textureTarget->getTexture(0), glm::vec2(0, 1), glm::vec2(1, 0));
+
+		auto world = Application::getInstance().GetWorld();
+		world->setEventListener(&eventListener);
 	}
 
 	
@@ -304,6 +305,8 @@ namespace Engine {
 		else
 			m_camera.update(timestep);
 		HierarchySystem::UpdateChildren(m_entities[1]);
+
+		eventListener.actionDestroy();
 	}
 
 	void FramebufferLayer::OnRender()

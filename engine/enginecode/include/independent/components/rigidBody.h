@@ -56,7 +56,7 @@ namespace Engine {
 		}
 
 		//Constructor with body type and transfortm
-		RigidBodyComponent(RigidBodyType type, glm::mat4& transform, bool gravityEnabled = true)
+		RigidBodyComponent(RigidBodyType type, glm::mat4& transform, rp3d::decimal mass = 1.0, bool gravityEnabled = true)
 		{
 			rp3d::PhysicsWorld* world = Application::getInstance().GetWorld();		//Give application a world for this to work.
 			rp3d::Transform RPtransform;
@@ -67,6 +67,7 @@ namespace Engine {
 			RPtransform.setOrientation(quat);
 
 			m_body = world->createRigidBody(RPtransform);
+			m_body->setMass(mass);
 			m_body->enableGravity(gravityEnabled);
 			switch (type)
 			{
@@ -175,6 +176,62 @@ namespace Engine {
 		rp3d::Collider* collider = nullptr;
 	};
 
+
+	struct DestroyOnContactComponent
+	{
+		bool destroyChildren = false;
+	};
+
+	class GeneralEventListener : public rp3d::EventListener
+	{
+	public:
+
+		std::vector<uint32_t> toBeDestroyed;
+
+		virtual void onContact(const CollisionCallback::CallbackData& callbackData) override
+		{
+			auto& registry = Application::getInstance().m_registry;
+			auto& entities = Application::getInstance().m_entities;
+			auto world = Application::getInstance().GetWorld();
+			
+			//for each contact pair entities
+			for (uint32_t i = 0; i < callbackData.getNbContactPairs(); i++)
+			{
+				CollisionCallback::ContactPair contactPair = callbackData.getContactPair(i);
+
+				uint32_t index1 = reinterpret_cast<uint32_t>(contactPair.getBody1()->getUserData());
+				uint32_t index2 = reinterpret_cast<uint32_t>(contactPair.getBody2()->getUserData());
+
+				entt::entity entity1 = entities[index1];
+				entt::entity entity2 = entities[index2];
+
+				bool destroy1 = registry.any_of<DestroyOnContactComponent>(entity1);
+				bool destroy2 = registry.any_of<DestroyOnContactComponent>(entity2);
+
+				if (destroy1)
+					toBeDestroyed.push_back(index1);
+				if (destroy2)
+					toBeDestroyed.push_back(index2);
+
+			}
+		}
+
+		void actionDestroy()
+		{
+			auto world = Application::getInstance().GetWorld();
+			auto& registry = Application::getInstance().m_registry;
+			auto& entities = Application::getInstance().m_entities;
+
+			for (auto index : toBeDestroyed)
+			{
+				entt::entity entity = entities[index];
+				auto& rb = registry.get<RigidBodyComponent>(entity);
+				world->destroyRigidBody(rb.m_body);
+				registry.destroy(entity);
+			}
+			toBeDestroyed.clear();
+		}
+	};
 
 	namespace NGPhyiscs
 	{

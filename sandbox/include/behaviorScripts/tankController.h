@@ -87,11 +87,17 @@ public:
 			std::vector<entt::entity>& m_entities = Application::getInstance().m_entities;
 			entt::registry& registry = Application::getInstance().m_registry;
 			bool found = false;
-			int i;
+			uint32_t i;
 			for (i = 0; i < m_entities.size(); i++)
 			{
-				if (m_entities[i] == entt::null)
-					continue;
+				if (!found)
+				{
+					if (!registry.valid(m_entities[i]))
+					{
+						found = true;
+						break;
+					}
+				}
 			}
 
 			entt::entity projectileEntity = registry.create();
@@ -120,6 +126,12 @@ public:
 			sc.collider->getMaterial().setMassDensity(5);
 			glm::vec3 force = (forward) * 1500.5f;
 			projectiel_rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(force.x, force.y, force.z));
+			
+			projectiel_rb.m_body->setUserData(reinterpret_cast<uint32_t*>(i));
+			
+			registry.emplace<DestroyOnContactComponent>(projectileEntity);
+			
+			Log::error("SIZE --{0}", m_entities.size());
 
 		}
 	}

@@ -295,8 +295,10 @@ namespace Engine {
 		m_windowSystem->stop();
 		
 		for (auto ent : m_entities)
-			m_registry.destroy(ent);
-
+		{
+			if(m_registry.valid(ent))
+				m_registry.destroy(ent);
+		}
 	}
 
 

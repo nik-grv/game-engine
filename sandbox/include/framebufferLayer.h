@@ -149,7 +149,7 @@ namespace Engine {
 		bool usePP = false;
 		bool m_isPlayerCam = false;
 
-	
-		RigidBodyComponent m_tankRB;
+		GeneralEventListener eventListener;
+
 	};
 }
