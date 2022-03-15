@@ -46,6 +46,7 @@ namespace Engine {
 	enum class BlendModes {None, Mix, Additive};
 
 	class Particle {
+	public:
 		Particle::Particle(ParticleHostProperties& Hprops, ParticleDeviceProperties& Dprops, BlendModes p_blendMode = BlendModes::None);
 		void OnUpdate(float timestep);
 		ParticleHostProperties hostProps;
@@ -56,6 +57,7 @@ namespace Engine {
 	};
 
 	class ParticleVertex {
+	public:
 		ParticleVertex() = default;
 		ParticleVertex(const glm::vec2& pos, const glm::vec3& pCentre, const glm::vec2& UVs, uint32_t textUnit, const glm::vec4& pTint) :
 			position(pos), centre(pCentre), uvCoords(UVs), textureUnit(textUnit), tint(RendererShared::pack(pTint)) {}
@@ -67,5 +69,43 @@ namespace Engine {
 		static VertexBufferLayout layout;
 	};
 
+	class ParticleSystem {
+	public:
+		static void init(uint32_t particleCapacity);
+		static void AddParticle(Particle& p);
+		static void OnUpdate(float timestep, glm::vec3& camera);
+		static void OnRender(const SceneWideUniforms& swu);
+		static bool AddTexture(const char* filepath, uint32_t& index);
+		static bool GetUVs(uint32_t index, glm::vec2& uv_start, glm::vec2& uv_end);
+	private:
+		static void AddParticleRenderData(Particle& p);
+
+		struct InternalData {
+			std::shared_ptr<ShaderRend> shader;
+			std::shared_ptr<VertexArray> VAO;
+			std::shared_ptr<UniformBuffer> UBO;
+
+			std::array<glm::vec4, 4> quad;
+			uint32_t particleBatchSize;
+			uint32_t particleCapacity;
+			uint32_t nonBlendParticleDrawCount;
+			uint32_t mixedBlendParticleDrawCount;
+			uint32_t additiveBlendParticleDrawCount;
+
+			std::vector<ParticleVertex> nonBlendVertecies;
+			std::vector<ParticleVertex> mixedBlendVertecies;
+			std::vector<ParticleVertex> additiveBlendVertecies;
+
+			std::vector<Particle> nonBlendParticles;
+			std::vector<Particle> mixedBlendParticles;
+			std::vector<Particle> additiveBlendParticles;
+
+			std::shared_ptr<TextureAtlas> atlas;
+			std::vector<SubTexture> particleTexture;
+			uint32_t textureUnit;
+		};
+
+		static std::shared_ptr<InternalData> s_data;
+	};
 
 }
