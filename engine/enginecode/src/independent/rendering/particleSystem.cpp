@@ -141,4 +141,65 @@ namespace Engine {
 		}
 	}
 
+	void ParticleSystem::OnRender(const SceneWideUniforms& swu) {
+		glUseProgram(s_data->shader->getRenderID());
+
+		s_data->shader->uploadIntArray("u_texData", RendererShared::textureUnits.data(), 32); //sort this to be correct
+
+		glBindBuffer(GL_UNIFORM_BUFFER, s_data->UBO->getRenderID());
+		s_data->UBO->uploadDataToUB("u_projection", swu.at("u_projection").second);
+		s_data->UBO->uploadDataToUB("u_view", swu.at("u_view").second);
+
+		glActiveTexture(GL_TEXTURE0 + s_data->textureUnit);
+		glBindTexture(GL_TEXTURE_2D, s_data->atlas->getBaseTexture()->getRenderID());
+
+		s_data->VAO->getVertexBuffers().at(0)->edit(s_data->nonBlendVertecies.data(), sizeof(ParticleVertex) * s_data->nonBlendParticleDrawCount);
+		glDrawElements(GL_QUADS, s_data->nonBlendParticleDrawCount, GL_UNSIGNED_INT, nullptr);
+		s_data->nonBlendParticleDrawCount = 0;
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		s_data->VAO->getVertexBuffers().at(0)->edit(s_data->mixedBlendVertecies.data(), sizeof(ParticleVertex) * s_data->mixedBlendParticleDrawCount);
+		glDrawElements(GL_QUADS, s_data->mixedBlendParticleDrawCount, GL_UNSIGNED_INT, nullptr);
+		s_data->mixedBlendParticleDrawCount = 0;
+
+		glBlendFunc(GL_ONE, GL_ONE);
+		s_data->VAO->getVertexBuffers().at(0)->edit(s_data->additiveBlendVertecies.data(), sizeof(ParticleVertex) * s_data->additiveBlendParticleDrawCount);
+		glDrawElements(GL_QUADS, s_data->additiveBlendParticleDrawCount, GL_UNSIGNED_INT, nullptr);
+		s_data->additiveBlendParticleDrawCount = 0;
+		glDisable(GL_BLEND);
+	}
+
+	bool ParticleSystem::AddTexture(const char* filepath, uint32_t& index) {
+		SubTexture t;
+		if (s_data->atlas->add(filepath, t)) {
+			s_data->particleTexture.push_back(t);
+			index = s_data->particleTexture.size() - 1;
+			return true;
+		}
+		index = 0xFFFFFFF;
+		return false;
+	}
+
+	bool ParticleSystem::GetUVs(uint32_t index, glm::vec2& uv_start, glm::vec2& uv_end) {
+		if (index < s_data->particleTexture.size()) {
+			uv_start = s_data->particleTexture[index].getUVStart();
+			uv_end = s_data->particleTexture[index].getUVEnd();
+			return true;
+		}
+		return false;
+	}
+
+	Particle::Particle(ParticleHostProperties& Hprops, ParticleDeviceProperties& Dprops, BlendModes p_blendMode) :
+		hostProps(Hprops), deviceProps(Dprops), blendMode(p_blendMode)
+	{
+		float r, g, b, a, scale;
+		glm::vec4 delta4;
+		glm::vec3 delta3;
+
+		//switch (hostProps.colourRandomTypes) {
+
+		//}
+	}
+
 }

@@ -23,6 +23,7 @@
 
 #include "systems/log.h"
 #include "systems/physics.h"
+#include "systems/randomiser.h"
 #include "events/events.h"
 #include "core/timer.h"
 #include "core/window.h"
@@ -47,7 +48,7 @@ namespace Engine {
 
 		std::shared_ptr<Log> m_loggerSystem; //!< logger system var
 		std::shared_ptr<System> m_windowSystem; //!< window system
-
+		std::shared_ptr<Randomiser> m_randomiserSystem;
 		std::shared_ptr<PhysicsSystem> m_physics; // Physics Sytem
 
 		std::shared_ptr<Window> m_window; //!< timer var
