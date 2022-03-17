@@ -1,7 +1,7 @@
 #pragma once
 
-#include "rendering/renderer2DBillbord.h"
 #include "engine_pch.h"
+#include "rendering/renderer2DBillbord.h"
 #include <glad/glad.h>
 #include "core/application.h"
 
@@ -55,7 +55,7 @@ namespace Engine {
 
 		glUseProgram(s_data->shader->getRenderID());
 
-		s_data->shader->uploadIntArray("u_texData", s_data->textUnits.data(), 32);
+		s_data->shader->uploadIntArray("u_texData", RendererShared::texUnits.data(), 32);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, s_data->UBO->getRenderID());
 		s_data->UBO->uploadDataToUB("u_projection", swu.at("u_projection").second);

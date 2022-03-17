@@ -104,18 +104,21 @@ namespace Engine {
 
 		m_registry.emplace<TransformComponent>(m_entities[0]);
 		m_registry.emplace<TransformComponent>(m_entities[1], glm::vec3(0.0f, 50.0f, 0.0f), glm::vec3(0), glm::vec3(1));
-		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(0.0f, 20, 0), glm::vec3(0), glm::vec3(1));
+		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(2.0f, 2.0f, 0), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));
 		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(15.0f, 1.f, 15.0f));
 		//m_registry.emplace<TransformComponent>(m_entities[5]);
 
 		auto tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
+		
 		auto cubeTransform = m_registry.get<TransformComponent>(m_entities[2]).GetTransform();
+		Log::error("{0},{1},{2}", cubeTransform[3][0], cubeTransform[3][1], cubeTransform[3][2]);
+
 		auto floorTransform = m_registry.get<TransformComponent>(m_entities[4]).GetTransform();
 		//auto slopeTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
 
 		auto tank_rb = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic, tankTransform);
-		auto cube_rb = m_registry.emplace<RigidBodyComponent>(m_entities[2], RigidBodyType::Dynamic, cubeTransform);
+		auto cube_rb = m_registry.emplace<RigidBodyComponent>(m_entities[2], RigidBodyType::Static, cubeTransform);
 		auto floor_rb = m_registry.emplace<RigidBodyComponent>(m_entities[4], RigidBodyType::Static, floorTransform);
 		//auto slope_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Static, slopeTransform);
 
@@ -128,6 +131,27 @@ namespace Engine {
 		m_registry.emplace<RenderComponent>(m_entities[1], m_VAO1, mat1);
 		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO2, mat2);
 		m_registry.emplace<RenderComponent>(m_entities[4], m_VAO2, mat1);
+
+		
+		auto& e = m_registry.emplace<EmitterComponent>(m_entities[2],90.0f,glm::vec3(cubeTransform[3]),glm::vec3(0.0f,0.5f,0.0f));
+		e.blendModes = BlendModes::Additive;
+		e.hostProps.linearVelocity = { 0.0f,1.5f,0.0f };
+		e.hostProps.linearAccelaration = { 0.0f,0.0f,0.0f };
+		e.hostProps.linearDrag = { 0.0f,0.f,0.0f };
+		e.hostProps.angularAcceleration = 0.0f;
+		e.hostProps.startSize = { 0.2f,0.2f };
+		e.hostProps.endSize = { 0.07f,0.07f };
+		e.hostProps.startColor = { 0.7f,0.7f,0.7f,0.9f };
+		e.hostProps.startColor = { 0.2f,0.2f,0.2f,0.5f };
+		e.hostProps.lifetime = 1.0f;
+		e.hostProps.lifetimeRemaining = e.hostProps.lifetime;
+		e.hostProps.velocityRandomisation = { 0.15f,0.05f,0.15f };
+		e.hostProps.velRandomType = RandomTypes::Normal;
+		e.hostProps.posRandomisation = { 0.05f,0.0f,0.05f };
+		e.hostProps.posRandomType = RandomTypes::Normal;
+		e.deviceProps.linearPosition = { cubeTransform[3][0],cubeTransform[3][1] ,cubeTransform[3][2] };
+		ParticleSystem::GetUVs(16, e.deviceProps.current_UVStart, e.deviceProps.current_UVEnd);
+		e.trackingVelocity = true;
 
 	}
 

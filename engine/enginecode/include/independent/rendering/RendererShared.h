@@ -14,6 +14,7 @@
 #include "rendering/RendererCommands.h"
 #include "rendering/TextureUnitManager.h"
 #include "rendering/TextureAtlas.h"
+#include <array>
 
 namespace Engine 
 {
@@ -36,7 +37,7 @@ namespace Engine
 		static const unsigned int SCR_WIDTH = 1280; //!< screen width
 		static const unsigned int SCR_HEIGHT = 720; //!< screen height
 		static uint32_t pack(const glm::vec4& tint); //!< pack tint 
-
+		static std::array<int32_t, 32> texUnits;
 	};
 
 }
