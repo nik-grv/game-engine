@@ -197,9 +197,91 @@ namespace Engine {
 		glm::vec4 delta4;
 		glm::vec3 delta3;
 
-		//switch (hostProps.colourRandomTypes) {
+		switch (hostProps.colorRandomType) {
+		case RandomTypes::None:
+			deviceProps.currentColor = hostProps.startColor;
+			break;
+		case RandomTypes::Normal:
+			r = Randomiser::normalFloat(0, hostProps.colorRandomisation.x);
+			g = Randomiser::normalFloat(0, hostProps.colorRandomisation.y);
+			b = Randomiser::normalFloat(0, hostProps.colorRandomisation.z);
+			a = hostProps.startColor.a;
+			delta4 = glm::vec4(r, g, b, 0.f);
+			hostProps.startColor += delta4;
+			hostProps.endColor -= delta4;
+			deviceProps.currentColor = hostProps.startColor;
+			break;
+		case RandomTypes::Uniform:
+			r = Randomiser::uniformFloatBetween(-hostProps.colorRandomisation.x, hostProps.colorRandomisation.x);
+			g = Randomiser::uniformFloatBetween(-hostProps.colorRandomisation.y, hostProps.colorRandomisation.y);
+			b = Randomiser::uniformFloatBetween(-hostProps.colorRandomisation.z, hostProps.colorRandomisation.z);
+			a = hostProps.startColor.a;
+			delta4 = glm::vec4(r, g, b, 0.f);
+			hostProps.startColor += delta4;
+			hostProps.endColor -= delta4;
+			deviceProps.currentColor = hostProps.startColor;
+			break;
+		}
 
-		//}
+		switch (hostProps.scaleRandomType) {
+		case RandomTypes::None:
+			deviceProps.currentSize = hostProps.startSize;
+			break;
+		case RandomTypes::Normal:
+			scale = Randomiser::normalFloat(-hostProps.scaleRandomisation, hostProps.scaleRandomisation);
+			hostProps.startSize -= scale;
+			hostProps.endSize += scale;
+			deviceProps.currentSize = hostProps.startSize;
+			break;
+		case RandomTypes::Uniform:
+			scale = Randomiser::normalFloat(1.0, hostProps.scaleRandomisation);
+			hostProps.startSize -= scale;
+			hostProps.endSize += scale;
+			deviceProps.currentSize = hostProps.startSize;
+			break;
+		}
+
+		switch (hostProps.posRandomType) {
+		case RandomTypes::Normal:
+			delta3.x = Randomiser::normalFloat(deviceProps.linearPosition.x, hostProps.posRandomisation.x);
+			delta3.y = Randomiser::normalFloat(deviceProps.linearPosition.y, hostProps.posRandomisation.y);
+			delta3.z = Randomiser::normalFloat(deviceProps.linearPosition.z, hostProps.posRandomisation.z);
+			deviceProps.linearPosition = delta3;
+			break;
+		case RandomTypes::Uniform:
+			delta3.x = Randomiser::uniformFloatBetween(-hostProps.posRandomisation.x, hostProps.posRandomisation.x);
+			delta3.y = Randomiser::uniformFloatBetween(-hostProps.posRandomisation.y, hostProps.posRandomisation.y);
+			delta3.z = Randomiser::uniformFloatBetween(-hostProps.posRandomisation.z, hostProps.posRandomisation.z);
+			deviceProps.linearPosition = delta3;
+			break;
+		}
+
+		switch (hostProps.velRandomType) {
+		case RandomTypes::Normal:
+			delta3.x = Randomiser::normalFloat(hostProps.linearVelocity.x, hostProps.velocityRandomisation.x);
+			delta3.y = Randomiser::normalFloat(hostProps.linearVelocity.y, hostProps.velocityRandomisation.y);
+			delta3.z = Randomiser::normalFloat(hostProps.linearVelocity.z, hostProps.velocityRandomisation.z);
+			hostProps.linearVelocity  = delta3;
+			break;
+		case RandomTypes::Uniform:
+			delta3.x = Randomiser::uniformFloatBetween(-hostProps.velocityRandomisation.x, hostProps.velocityRandomisation.x);
+			delta3.y = Randomiser::uniformFloatBetween(-hostProps.velocityRandomisation.y, hostProps.velocityRandomisation.y);
+			delta3.z = Randomiser::uniformFloatBetween(-hostProps.velocityRandomisation.z, hostProps.velocityRandomisation.z);
+			deviceProps.linearPosition = delta3;
+			break;
+		}
+	}
+
+	void Particle::OnUpdate(float timestep) {
+		hostProps.linearVelocity += hostProps.linearAccelaration * timestep + hostProps.linearDrag * -hostProps.linearVelocity * timestep;
+		deviceProps.linearPosition += hostProps.linearAccelaration * timestep;
+
+		hostProps.angularAcceleration += hostProps.angularAcceleration * timestep + hostProps.angularDrag * -hostProps.angularVelocity * timestep;
+		deviceProps.angularPosition += hostProps.angularVelocity;
+
+		hostProps.lifetimeRemaining -= timestep;
+
+		float lifetime_t = 1.0f - (hostProps.lifetimeRemaining / hostProps.lifetime);
 	}
 
 }

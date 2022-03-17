@@ -26,19 +26,21 @@ namespace Engine {
 
 	uint32_t Randomiser::uniformIntBetween(int32_t lower, int32_t upper)
 	{
-		int32_t num = s_uniformInt(*s_generator);
-		float fNum = static_cast<float>(num);
-		int result = lower + (fabs(fNum) / s_intRange) * (upper - lower);
-		return result;
+		float t = (static_cast<float>(s_uniformInt(*s_generator)) / s_intRange) + 0.5f;
+		float range = upper - lower;
+		return lower + static_cast<int32_t>(t * range);
 	}
 
-	float Randomiser::uniformIntBetween(float lower, float upper)
+	float Randomiser::uniformFloatBetween(float lower, float upper)
 	{
-		return lower + (fabs(s_uniformFloat(*s_generator)) / s_fRange );
+		float t = (s_uniformFloat(*s_generator) / s_fRange);
+		float range = upper - lower;
+		return lower + (t * range);
 	}
 
 	int32_t Randomiser::normalInt(float c, float sigma)
 	{
+		
 		std::normal_distribution<float> distribution(c, sigma);
 		return static_cast<int32_t>(distribution(*s_generator));
 	}

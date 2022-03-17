@@ -48,7 +48,7 @@ namespace Engine {
 
 		std::shared_ptr<Log> m_loggerSystem; //!< logger system var
 		std::shared_ptr<System> m_windowSystem; //!< window system
-		std::shared_ptr<Randomiser> m_randomiserSystem;
+		std::shared_ptr<Randomiser> m_randomiserSystem; //system not started yet, dont need it for now
 		std::shared_ptr<PhysicsSystem> m_physics; // Physics Sytem
 
 		std::shared_ptr<Window> m_window; //!< timer var

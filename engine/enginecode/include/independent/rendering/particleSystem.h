@@ -4,6 +4,9 @@
 //#include "systems/randomiser.h"
 
 namespace Engine {
+
+	enum class RandomTypes { None, Normal, Uniform };
+
 	struct ParticleHostProperties {
 		glm::vec3 linearVelocity = { 0.f, 0.f, 0.f };
 		glm::vec3 linearAccelaration = { 0.f, 0.f, 0.f };
@@ -27,10 +30,10 @@ namespace Engine {
 
 		glm::vec3 colorRandomisation = { 0.f, 0.f, 0.f };
 
-		//RandomTypes posRandomType = RandomTypes::None;
-		//RandomTypes velRandomType = RandomTypes::None;
-		//RandomTypes scaleRandomType = RandomTypes::None;
-		//RandomTypes colorRandomType = RandomTypes::None;
+		RandomTypes posRandomType = RandomTypes::None;
+		RandomTypes velRandomType = RandomTypes::None;
+		RandomTypes scaleRandomType = RandomTypes::None;
+		RandomTypes colorRandomType = RandomTypes::None;
 
 	};
 

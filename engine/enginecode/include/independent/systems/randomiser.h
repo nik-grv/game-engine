@@ -11,7 +11,7 @@ namespace Engine {
 		virtual void stop(SystemSignal close = SystemSignal::None, ...) override; //!< Stop the system
 
 		static uint32_t uniformIntBetween(int32_t lower, int32_t upper);
-		static float uniformIntBetween(float lower, float upper);
+		static float uniformFloatBetween(float lower, float upper);
 		static int32_t normalInt(float c, float sigma);
 		static int32_t normalFloat(float c, float sigma);
 
