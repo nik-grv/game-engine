@@ -225,9 +225,12 @@ namespace Engine {
 			for (auto index : toBeDestroyed)
 			{
 				entt::entity entity = entities[index];
-				auto& rb = registry.get<RigidBodyComponent>(entity);
-				world->destroyRigidBody(rb.m_body);
-				registry.destroy(entity);
+				if (registry.valid(entity))
+				{
+					auto& rb = registry.get<RigidBodyComponent>(entity);
+					world->destroyRigidBody(rb.m_body);
+					registry.destroy(entity);
+				}
 			}
 			toBeDestroyed.clear();
 		}
