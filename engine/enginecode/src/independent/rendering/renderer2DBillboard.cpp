@@ -10,7 +10,7 @@
 #include <numeric>
 
 namespace Engine {
-	VertexBufferLayout BillboardVertex::layout = VertexBufferLayout({ ShaderDataType::Float2, ShaderDataType::Float3, ShaderDataType::Float2, ShaderDataType::FlatInt, /*{ShaderDataType::Byte4, 0, true}*/ShaderDataType::Byte4 }); //Fix Shader Data type for packed byte 4
+	VertexBufferLayout BillboardVertex::layout = VertexBufferLayout({ ShaderDataType::Float2, ShaderDataType::Float3, ShaderDataType::Float2, ShaderDataType::FlatInt, /*{ShaderDataType::Byte4, 0, true}*/ShaderDataType::Byte4}); //Fix Shader Data type for packed byte 4
 	
 	std::shared_ptr<Renderer2DBillboard::InternalData> Renderer2DBillboard::s_data = nullptr; //wtf is this
 
