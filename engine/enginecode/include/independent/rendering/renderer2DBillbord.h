@@ -10,7 +10,7 @@ namespace Engine {
 		BillboardQuad(const glm::vec3& centre, const glm::vec2& halfExtents) : m_center(centre), m_size(halfExtents * 2.f) {};
 	private:
 		glm::vec3 m_center;
-		glm::vec3 m_size;
+		glm::vec2 m_size;
 
 		friend class Renderer2DBillboard;
 	};

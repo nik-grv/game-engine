@@ -16,7 +16,50 @@ namespace Engine {
 	std::shared_ptr<ParticleSystem::InternalData> ParticleSystem::s_data = nullptr;
 
 	void ParticleSystem::init(uint32_t particleCapacity) {
+		//auto& resources = Application::getInstance().getResourceManager(); // we dont have that yet
 
+		s_data.reset(new InternalData);
+		s_data->particleBatchSize = particleCapacity * 4;
+
+		//check if default texture is there if not, create it. Simon uses default texture of rendererCommon, we dont seem to have that.
+
+		s_data->shader.reset(ShaderRend::create("./assets/shaders/quadBillboard.glsl")); // add shader later or use resource manager
+
+		s_data->UBO.reset(UniformBuffer::create(UniformBufferLayout({
+			{"u_view", ShaderDataType::Mat4},
+			{"u_projection", ShaderDataType::Mat4}
+			})));
+
+		s_data->quad[0] = { -0.5f, -0.5f, 0.f, 1.f };
+		s_data->quad[1] = { -0.5f, 0.5f, 0.f, 1.f };
+		s_data->quad[2] = { 0.5f, 0.5f, 0.f, 1.f };
+		s_data->quad[3] = { 0.5f, -0.5f, 0.f, 1.f };
+
+		s_data->nonBlendVertecies.resize(s_data->particleBatchSize); //add mixed and additive blend later
+		s_data->mixedBlendVertecies.resize(s_data->particleBatchSize); //add mixed and additive blend later
+		s_data->additiveBlendVertecies.resize(s_data->particleBatchSize);
+		//add mixed and additive blend later
+		s_data->nonBlendParticles.reserve(s_data->particleCapacity); //add mixed and additive blend later
+		s_data->mixedBlendParticles.reserve(s_data->particleCapacity); //add mixed and additive blend later
+		s_data->additiveBlendParticles.reserve(s_data->particleCapacity); //add mixed and additive blend later
+
+
+		std::vector<uint32_t> indices(s_data->particleBatchSize);
+		std::iota(indices.begin(), indices.end(), 0);
+
+		std::shared_ptr<VertexBuffer> VBO;
+		std::shared_ptr<IndexBuffer> IBO;
+
+		s_data->VAO.reset(VertexArray::create());
+		VBO.reset(VertexBuffer::create(s_data->nonBlendVertecies.data(), sizeof(ParticleVertex) * s_data->nonBlendVertecies.size(), ParticleVertex::layout));
+		IBO.reset(IndexBuffer::create(indices.data(), indices.size()));
+		s_data->VAO->addVertexBuffer(VBO);
+		s_data->VAO->setIndexBuffer(IBO);
+
+		s_data->UBO->attachShaderBlock(s_data->shader, "b_camera");
+
+		s_data->atlas.reset(new TextureAtlas({ 4096, 4096 }, 4, 100));
+		s_data->particleTexture.reserve(100);
 	}
 
 	void ParticleSystem::AddParticle(Particle& p) {
@@ -144,7 +187,7 @@ namespace Engine {
 	void ParticleSystem::OnRender(const SceneWideUniforms& swu) {
 		glUseProgram(s_data->shader->getRenderID());
 
-		s_data->shader->uploadIntArray("u_texData", s_data->textureUnit.data(), 32); //sort this to be correct
+		s_data->shader->uploadIntArray("u_texData", s_data->textureUnit); //sort this to be correct
 
 		glBindBuffer(GL_UNIFORM_BUFFER, s_data->UBO->getRenderID());
 		s_data->UBO->uploadDataToUB("u_projection", swu.at("u_projection").second);

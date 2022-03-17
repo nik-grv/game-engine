@@ -105,7 +105,7 @@ namespace Engine {
 
 			std::shared_ptr<TextureAtlas> atlas;
 			std::vector<SubTexture> particleTexture;
-			uint32_t textureUnit;
+			int32_t textureUnit;
 		};
 
 		static std::shared_ptr<InternalData> s_data;
