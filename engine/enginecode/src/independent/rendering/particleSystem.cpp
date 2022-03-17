@@ -11,7 +11,7 @@
 
 namespace Engine {
 
-	VertexBufferLayout ParticleVertex::layout = VertexBufferLayout({ ShaderDataType::Float2, ShaderDataType::Float3, ShaderDataType:: });
+	VertexBufferLayout ParticleVertex::layout = VertexBufferLayout({ ShaderDataType::Float2, ShaderDataType::Float3, ShaderDataType::Float2, ShaderDataType::FlatInt,  {ShaderDataType::Byte4,true} }); // 0 for instance
 
 	std::shared_ptr<ParticleSystem::InternalData> ParticleSystem::s_data = nullptr;
 
@@ -144,7 +144,7 @@ namespace Engine {
 	void ParticleSystem::OnRender(const SceneWideUniforms& swu) {
 		glUseProgram(s_data->shader->getRenderID());
 
-		s_data->shader->uploadIntArray("u_texData", RendererShared::textureUnits.data(), 32); //sort this to be correct
+		s_data->shader->uploadIntArray("u_texData", s_data->textureUnit.data(), 32); //sort this to be correct
 
 		glBindBuffer(GL_UNIFORM_BUFFER, s_data->UBO->getRenderID());
 		s_data->UBO->uploadDataToUB("u_projection", swu.at("u_projection").second);
