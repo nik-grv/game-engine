@@ -37,7 +37,6 @@ namespace Engine {
 	*/
 	Application::Application()
 	{
-
 		for (auto ent : m_entities)
 			ent = m_registry.create();
 		

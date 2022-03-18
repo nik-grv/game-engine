@@ -30,14 +30,27 @@ namespace Engine {
 		}
 
 		//textures
-		std::shared_ptr<TextureRend> letterTexture;
+		textureMap[std::string("letterTexture")] = std::shared_ptr<TextureRend>(TextureRend::create("assets/textures/letterCube.png"));
+		textureMap[std::string("numberTexture")] = std::shared_ptr<TextureRend>(TextureRend::create("assets/textures/numberCube.png"));
+		textureMap[std::string("plainWhiteTex")] = std::shared_ptr<TextureRend>(TextureRend::create("assets/textures/plainWhiteTex.png"));
+		/*std::shared_ptr<TextureRend> letterTexture;
 		letterTexture.reset(TextureRend::create("assets/textures/letterCube.png"));
 		std::shared_ptr<TextureRend> numberTexture;
 		numberTexture.reset(TextureRend::create("assets/textures/numberCube.png"));
 		std::shared_ptr<TextureRend> plainWhiteTex;
 		unsigned char whitePixel[4] = { 255,255,255,255 };
 		plainWhiteTex.reset(TextureRend::create(1, 1, 4, whitePixel));
+		*/
 
+		//set the 2d camera
+		m_view2D = glm::mat4(1.0f);
+		m_projection2D = glm::ortho(0.0f, static_cast<float>(window->getWidth()), static_cast<float>(window->getHeight()), 0.0f);
+
+		m_swu2D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_view2D)));
+		m_swu2D["u_projection"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_projection2D)));
+
+		m_screenQuad = Quad::createCentreHalfExtens(glm::vec2(RendererShared::SCR_WIDTH * 0.5f, RendererShared::SCR_HEIGHT * 0.5f),
+			glm::vec2(RendererShared::SCR_WIDTH * 0.5f, RendererShared::SCR_HEIGHT * 0.5f));
 
 		//loading model
 		m_camera.setCameraPos(glm::vec3(-1.0f, 1.0f, 6.0f));
@@ -50,8 +63,10 @@ namespace Engine {
 
 		Renderer3D::init();
 
-		shader.reset(ShaderRend::create("./assets/shaders/texturedPhong.glsl"));
-		Renderer3D::registerShader(shader);
+		//shader
+		shaderMap[std::string("texturedPhong")] = std::shared_ptr<ShaderRend>(ShaderRend::create("./assets/shaders/texturedPhong.glsl"));
+		//shader.reset(ShaderRend::create("./assets/shaders/texturedPhong.glsl"));
+		Renderer3D::registerShader(shaderMap["texturedPhong"]);
 
 		//1st model
 		//Loader::ASSIMPLoad("./assets/models/zard/mesh.3DS", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
@@ -64,7 +79,7 @@ namespace Engine {
 		m_IBO1.reset(IndexBuffer::create(Loader::output.indicies.data(), Loader::output.indicies.size()));
 		m_VAO1->addVertexBuffer(m_VBO1);
 		m_VAO1->setIndexBuffer(m_IBO1);
-		mat1.reset(new Material(shader, Loader::output.diffusTex, glm::vec4(1.0f)));
+		mat1.reset(new Material(shaderMap["texturedPhong"], Loader::output.diffusTex, glm::vec4(1.0f)));
 
 		//2nd model
 		Loader::ASSIMPLoad("./assets/models/lettercube/lettercube.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
@@ -75,7 +90,7 @@ namespace Engine {
 		m_IBO2.reset(IndexBuffer::create(Loader::output.indicies.data(), Loader::output.indicies.size()));
 		m_VAO2->addVertexBuffer(m_VBO2);
 		m_VAO2->setIndexBuffer(m_IBO2);
-		mat2.reset(new Material(shader, Loader::output.diffusTex, glm::vec4(1.0f)));
+		mat2.reset(new Material(shaderMap["texturedPhong"], Loader::output.diffusTex, glm::vec4(1.0f)));
 
 
 		// height data used for a height map later on
@@ -194,6 +209,14 @@ namespace Engine {
 		ImGui_ImplOpenGL3_Init("#version 440");
 		Log::e_info("== Application Started ==");
 		Log::e_info("");
+
+		//Current Work in Progress
+
+		//auto tank = m_ActiveScene->CreateEntity();
+		//m_ActiveScene->Reg().emplace<TransformComponent>(tank);
+		//m_ActiveScene->Reg().emplace<SpriteRenderComponent>(tank, glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
+
+
 	}
 
 	void ImGuiLayer::OnDettach()
@@ -207,6 +230,7 @@ namespace Engine {
 	{
 		NGPhyiscs::updateTransforms();
 		m_camera.update(timestep);
+		m_ActiveScene->OnUpdate(timestep);
 	}
 
 	void ImGuiLayer::OnRender()
@@ -250,7 +274,7 @@ namespace Engine {
 
 		//set polygon mode to gl_Line
 		RendererShared::actionCommand(setGlLineCmd);
-		wireframeMat.reset(new Material(shader, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f)));
+		wireframeMat.reset(new Material(shaderMap["texturedPhong"], glm::vec4(0.0f, 1.0f, 0.0f, 1.0f)));
 
 		auto bxColl = m_registry.view<TransformComponent, BoxColliderComponent>();
 		for (auto entity : bxColl)
@@ -275,6 +299,12 @@ namespace Engine {
 
 		//render the framebuffer on a 2d quad
 		
+		//auto& qd = Quad::createCentreHalfExtens(glm::vec2(2.f, 2.f), glm::vec2(1.f, 1.f));
+		//Renderer2D::begin(m_swu2D);
+		//Renderer2D::submit();
+
+
+
 		Begin();
 
 		static bool dockspaceOpen = true;
@@ -354,6 +384,7 @@ namespace Engine {
 		UI_Toolbar();
 
 		m_ContentBrowserPanel.OnImGuiRender();
+		m_SceneHierarchyPanel.OnImGuiRender();
 
 		defaultTarget->use();
 		ImGui::Begin("Visualizer");

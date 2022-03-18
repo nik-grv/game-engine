@@ -31,8 +31,14 @@ project "Engine"
 	
 	files
 	{
-		"%{prj.name}/enginecode/**.h",
-		"%{prj.name}/enginecode/**.cpp",
+		"%{prj.name}/enginecode/src/**.cpp",
+		"%{prj.name}/enginecode/src/independent/**.cpp",
+		"%{prj.name}/enginecode/src/platform/**.cpp",
+		"%{prj.name}/enginecode/src/systems/**.cpp",
+		"%{prj.name}/enginecode/include/**.h",
+		"%{prj.name}/enginecode/include/independent/**.h",
+		"%{prj.name}/enginecode/include/platform/**.h",
+		"%{prj.name}/enginecode/include/systems/**.h",
 		"engine/precompiled/engine_pch.h",
 		"engine/precompiled/engine_pch.cpp"
 	}

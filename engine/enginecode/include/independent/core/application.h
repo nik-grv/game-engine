@@ -46,7 +46,6 @@ namespace Engine {
 	protected:
 		Application(); //!< Constructor
 		
-
 		std::shared_ptr<Log> m_loggerSystem; //!< logger system var
 		std::shared_ptr<System> m_windowSystem; //!< window system
 		std::shared_ptr<PhysicsSystem> m_physics; // Physics Sytem

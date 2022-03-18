@@ -2,6 +2,7 @@
 
 #include "engine.h"
 #include "../panels/ContentBrowserPanel.h"
+#include "../panels/SceneHierarchyPanel.h"
 #include "json.hpp"
 
 #include <rendering/Renderer3D.h>
@@ -33,6 +34,7 @@ namespace Engine {
 		};
 
 	public:
+		ImGuiLayer() = default;
 		ImGuiLayer(const char* name);
 		~ImGuiLayer();
 
@@ -43,10 +45,12 @@ namespace Engine {
 		void OnRender() override;
 		static void Begin();
 		static void End();
+		Scene* m_ActiveScene;
 
 		SceneState m_SceneState = SceneState::Edit;
 
 		ContentBrowserPanel m_ContentBrowserPanel;
+		SceneHierarchyPanel m_SceneHierarchyPanel;
 
 
 		void UI_Toolbar();
@@ -170,7 +174,7 @@ namespace Engine {
 		std::shared_ptr<VertexArray> m_VAO1, m_VAO2;
 		std::shared_ptr<VertexBuffer> m_VBO1, m_VBO2;
 		std::shared_ptr<IndexBuffer> m_IBO1, m_IBO2;
-		std::shared_ptr<ShaderRend> shader;
+		//std::shared_ptr<ShaderRend> shader;
 		std::shared_ptr<Material> mat1, mat2;
 		std::shared_ptr<Material> wireframeMat;
 
@@ -207,5 +211,8 @@ namespace Engine {
 		Quad m_screenQuad;
 		SubTexture m_screenTexture;
 		bool usePP = false, m_ViewportFocused = false;
+#
+		std::map<std::string, std::shared_ptr<ShaderRend>> shaderMap;
+		std::map<std::string, std::shared_ptr<TextureRend>> textureMap;
 	};
 }
