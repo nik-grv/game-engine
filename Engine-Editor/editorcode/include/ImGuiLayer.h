@@ -14,11 +14,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "camera/Camera.h"
 #include <entt/entt.hpp>
-#include "include/independent/components/transform.h"
-#include "include/independent/components/relationship.h"
-#include "include/independent/components/render.h"
-#include "include/independent/components/label.h"
-#include "include/independent/components/rigidBody.h"
+#include "components/components.h"
 #include <assimpLoader.h>
 #include <rendering/framebuffer.h>
 
