@@ -20,6 +20,10 @@ namespace Engine {
 
 		s_data.reset(new InternalData);
 		s_data->particleBatchSize = particleCapacity * 4;
+		s_data->particleCapacity = particleCapacity;
+		s_data->nonBlendParticleDrawCount = 0;
+		s_data->mixedBlendParticleDrawCount = 0;
+		s_data->additiveBlendParticleDrawCount = 0;
 
 		//check if default texture is there if not, create it. Simon uses default texture of rendererCommon, we dont seem to have that.
 
@@ -29,6 +33,11 @@ namespace Engine {
 			{"u_view", ShaderDataType::Mat4},
 			{"u_projection", ShaderDataType::Mat4}
 			})));
+
+	/*	for (int i = 0; i < s_data->textureUnit.size(); i++)
+		{
+			s_data->textureUnit[i] = i;
+		}*/
 
 		s_data->quad[0] = { -0.5f, -0.5f, 0.f, 1.f };
 		s_data->quad[1] = { -0.5f, 0.5f, 0.f, 1.f };
@@ -186,7 +195,7 @@ namespace Engine {
 
 	void ParticleSystem::OnRender(const SceneWideUniforms& swu) {
 		glUseProgram(s_data->shader->getRenderID());
-		s_data->shader->uploadIntArray("u_texData", RendererShared::texUnits.data(),32); //sort this to be correct
+		s_data->shader->uploadIntArray("u_texData", &s_data->textureUnit,32); //sort this to be correct
 
 		glBindBuffer(GL_UNIFORM_BUFFER, s_data->UBO->getRenderID());
 		s_data->UBO->uploadDataToUB("u_projection", swu.at("u_projection").second);

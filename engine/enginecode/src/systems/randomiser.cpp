@@ -8,10 +8,10 @@
 namespace Engine {
 
 	std::shared_ptr<std::mt19937> Randomiser::s_generator = nullptr;
-	std::uniform_int_distribution<int32_t> Randomiser::s_uniformInt = std::uniform_int_distribution<int32_t>(std::numeric_limits<uint32_t>::min(), std::numeric_limits<uint32_t>::max());
+	std::uniform_int_distribution<int32_t> Randomiser::s_uniformInt = std::uniform_int_distribution<int32_t>(std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max());
 	std::uniform_real_distribution<float> Randomiser::s_uniformFloat = std::uniform_real_distribution<float>(std::numeric_limits<float>::min(), std::numeric_limits<float>::max());
-	float Randomiser::s_intRange = static_cast<float>((std::numeric_limits<uint32_t>::min() - (float)std::numeric_limits<uint32_t>::min()));
-	float Randomiser::s_fRange = (fabs(s_uniformFloat(*s_generator)) / (std::numeric_limits<float>::min() - std::numeric_limits<float>::min()));
+	float Randomiser::s_intRange = static_cast<float>((std::numeric_limits<uint32_t>::max() - (float)std::numeric_limits<uint32_t>::min()));
+	float Randomiser::s_fRange = std::numeric_limits<float>::max() - std::numeric_limits<float>::min();
 
 	void Randomiser::start(SystemSignal init, ...)
 	{

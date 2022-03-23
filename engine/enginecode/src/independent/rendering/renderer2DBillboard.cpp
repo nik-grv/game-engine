@@ -22,12 +22,24 @@ namespace Engine {
 
 		//check if default texture is there if not, create it. Simon uses default texture of rendererCommon, we dont seem to have that.
 		
+
+		unsigned char whitePixel[4] = { 255,255,255,255 };
+		s_data->defTexture.reset(TextureRend::create(1, 1, 4, whitePixel));
+
+		s_data->defaultSubTexture = SubTexture(s_data->defTexture, glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f));
+
 		s_data->shader.reset(ShaderRend::create("./assets/shaders/quadBillboard.glsl")); // add shader later or use resource manager
 
 		s_data->UBO.reset(UniformBuffer::create(UniformBufferLayout({
 			{"u_view", ShaderDataType::Mat4},
 			{"u_projection", ShaderDataType::Mat4}
 			})));
+
+		for (int i = 0; i < s_data->texUnits.size(); i++)
+		{
+			s_data->texUnits[i] = i;
+		}
+
 
 		s_data->quad[0] = { -0.5f, -0.5f, 0.f, 1.f };
 		s_data->quad[1] = { -0.5f, 0.5f, 0.f, 1.f };
@@ -55,11 +67,16 @@ namespace Engine {
 
 		glUseProgram(s_data->shader->getRenderID());
 
-		s_data->shader->uploadIntArray("u_texData", RendererShared::texUnits.data(), 32);
+		s_data->shader->uploadIntArray("u_texData", s_data->texUnits.data(), 32);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, s_data->UBO->getRenderID());
 		s_data->UBO->uploadDataToUB("u_projection", swu.at("u_projection").second);
 		s_data->UBO->uploadDataToUB("u_view", swu.at("u_view").second);
+	}
+
+	void Renderer2DBillboard::submit(const BillboardQuad& quad, const glm::vec4& tint)
+	{
+		Renderer2DBillboard::submit(quad, tint, s_data->defaultSubTexture);
 	}
 
 	void Renderer2DBillboard::submit(const BillboardQuad& quad, const glm::vec4& tint, const SubTexture& texture) {

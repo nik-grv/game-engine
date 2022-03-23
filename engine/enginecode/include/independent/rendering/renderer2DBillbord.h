@@ -33,6 +33,7 @@ namespace Engine {
 	class Renderer2DBillboard {
 	public:
 		static void init(uint32_t batchSize);
+		static void submit(const BillboardQuad& quad, const glm::vec4& tint);
 		static void submit(const BillboardQuad& quad, const glm::vec4& tint, const SubTexture& texture);
 		static void begin(const SceneWideUniforms& swu);
 		static void end();
@@ -49,6 +50,9 @@ namespace Engine {
 			uint32_t batchSize;
 			uint32_t drawCount;
 			std::vector<BillboardVertex> vertices;
+			std::array<int32_t, 32> texUnits;
+			std::shared_ptr<TextureRend> defTexture; //!< empty white texture
+			SubTexture defaultSubTexture; //!< default sub texture
 		};
 		static std::shared_ptr<InternalData> s_data;
 	};

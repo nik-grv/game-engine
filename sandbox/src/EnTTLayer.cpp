@@ -26,7 +26,8 @@ namespace Engine {
 		unsigned char whitePixel[4] = { 255,255,255,255 };
 		plainWhiteTex.reset(TextureRend::create(1, 1, 4, whitePixel));
 
-
+		Renderer2DBillboard::init(100);
+		ParticleSystem::init(100);
 		//loading model
 
 		m_camera.setCameraPos(glm::vec3(-1.0f, 1.0f, 6.0f));
@@ -140,9 +141,9 @@ namespace Engine {
 		e.hostProps.linearDrag = { 0.0f,0.f,0.0f };
 		e.hostProps.angularAcceleration = 0.0f;
 		e.hostProps.startSize = { 0.2f,0.2f };
-		e.hostProps.endSize = { 0.07f,0.07f };
+		e.hostProps.endSize = { 0.7f,0.7f };
 		e.hostProps.startColor = { 0.7f,0.7f,0.7f,0.9f };
-		e.hostProps.startColor = { 0.2f,0.2f,0.2f,0.5f };
+		e.hostProps.endColor = { 0.2f,0.2f,0.2f,0.5f };
 		e.hostProps.lifetime = 1.0f;
 		e.hostProps.lifetimeRemaining = e.hostProps.lifetime;
 		e.hostProps.velocityRandomisation = { 0.15f,0.05f,0.15f };
@@ -150,8 +151,12 @@ namespace Engine {
 		e.hostProps.posRandomisation = { 0.05f,0.0f,0.05f };
 		e.hostProps.posRandomType = RandomTypes::Normal;
 		e.deviceProps.linearPosition = { cubeTransform[3][0],cubeTransform[3][1] ,cubeTransform[3][2] };
-		ParticleSystem::GetUVs(16, e.deviceProps.current_UVStart, e.deviceProps.current_UVEnd);
+		uint32_t index = 0;
+		ParticleSystem::AddTexture("assets/textures/letterCube.png",index);
+		//ParticleSystem::GetUVs(16, e.deviceProps.current_UVStart, e.deviceProps.current_UVEnd);
 		e.trackingVelocity = true;
+
+
 
 	}
 
@@ -162,8 +167,8 @@ namespace Engine {
 			NGPhyiscs::updateTransforms();
 		//doit = false;
 		m_camera.update(timestep);
-
-		Log::error("POS - {0},{1},{2}", m_camera.getCameraPos().x, m_camera.getCameraPos().y, m_camera.getCameraPos().z);
+		ParticleSystem::OnUpdate(timestep, m_camera.getCameraPos());
+		//Log::error("POS - {0},{1},{2}", m_camera.getCameraPos().x, m_camera.getCameraPos().y, m_camera.getCameraPos().z);
 
 	}
 
@@ -175,6 +180,7 @@ namespace Engine {
 
 		m_swu3D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_view3D)));
 		m_swu3D["u_projection"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_projection3D)));
+
 
 
 		Renderer3D::begin(m_swu3D);
@@ -215,6 +221,16 @@ namespace Engine {
 
 		//set polygon mode to gl_fill back for drawing the models
 		RendererShared::actionCommand(setGlFillCmd);
+
+		auto t = m_registry.get<TransformComponent>(m_entities[2]).GetTransform();
+		BillboardQuad quad ({t[3][0],t[3][1] + 1.5f,t[3][2] }, { 1.0f,1.0f });
+
+		Renderer2DBillboard::begin(m_swu3D);
+
+		Renderer2DBillboard::submit(quad, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		Renderer2DBillboard::end();
+
+		ParticleSystem::OnRender(m_swu3D);
 	}
 
 	void EnTTLayer::onMouseMoved(MouseMovedEvent& e)

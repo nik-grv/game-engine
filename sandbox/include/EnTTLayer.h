@@ -18,6 +18,8 @@
 #include "include/independent/components/rigidBody.h"
 #include "include/independent/components/emitter.h"
 #include <assimpLoader.h>
+#include "rendering/particleSystem.h"
+#include "rendering/renderer2DBillbord.h"
 
 namespace Engine {
 	class EnTTLayer : public Layer{
