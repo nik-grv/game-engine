@@ -1,10 +1,13 @@
 /** \file Renderer2D.cpp*/
 #include <engine_pch.h>
-#include "rendering/Renderer2D.h"
 #include <glad/glad.h>
+#include "rendering/Renderer2D.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <systems/log.h>
 #include <numeric>
+
+#include "ft2build.h"
+#include "freetype/freetype.h"
 
 namespace Engine 
 {
@@ -268,6 +271,20 @@ namespace Engine
 		s_data->drawCount = 0;
 	}
 
+	glm::ivec2 Renderer2D::getTextSize(const char* text)
+	{
+		glm::ivec2 result(0);
+		uint32_t len = strlen(text);
+		float advance = 0.f;
+		
+		for (int32_t i = 0; i < len; i++)
+		{
+			GlyphData& gd = s_data->glyphData.at(text[i] - s_data->FIRST_CHAR);
+			result.x += gd.advance;
+			result.y = std::max(result.y, static_cast<int>(gd.size.y));
+		}
+		return result;
+	}
 	void Renderer2D::RToRGBA(unsigned char* srcBuffer, unsigned char* destBuffer, uint32_t width, uint32_t height)
 	{
 		unsigned char* pointerWalker = destBuffer;

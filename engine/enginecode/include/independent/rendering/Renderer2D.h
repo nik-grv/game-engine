@@ -4,6 +4,7 @@
 #include "rendering/RendererShared.h"
 #include "ft2build.h"
 #include "freetype/freetype.h"
+#include "UI/modalWindow.h"
 
 #include <array>
 #include <vector>
@@ -118,6 +119,7 @@ namespace Engine {
 
 		static void end(); //!< end rendering current scene
 		static void flush(); //!< render all the geometry
+		static glm::ivec2 getTextSize(const char* text);
 
 	private:
 		
@@ -187,6 +189,8 @@ namespace Engine {
 
 
 		static std::shared_ptr<InternalData> s_data; //!< internal data of the renderer
+
+		
 
 		//! Function to convert the buffer to RGBA format
 		/*!
