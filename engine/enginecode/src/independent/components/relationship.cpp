@@ -1,5 +1,6 @@
 #include "engine_pch.h"
 #include "components/relationship.h"
+#include "components/label.h"
 
 namespace Engine
 {
@@ -26,7 +27,7 @@ namespace Engine
 		{
 			//loop through all children
 			auto currentEntity = parentComp.first;
-			for (int i = 0; i < parentComp.children; i++)
+			for (int i = 1; i < parentComp.children; i++)
 			{
 				currentEntity = reg.get<RelationshipComponent>(currentEntity).next;
 			}
@@ -40,25 +41,56 @@ namespace Engine
 
 	}
 
-	void HierarchySystem::UpdateChildren()
+	void HierarchySystem::UpdateChildren(entt::entity root)
+	{
+		entt::registry& reg = Application::getInstance().m_registry;
+		std::vector<entt::entity>& m_entities = Application::getInstance().m_entities;
+		//get all objects with relationship and transform component excluding root
+		auto view = reg.view<RelationshipComponent, TransformComponent>(entt::exclude<RootComponent>);
+		
+		//get the root entity eg Tank Body
+			//for loop -update transforms for all its children
+					//for loop - for each child , update transforms for its children
+		
+		auto& tankBodyRoot = reg.get<RelationshipComponent>(root);
+		if (tankBodyRoot.children > 0)
+		{
+			for (int i = 0; i < tankBodyRoot.children; i++)
+			{
+				auto& parentTransform = reg.get<TransformComponent>(root);
+				auto& nextChild = reg.get<RelationshipComponent>(tankBodyRoot.first);
+				auto& transform = reg.get<TransformComponent>(tankBodyRoot.first);
+				transform.UpdateTransform(parentTransform.GetTransform());
+				  if (nextChild.children)
+				  {
+					  UpdateChildren(tankBodyRoot.first);
+				  }
+			}
+		}
+
+	}
+
+	entt::entity HierarchySystem::GetChildEntity(entt::entity parentEntity, int childNumber)
 	{
 		entt::registry& reg = Application::getInstance().m_registry;
 
-		//get all objects with relationship and transform component excluding root
-		auto view = reg.view<RelationshipComponent, TransformComponent>(entt::exclude<RootComponent>);
+		auto parentComp = reg.get<RelationshipComponent>(parentEntity);
 
-		//loop through all entities
-		for (auto entity : view)
+		if (childNumber == 0)
 		{
-			auto& relationship = reg.get<RelationshipComponent>(entity);
-			auto& transform = reg.get<TransformComponent>(entity);
-
-			//update the position of any children
-			if (relationship.parent != entt::null)
+			auto currentEntity = parentComp.first;
+			return currentEntity;
+		}
+		else
+		{
+			auto currentEntity = parentComp.first;
+			for (int i = 0; i < childNumber; i++)
 			{
-				auto& parentTransform = reg.get<TransformComponent>(relationship.parent);
-				transform.UpdateTransform(parentTransform.GetTransform());
+				currentEntity = reg.get<RelationshipComponent>(currentEntity).next;
 			}
+			return currentEntity;
 		}
 	}
+
+
 }

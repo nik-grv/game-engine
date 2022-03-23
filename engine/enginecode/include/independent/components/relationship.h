@@ -25,7 +25,8 @@ namespace  Engine
 	namespace HierarchySystem
 	{
 		void setChild(entt::entity parentEntity, entt::entity childEntity);
-		void UpdateChildren();
+		void UpdateChildren(entt::entity root);
+		entt::entity GetChildEntity(entt::entity parentEntity, int childNumber);
 	}
 
 }

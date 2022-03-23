@@ -20,10 +20,10 @@ namespace Engine {
 			std::shared_ptr<TextureRend> diffusTex = nullptr;
 			glm::vec3 defuseTint = { 1.f, 1.f, 1.f };
 		};
-		static TempMesh output;
 		//static std::vector<std::shared_ptr<Material>> s_material;
 		//static std::vector<std::shared_ptr<VertexArray>> s_VAO;
 		static std::string s_workingDir = "";
+		static TempMesh output;
 		/*std::shared_ptr<VertexArray> cubeVAO;
 		std::shared_ptr<VertexBuffer> cubeVBO;
 		std::shared_ptr<IndexBuffer> cubeIBO;*/
@@ -32,6 +32,9 @@ namespace Engine {
 		static void ASSIMPProcessMesh(aiMesh* mesh, const aiScene* scene)
 		{
 			output.vertices.clear();
+			output.indicies.clear();
+			//output.
+			output.vertices.reserve(mesh->mNumVertices);
 			//std::multimap<uint32_t, std::pair<uint32_t, float>> vertexBoneWeights;
 
 			// Find vertex properties

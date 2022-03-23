@@ -102,8 +102,11 @@ namespace Engine {
 
 		entt::registry m_registry; //ESC registry whatever that is
 		std::vector<entt::entity> m_entities; //Entities
+
+		bool isFirstFrame = true;
 	};
 
 	// To be defined in users code
 	Application* startApplication(); //!< Function definition which provides an entry hook
+	
 }
