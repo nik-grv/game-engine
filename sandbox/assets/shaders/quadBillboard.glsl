@@ -29,14 +29,14 @@ void main()
 
 	vec3 position = a_quadCentre + cameraRight * a_relativePosition.x + cameraUp * a_relativePosition.y;
 
-	gl_Position = u_projection * u_view + vec4(position, 1.0f);
+	gl_Position = u_projection * u_view * vec4(position, 1.0f);
 }
 
 #region Fragment
 
 #version 440 core
 
-layout (location = 0) in vec4 colour;
+layout (location = 0) out vec4 colour;
 
 in vec2 texCoord;
 in flat int texUnit;

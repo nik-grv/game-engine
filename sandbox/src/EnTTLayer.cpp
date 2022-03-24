@@ -9,6 +9,7 @@ namespace Engine {
 		clearColorAndDepthCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::clearColorAndDepthBuffer));
 		setGlLineCmd.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::setLineMode));
 		setGlFillCmd.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::setFillMode));
+		enableDepthTest.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::enableCommand, GL_DEPTH_TEST));
 
 		auto& window = Application::getInstance().getAppWindow();
 		{
@@ -174,6 +175,8 @@ namespace Engine {
 
 	void EnTTLayer::OnRender()
 	{
+		
+		RendererShared::actionCommand(enableDepthTest);
 		RendererShared::actionCommand(clearColorAndDepthCommand);
 
 		m_view3D = m_camera.getCameraViewMatrix();
@@ -226,11 +229,11 @@ namespace Engine {
 		BillboardQuad quad ({t[3][0],t[3][1] + 1.5f,t[3][2] }, { 1.0f,1.0f });
 
 		Renderer2DBillboard::begin(m_swu3D);
-
+		
 		Renderer2DBillboard::submit(quad, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 		Renderer2DBillboard::end();
 
-		ParticleSystem::OnRender(m_swu3D);
+		//ParticleSystem::OnRender(m_swu3D);
 	}
 
 	void EnTTLayer::onMouseMoved(MouseMovedEvent& e)

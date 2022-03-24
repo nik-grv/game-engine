@@ -141,6 +141,6 @@ namespace Engine {
 		std::shared_ptr<RendererCommands> clearColorAndDepthCommand;
 		std::shared_ptr<RendererCommands> setGlLineCmd;
 		std::shared_ptr<RendererCommands> setGlFillCmd;
-
+		std::shared_ptr<RendererCommands> enableDepthTest;
 	};
 }
