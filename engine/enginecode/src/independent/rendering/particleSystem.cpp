@@ -2,6 +2,7 @@
 #include "systems/log.h"
 #include <glad/glad.h>
 #include "rendering/particleSystem.h"
+#include "components/emitter.h"
 #include "core/application.h"
 
 #include <glm/gtx/norm.hpp>
@@ -11,7 +12,7 @@
 
 namespace Engine {
 
-	VertexBufferLayout ParticleVertex::layout = VertexBufferLayout({ ShaderDataType::Float2, ShaderDataType::Float3, ShaderDataType::Float2, ShaderDataType::FlatInt,  {ShaderDataType::Byte4,true} }); // 0 for instance
+	VertexBufferLayout ParticleVertex::layout = VertexBufferLayout({ ShaderDataType::Float2, ShaderDataType::Float3, ShaderDataType::Float2, ShaderDataType::FlatInt,  {ShaderDataType::Byte4} }); // 0 for instance
 
 	std::shared_ptr<ParticleSystem::InternalData> ParticleSystem::s_data = nullptr;
 
@@ -126,6 +127,9 @@ namespace Engine {
 	}
 
 	void ParticleSystem::OnUpdate(float timestep, glm::vec3& camera) {
+
+		EmitterSystem::Update(timestep); //Update particle emitter system / emits particles
+
 		s_data->nonBlendParticleDrawCount = 0;
 		for (int i = 0; i < s_data->nonBlendParticles.size(); i++) {
 			s_data->nonBlendParticles[i].OnUpdate(timestep);
@@ -191,33 +195,34 @@ namespace Engine {
 			}
 
 		}
+
+
 	}
 
 	void ParticleSystem::OnRender(const SceneWideUniforms& swu) {
 		glUseProgram(s_data->shader->getRenderID());
-		s_data->shader->uploadIntArray("u_texData", &s_data->textureUnit,32); //sort this to be correct
+		//s_data->shader->uploadIntArray("u_texData", &s_data->textureUnit,32); //sort this to be correct
 
 		glBindBuffer(GL_UNIFORM_BUFFER, s_data->UBO->getRenderID());
 		s_data->UBO->uploadDataToUB("u_projection", swu.at("u_projection").second);
 		s_data->UBO->uploadDataToUB("u_view", swu.at("u_view").second);
 
+	
 		glActiveTexture(GL_TEXTURE0 + s_data->textureUnit);
 		glBindTexture(GL_TEXTURE_2D, s_data->atlas->getBaseTexture()->getRenderID());
 
 		s_data->VAO->getVertexBuffers().at(0)->edit(s_data->nonBlendVertecies.data(), sizeof(ParticleVertex) * s_data->nonBlendParticleDrawCount,0);
 		glDrawElements(GL_QUADS, s_data->nonBlendParticleDrawCount, GL_UNSIGNED_INT, nullptr);
-		s_data->nonBlendParticleDrawCount = 0;
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		s_data->VAO->getVertexBuffers().at(0)->edit(s_data->mixedBlendVertecies.data(), sizeof(ParticleVertex) * s_data->mixedBlendParticleDrawCount,0);
 		glDrawElements(GL_QUADS, s_data->mixedBlendParticleDrawCount, GL_UNSIGNED_INT, nullptr);
-		s_data->mixedBlendParticleDrawCount = 0;
 
 		glBlendFunc(GL_ONE, GL_ONE);
 		s_data->VAO->getVertexBuffers().at(0)->edit(s_data->additiveBlendVertecies.data(), sizeof(ParticleVertex) * s_data->additiveBlendParticleDrawCount,0);
 		glDrawElements(GL_QUADS, s_data->additiveBlendParticleDrawCount, GL_UNSIGNED_INT, nullptr);
-		s_data->additiveBlendParticleDrawCount = 0;
+
 		glDisable(GL_BLEND);
 	}
 
@@ -291,6 +296,8 @@ namespace Engine {
 		}
 
 		switch (hostProps.posRandomType) {
+		case RandomTypes::None:
+			break;
 		case RandomTypes::Normal:
 			delta3.x = Randomiser::normalFloat(deviceProps.linearPosition.x, hostProps.posRandomisation.x);
 			delta3.y = Randomiser::normalFloat(deviceProps.linearPosition.y, hostProps.posRandomisation.y);
@@ -306,6 +313,8 @@ namespace Engine {
 		}
 
 		switch (hostProps.velRandomType) {
+		case RandomTypes::None :
+			break;
 		case RandomTypes::Normal:
 			delta3.x = Randomiser::normalFloat(hostProps.linearVelocity.x, hostProps.velocityRandomisation.x);
 			delta3.y = Randomiser::normalFloat(hostProps.linearVelocity.y, hostProps.velocityRandomisation.y);

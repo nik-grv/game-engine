@@ -54,8 +54,12 @@ namespace Engine {
 
 		m_physics.reset(new PhysicsSystem);
 		m_physics->start(); // reset first? we need?
+		m_randomiserSystem.reset(new Randomiser);
+		m_randomiserSystem->start();
 		//m_physics->m_world->setGravity(reactphysics3d::Vector3(0.f, -10.f, 0.f));
 		//m_physics->m_world->setIsGravityEnabled(true);
+		//m_particleSystem.reset(new ParticleSystem);
+
 
 
 		//reset timer
@@ -276,16 +280,18 @@ namespace Engine {
 
 	Application::~Application()
 	{
+		m_randomiserSystem->stop();
 		//delete world
 		m_physics->stop();
-		//stop the systems and logger
-		m_loggerSystem->stop();
+
+		for (auto ent : m_entities)
+			m_registry.destroy(ent);
 		//stop windows system
 		m_windowSystem->stop();
 		
-		for (auto ent : m_entities)
-			m_registry.destroy(ent);
 
+		//stop the systems and logger
+		m_loggerSystem->stop();
 	}
 
 

@@ -10,7 +10,7 @@
 
 namespace Engine {
 	namespace EmitterSystem {
-		void update(float timestep)
+		void Update(float timestep)
 		{
 			entt::registry& reg = Application::getInstance().m_registry;
 

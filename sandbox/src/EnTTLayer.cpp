@@ -26,9 +26,8 @@ namespace Engine {
 		std::shared_ptr<TextureRend> plainWhiteTex;
 		unsigned char whitePixel[4] = { 255,255,255,255 };
 		plainWhiteTex.reset(TextureRend::create(1, 1, 4, whitePixel));
-
 		Renderer2DBillboard::init(100);
-		ParticleSystem::init(100);
+		ParticleSystem::init(1000);
 		//loading model
 
 		m_camera.setCameraPos(glm::vec3(-1.0f, 1.0f, 6.0f));
@@ -135,7 +134,7 @@ namespace Engine {
 		m_registry.emplace<RenderComponent>(m_entities[4], m_VAO2, mat1);
 
 		
-		auto& e = m_registry.emplace<EmitterComponent>(m_entities[2],90.0f,glm::vec3(cubeTransform[3]),glm::vec3(0.0f,0.5f,0.0f));
+		auto& e = m_registry.emplace<EmitterComponent>(m_entities[4], 1.0f, glm::vec3(0.f),glm::vec3(0.0f,0.5f,0.0f));
 		e.blendModes = BlendModes::Additive;
 		e.hostProps.linearVelocity = { 0.0f,1.5f,0.0f };
 		e.hostProps.linearAccelaration = { 0.0f,0.0f,0.0f };
@@ -149,7 +148,7 @@ namespace Engine {
 		e.hostProps.lifetimeRemaining = e.hostProps.lifetime;
 		e.hostProps.velocityRandomisation = { 0.15f,0.05f,0.15f };
 		e.hostProps.velRandomType = RandomTypes::Normal;
-		e.hostProps.posRandomisation = { 0.05f,0.0f,0.05f };
+		e.hostProps.posRandomisation = { 0.05f,0.01f,0.05f };
 		e.hostProps.posRandomType = RandomTypes::Normal;
 		e.deviceProps.linearPosition = { cubeTransform[3][0],cubeTransform[3][1] ,cubeTransform[3][2] };
 		uint32_t index = 0;
@@ -169,6 +168,7 @@ namespace Engine {
 		//doit = false;
 		m_camera.update(timestep);
 		ParticleSystem::OnUpdate(timestep, m_camera.getCameraPos());
+
 		//Log::error("POS - {0},{1},{2}", m_camera.getCameraPos().x, m_camera.getCameraPos().y, m_camera.getCameraPos().z);
 
 	}
@@ -233,7 +233,7 @@ namespace Engine {
 		Renderer2DBillboard::submit(quad, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 		Renderer2DBillboard::end();
 
-		//ParticleSystem::OnRender(m_swu3D);
+		ParticleSystem::OnRender(m_swu3D);
 	}
 
 	void EnTTLayer::onMouseMoved(MouseMovedEvent& e)

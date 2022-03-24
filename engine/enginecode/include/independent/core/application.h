@@ -32,6 +32,7 @@
 #include "camera/Camera.h"
 #include "camera/FollowPlayer.h"
 #include <entt/entt.hpp>
+#include "rendering/particleSystem.h"
 
 
 namespace Engine {
@@ -50,6 +51,7 @@ namespace Engine {
 		std::shared_ptr<System> m_windowSystem; //!< window system
 		std::shared_ptr<Randomiser> m_randomiserSystem; //system not started yet, dont need it for now
 		std::shared_ptr<PhysicsSystem> m_physics; // Physics Sytem
+		std::shared_ptr<ParticleSystem> m_particleSystem;
 
 		std::shared_ptr<Window> m_window; //!< timer var
 		std::shared_ptr<Timer> m_timer; //!< timer var

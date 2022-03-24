@@ -51,5 +51,6 @@ void main()
 	{
 		discard;
 	}
-	colour = textureColour * tint;
+	//colour = textureColour * tint;
+	colour = vec4(0, 1, 1, 1);
 }

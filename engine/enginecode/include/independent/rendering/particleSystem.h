@@ -40,10 +40,10 @@ namespace Engine {
 	struct ParticleDeviceProperties {
 		glm::vec3 linearPosition = { 0.f, 0.f, 0.f };
 		float angularPosition = 0.f;
-		glm::vec4 currentColor;
-		glm::vec2 currentSize;
-		glm::vec2 current_UVStart;
-		glm::vec2 current_UVEnd;
+		glm::vec4 currentColor = glm::vec4(255);
+		glm::vec2 currentSize = glm::vec2(1.f, 1.f);
+		glm::vec2 current_UVStart = glm::vec2(0.f);
+		glm::vec2 current_UVEnd = glm::vec2(1.f);
 	};
 
 	enum class BlendModes {None, Mix, Additive};
@@ -67,7 +67,7 @@ namespace Engine {
 		glm::vec2 position;
 		glm::vec3 centre;
 		glm::vec2 uvCoords;
-		uint32_t textureUnit;
+		uint32_t textureUnit = 31;
 		uint32_t tint;
 		static VertexBufferLayout layout;
 	};
@@ -105,7 +105,7 @@ namespace Engine {
 
 			std::shared_ptr<TextureAtlas> atlas;
 			std::vector<SubTexture> particleTexture;
-			int32_t textureUnit;
+			uint32_t textureUnit = 31;
 		};
 
 		static std::shared_ptr<InternalData> s_data;
