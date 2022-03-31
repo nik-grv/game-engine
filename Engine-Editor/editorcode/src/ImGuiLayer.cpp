@@ -5,7 +5,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <assimpLoader.h>
-#include "../editorcode/include/ImGuiHelper.h";
+
 
 namespace Engine {
 
@@ -184,7 +184,6 @@ namespace Engine {
 	void ImGuiLayer::OnAttach()
 	{
 		IMGUI_CHECKVERSION();
-
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -193,13 +192,12 @@ namespace Engine {
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewPortsNoTaskIcons;
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
-		
-		ImGui::StyleColorsDark();
 
+		ImGui::StyleColorsDark();
 
 		m_IconPlay.reset(TextureRend::create("Resources/Icons/PlayButton.png"));
 		m_IconStop.reset(TextureRend::create("Resources/Icons/StopButton.png"));
-		
+
 		ImGuiStyle& style = ImGui::GetStyle();
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
@@ -218,10 +216,7 @@ namespace Engine {
 		//m_ActiveScene->Reg().emplace<TransformComponent>(tank);
 		//m_ActiveScene->Reg().emplace<SpriteRenderComponent>(tank, glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
 
-		Application& app = Application::getInstance();
-		
-		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)app.getAppWindow()->getNativewindow(), true);
-		ImGui_ImplOpenGL3_Init("#version 440");
+
 	}
 
 	void ImGuiLayer::OnDettach()
@@ -233,7 +228,6 @@ namespace Engine {
 
 	void ImGuiLayer::OnUpdate(float timestep)
 	{
-
 		NGPhyiscs::updateTransforms();
 		m_camera.update(timestep);
 		m_ActiveScene->OnUpdate(timestep);
@@ -304,7 +298,7 @@ namespace Engine {
 		RendererShared::actionCommand(setGlFillCmd);
 
 		//render the framebuffer on a 2d quad
-		
+
 		//auto& qd = Quad::createCentreHalfExtens(glm::vec2(2.f, 2.f), glm::vec2(1.f, 1.f));
 		//Renderer2D::begin(m_swu2D);
 		//Renderer2D::submit();
@@ -363,7 +357,7 @@ namespace Engine {
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
-		
+
 
 		if (ImGui::BeginMenuBar())
 		{
@@ -375,7 +369,7 @@ namespace Engine {
 				if (ImGui::MenuItem("New", "Ctrl+N"))
 					NewScene();
 
-				if (ImGui::MenuItem("Open...", "Ctrl+O")) 
+				if (ImGui::MenuItem("Open...", "Ctrl+O"))
 					OpenScene();
 
 				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
@@ -455,20 +449,6 @@ namespace Engine {
 		ImGui::PopStyleVar(2);
 		ImGui::PopStyleColor(3);
 		ImGui::End();
-    
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-
-		ImGui::Begin("Test");
-		ImGui::Text("This is window A");
-		ImGui::End();
-	
-		ImGui::Render();
-		glfwMakeContextCurrent((GLFWwindow*)app.getAppWindow()->getNativewindow());
-		glClear(GL_COLOR_BUFFER_BIT);
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 	}
 
 #pragma region -- [ GUIInputManager ] --
@@ -493,6 +473,7 @@ namespace Engine {
 			moveUpdate(e);
 #pragma endregion
 
+		//Log::info("Key Pressed GUI");
 	}
 
 	void ImGuiLayer::cameraUpdate(MouseMovedEvent e)
@@ -523,7 +504,6 @@ namespace Engine {
 
 	/*void ImGuiLayer::onKeyTypedEvent(KeyTypedEvent& e)
 	{
-
 	}*/
 
 	void ImGuiLayer::onMouseBtnPressed(MouseButtonPressedEvent& e)
@@ -531,6 +511,7 @@ namespace Engine {
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseDown[e.getButton()] = true;
 
+		//Log::info("Mouse Button Pressed GUI");
 	}
 
 	void ImGuiLayer::onMouseBtnReleased(MouseButtonReleasedEvent& e)
@@ -544,6 +525,7 @@ namespace Engine {
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseWheelH += e.getXScroll();
 		io.MouseWheel += e.getYScroll();
+		//Log::info("Mouse Scrolled GUI");
 	}
 #pragma endregion
 
@@ -578,7 +560,7 @@ namespace Engine {
 	void ImGuiLayer::Exit()
 	{
 		Log::e_debug("== Exiting Editor ==");
-	
+
 	}
 
 	void ImGuiLayer::OnScenePlay()
@@ -595,6 +577,5 @@ namespace Engine {
 	}
 
 }
-
 
 

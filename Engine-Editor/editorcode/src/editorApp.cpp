@@ -14,11 +14,8 @@ namespace Engine
 		glfwSetWindowTitle(((GLFWwindow*)app.getAppWindow()->getNativewindow()), "Tankery Editor V1");
 		m_layerStack.Push(new Engine::ImGuiLayer("ImGUI Layer"));
 		//m_layerStack.Push(new EditorLayer("Editor Layer"));
-    //MERGE MAIN CHANGEES!!!
-	  m_layerStack.Push(new Engine::ImGuiLayer("ImGUI Layer"));
-    EditorLayer::init();
-  }
-}
+		EditorLayer::init();
+	}
 
 	EditorApp::~EditorApp()
 	{
