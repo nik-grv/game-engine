@@ -96,7 +96,7 @@ namespace Engine {
 			*/
 			}
 
-			Log::info("INDICES");
+			//Log::info("INDICES");
 			uint32_t elementCount = 0;
 			for (uint32_t i = 0; i < mesh->mNumFaces; i++)
 			{
@@ -110,7 +110,7 @@ namespace Engine {
 				// Log part - assume all faces are trinalge and therefore ahve 3 indices
 				//Log::info("Face {0}: {1} {2} {3}", i, face.mIndices[0], face.mIndices[1], face.mIndices[2]);
 			}
-			Log::info("Num vertices {0} Num indices {1}",mesh->mNumVertices, elementCount);
+			//Log::info("Num vertices {0} Num indices {1}",mesh->mNumVertices, elementCount);
 
 
 
@@ -144,7 +144,7 @@ namespace Engine {
 				{
 					aiString str;
 					material->GetTexture(type, i, &str);
-					Log::info("Texture type:{0} filepath:{1}", type, str.C_Str());
+					//Log::info("Texture type:{0} filepath:{1}", type, str.C_Str());
 				}
 
 			}
@@ -187,7 +187,7 @@ namespace Engine {
 
 			if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_AMBIENT, colorValue)) Log::info("Material ambient colour: {0}, {1}, {2}", colorValue.r, colorValue.g, colorValue.b);
 			*/
-			if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, colorValue)) Log::info("Material diffuse colour: {0}, {1}, {2}", colorValue.r, colorValue.g, colorValue.b);
+			//if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, colorValue)) Log::info("Material diffuse colour: {0}, {1}, {2}", colorValue.r, colorValue.g, colorValue.b);
 			/*if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_SPECULAR, colorValue)) Log::info("Material specular colour: {0}, {1}, {2}", colorValue.r, colorValue.g, colorValue.b);
 			if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_EMISSIVE, colorValue)) Log::info("Material emissive colour: {0}, {1}, {2}", colorValue.r, colorValue.g, colorValue.b);
 			if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_REFLECTIVE, colorValue)) Log::info("Material reflective colour: {0}, {1}, {2}", colorValue.r, colorValue.g, colorValue.b);
@@ -212,17 +212,17 @@ namespace Engine {
 		{
 			std::string parentName = "Null";
 			if (node->mParent != nullptr) parentName = node->mParent->mName.C_Str();
-			if (node->mNumMeshes > 0) Log::info("MESHED NODE: {0} PARENT: {1}", node->mName.C_Str(), parentName);
-			if (node->mNumMeshes == 0) Log::info("UNMESHED NODE: {0} PARENT: {1}", node->mName.C_Str(), parentName);
+			//if (node->mNumMeshes > 0) Log::info("MESHED NODE: {0} PARENT: {1}", node->mName.C_Str(), parentName);
+			//if (node->mNumMeshes == 0) Log::info("UNMESHED NODE: {0} PARENT: {1}", node->mName.C_Str(), parentName);
 
 			aiMatrix4x4 *transform = &node->mTransformation;
-
+			/*
 			Log::info("TRANSFORM");
 			Log::info("{0} {1} {2} {3}", transform->a1, transform->a2, transform->a3, transform->a4);
 			Log::info("{0} {1} {2} {3}", transform->b1, transform->b2, transform->b3, transform->b4);
 			Log::info("{0} {1} {2} {3}", transform->c1, transform->c2, transform->c3, transform->c4);
 			Log::info("{0} {1} {2} {3}", transform->d1, transform->d2, transform->d3, transform->d4);
-
+			*/
 			// process all the node's meshes
 			for (uint32_t i = 0; i < node->mNumMeshes; i++)
 			{

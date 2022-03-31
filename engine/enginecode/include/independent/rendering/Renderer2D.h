@@ -116,6 +116,7 @@ namespace Engine {
 		*/
 		static void submit(const char * stringText, const glm::vec2& pos, const glm::vec4& tint);
 
+
 		static void end(); //!< end rendering current scene
 		static void flush(); //!< render all the geometry
 

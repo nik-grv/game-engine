@@ -12,6 +12,9 @@ namespace Engine
 		virtual void OnAttach() {}
 		virtual void OnDettach() {}
 		virtual void OnUpdate(float timeStep) {}
+		virtual void onImGuiRender() {}
+		virtual void Begin() {}
+		virtual void End() {}
 		virtual void OnRender() {}
 		virtual void OnResize(WindowResizeEvent& event) {}
 

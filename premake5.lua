@@ -31,8 +31,14 @@ project "Engine"
 	
 	files
 	{
-		"%{prj.name}/enginecode/**.h",
-		"%{prj.name}/enginecode/**.cpp",
+		"%{prj.name}/enginecode/src/**.cpp",
+		"%{prj.name}/enginecode/src/independent/**.cpp",
+		"%{prj.name}/enginecode/src/platform/**.cpp",
+		"%{prj.name}/enginecode/src/systems/**.cpp",
+		"%{prj.name}/enginecode/include/**.h",
+		"%{prj.name}/enginecode/include/independent/**.h",
+		"%{prj.name}/enginecode/include/platform/**.h",
+		"%{prj.name}/enginecode/include/systems/**.h",
 		"engine/precompiled/engine_pch.h",
 		"engine/precompiled/engine_pch.cpp"
 	}
@@ -41,6 +47,8 @@ project "Engine"
 	{
 		"%{prj.name}/enginecode/",
 		"%{prj.name}/enginecode/include/independent",
+		"%{prj.name}/enginecode/include/Utilities",
+		"%{prj.name}/enginecode/src/platform/Windows",
 		"%{prj.name}/enginecode/include/",
 		"%{prj.name}/precompiled/",
 		"vendor/spdlog/include",
@@ -56,7 +64,8 @@ project "Engine"
 		"vendor/assimp/include",
 		"vendor/box2d/include",
 		"vendor/lua",
-		"vendor/react3d/include"
+		"vendor/react3d/include",
+		"vendor/yaml_cpp"
 	}
 	
 	links 
@@ -68,10 +77,29 @@ project "Engine"
 		"assimp",
 		"box2d",
 		"lua",
-		"ReactPhysics3d"
+		"ReactPhysics3d",
+		"yaml-cpp"
 		
 	}
 	
+	disablewarnings 
+	{
+		2467,
+		4244,
+		4099,
+		4996,
+		4101,
+		4305,
+		4267,
+		4244,
+		4715,
+		4305,
+		4267,
+		4244,
+		4267,
+		4307,
+	}
+
 	filter "system:windows"
 		cppdialect "C++17"
 		systemversion "latest"
@@ -124,7 +152,7 @@ project "Sandbox"
 		"vendor/assimp/include",
 		"vendor/box2d/include",
 		"vendor/lua",
-		"vendor/react3d/include"
+		"vendor/react3d/include",
 	}
 
 	links
@@ -166,6 +194,8 @@ project "Engine-Editor"
 		{
 			"%{prj.name}/editorcode/include/**.h",
 			"%{prj.name}/editorcode/src/**.cpp",
+			"%{prj.name}/editorcode/panels/**.h",
+			"%{prj.name}/editorcode/panels/**.cpp",
 			"%{prj.name}/editorcode/OpenGL/**.cpp"
 		}
 	
@@ -176,6 +206,11 @@ project "Engine-Editor"
 			"engine/enginecode/include/independent",
 			"engine/enginecode/include/",
 			"engine/precompiled/",
+			"engine-editor/editorcode/src/",
+			"engine-editor/editorcode/include/",
+			"engine-editor/editorcode/panels/",
+			"engine-editor/",
+			"sandbox/include",
 			"vendor/glfw/include",
 			"vendor/glm/",
 			"vendor/glad/include",
@@ -183,6 +218,7 @@ project "Engine-Editor"
 			"vendor/json/single_include/nlohmann",
 			"vendor/freetype2/include",
 			"vendor/IMGui",
+			"vendor/IMGui/backends",
 			"vendor/enTT/single_include",
 			"vendor/luaBridge/Source",
 			"vendor/assimp/include",
@@ -196,6 +232,25 @@ project "Engine-Editor"
 			"Engine",
 			"IMGui",
 			"Glad"
+		}
+
+		disablewarnings 
+		{
+			2467,
+			4244,
+			4099,
+			4996,
+			4101,
+			4305,
+			4267,
+			4244,
+			4715,
+			4305,
+			4267,
+			4244,
+			4267,
+			4307,
+
 		}
 	
 		filter "system:windows"
@@ -334,9 +389,6 @@ project "Spike"
 		optimize "On"
 
 group "Vendor"
-
-
-
 	include "vendor/glfw"
 	include "vendor/googletest"
 	include "vendor/Glad"
@@ -346,4 +398,5 @@ group "Vendor"
 	include "vendor/box2d"
 	include "vendor/lua"
 	include "vendor/react3d"
-
+	include "vendor/yaml-cpp"
+group ""

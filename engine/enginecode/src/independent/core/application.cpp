@@ -12,8 +12,9 @@
 #endif
 
 #include <glm/gtc/matrix_transform.hpp>
-# include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
+#include <memory>
 
 #include "rendering/subTexture.h"
 
@@ -25,8 +26,7 @@
 
 #include "rendering/Renderer3D.h"
 #include "rendering/Renderer2D.h"
-
-#include "../../Engine-Editor/editorcode/include/ImGuiHelper.h";
+#include <stb_image.h>
 
 namespace Engine {
 	// Set static vars
@@ -39,14 +39,18 @@ namespace Engine {
 	{
 		for (auto ent : m_entities)
 			ent = m_registry.create();
-		
+
 		if (s_instance == nullptr)
 		{
 			s_instance = this;
 		}
 		//Start system and logger
-		m_loggerSystem.reset(new Log); 
+		m_loggerSystem.reset(new Log);
 		m_loggerSystem->start();
+
+		Log::info("Core Starting...");
+		Log::info("");
+
 
 		//start windows system
 #ifdef NG_PLATFORM_WINDOWS
@@ -54,8 +58,6 @@ namespace Engine {
 #endif
 		m_windowSystem->start();
 
-		m_physics.reset(new PhysicsSystem);
-		m_physics->start(); // reset first? we need?
 		//m_physics->m_world->setGravity(reactphysics3d::Vector3(0.f, -10.f, 0.f));
 		//m_physics->m_world->setIsGravityEnabled(true);
 
@@ -70,7 +72,7 @@ namespace Engine {
 		{
 			std::cout << "\nStart with Fullscreen (Y/N) ?\n";
 			std::cin >> m_setFullScreen;
-			
+
 			while (tolower(m_setFullScreen) != 'y' && tolower(m_setFullScreen) != 'n')
 			{
 				std::cout << "\nPlease enter Y or N as ur choice : ";
@@ -91,13 +93,24 @@ namespace Engine {
 				std::cout << "\nLaunching in Minimised Mode!\n";
 				std::cin.ignore();
 			}
-		
+
 		}
 		*/
 #pragma endregion
 
-		WindowProperties props("My Game Engine",RendererShared::SCR_WIDTH, RendererShared::SCR_HEIGHT,m_isFullscreen);
+		WindowProperties props("My Game Engine", RendererShared::SCR_WIDTH, RendererShared::SCR_HEIGHT, m_isFullscreen);
 		m_window.reset(Window::create(props));
+		
+		int width, height; 
+		int channels;
+		pixel = stbi_load("../icon.png", &width, &height, &channels, 4);
+		GLFWimage img[1];
+		img[0].width = width;
+		img[0].height = height;
+		img[0].pixels = pixel;
+
+		glfwSetWindowIcon((GLFWwindow*)m_window->getNativewindow(), 1, img);
+		
 
 		//window callbacks
 		m_window->getEventHandler().setOnCloseCallback(std::bind(&Application::onWindowClose, this, std::placeholders::_1));
@@ -108,7 +121,7 @@ namespace Engine {
 		//keyboard callbacks
 		m_window->getEventHandler().setOnKeyPressedEvent(std::bind(&Application::onKeyPressed, this, std::placeholders::_1));
 		m_window->getEventHandler().setOnKeyReleasedEvent(std::bind(&Application::onKeyReleased, this, std::placeholders::_1));
-		
+
 		//mouse callbacks
 		m_window->getEventHandler().setOnMouseMovedEvent(std::bind(&Application::onMouseMoved, this, std::placeholders::_1));
 		m_window->getEventHandler().setOnMouseBtnPressedEvent(std::bind(&Application::onMouseBtnPressed, this, std::placeholders::_1));
@@ -117,13 +130,21 @@ namespace Engine {
 
 		InputPoller::setNativeWindow(m_window->getNativewindow());
 		m_timer->reset();
-
 		//ImGuiHelper::init();
+
 
 		Renderer2D::init();
 		//Renderer3D::init();
+		//Log::info("== Core Running ==");
+		//Log::info("");
 
+		m_physics.reset(new PhysicsSystem);
+		m_physics->start(); // reset first? we need?
+
+		m_physics->m_world->setGravity(rp3d::Vector3(0.0f, -9.8f, 0.0f));
+		m_physics->m_world->setIsGravityEnabled(true);
 	}
+
 
 #pragma region AppEvents
 	/*!
@@ -155,7 +176,7 @@ namespace Engine {
 	{
 		e.handle(true);
 		auto& size = e.getPos();
-		Log::trace("Window Moved : {0} / {1}", size.x, size.y);
+		//Log::trace("Window Moved : {0} / {1}", size.x, size.y);
 		return e.isHandled();
 	}
 
@@ -211,9 +232,10 @@ namespace Engine {
 	{
 		e.handle(true);
 		//reset speed multiplier for both cameras on key release
-		if (e.getKeyCode() == NG_KEY_W || e.getKeyCode() == NG_KEY_A || e.getKeyCode() == NG_KEY_S || e.getKeyCode() == NG_KEY_D
+		/*if (e.getKeyCode() == NG_KEY_W || e.getKeyCode() == NG_KEY_A || e.getKeyCode() == NG_KEY_S || e.getKeyCode() == NG_KEY_D
 			|| e.getKeyCode() == NG_KEY_Q || e.getKeyCode() == NG_KEY_E || e.getKeyCode() == NG_KEY_Z || e.getKeyCode() == NG_KEY_X)
 			m_SpeedMultiplier = 2.5f;
+			*/
 
 		m_layerStack.onKeyReleased(e);
 
@@ -280,7 +302,6 @@ namespace Engine {
 
 	Application::~Application()
 	{
-
 		//delete world
 		m_physics->stop();
 		//stop the systems and logger
@@ -290,10 +311,12 @@ namespace Engine {
 
 		//stop windows system
 		m_windowSystem->stop();
-		
+		free(pixel);
 		for (auto ent : m_entities)
-			m_registry.destroy(ent);
-
+		{
+			if(m_registry.valid(ent))
+				m_registry.destroy(ent);
+		}
 	}
 
 
@@ -303,20 +326,32 @@ namespace Engine {
 	*/
 	void Application::run()
 	{
+
 #pragma endregion RenderCommands
+
 		float timestep = 0.f;
 		while (m_running)
 		{
-#pragma region [History] - While Loop
-
-#pragma endregion
 			timestep = m_timer->getElapsedTime();
+
 			m_timer->reset();
 
-			m_physics->m_world->update(timestep);
+			timestep = std::min(timestep, 1.f / 8.f);
+
+			if (!isFirstFrame)
+			{
+				m_physics->m_world->update(timestep);
+			}
 			m_layerStack.Update(timestep);
 			m_layerStack.Render();
 			m_window->onUpdate(timestep);
+
+			glClear(GL_COLOR_BUFFER_BIT);
+
+
+			if(isFirstFrame)
+				isFirstFrame = false;
+
 		}
 
 	}

@@ -5,6 +5,7 @@
 
 namespace Engine
 {
+
 	LayerStack::~LayerStack()
 	{
 		for (int i = m_layers.size(); i > 0 ; i--)
@@ -26,6 +27,13 @@ namespace Engine
 	{
 		for (auto& layer : m_layers)
 		{
+			if (layer->getLayerName() == "ImGUI Layer") //Be good to find a way to do it for every gui layer ?
+			{
+				layer->Begin();
+				layer->onImGuiRender();
+				layer->End();
+			}
+			
 			layer->OnRender();
 		}
 	}
