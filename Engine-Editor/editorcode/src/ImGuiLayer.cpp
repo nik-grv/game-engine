@@ -5,7 +5,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <assimpLoader.h>
-
+#include "../editorcode/include/ImGuiHelper.h";
 
 namespace Engine {
 
@@ -184,6 +184,7 @@ namespace Engine {
 	void ImGuiLayer::OnAttach()
 	{
 		IMGUI_CHECKVERSION();
+
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -194,6 +195,7 @@ namespace Engine {
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 		
 		ImGui::StyleColorsDark();
+
 
 		m_IconPlay.reset(TextureRend::create("Resources/Icons/PlayButton.png"));
 		m_IconStop.reset(TextureRend::create("Resources/Icons/StopButton.png"));
@@ -216,7 +218,10 @@ namespace Engine {
 		//m_ActiveScene->Reg().emplace<TransformComponent>(tank);
 		//m_ActiveScene->Reg().emplace<SpriteRenderComponent>(tank, glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
 
-
+		Application& app = Application::getInstance();
+		
+		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)app.getAppWindow()->getNativewindow(), true);
+		ImGui_ImplOpenGL3_Init("#version 440");
 	}
 
 	void ImGuiLayer::OnDettach()
@@ -228,6 +233,7 @@ namespace Engine {
 
 	void ImGuiLayer::OnUpdate(float timestep)
 	{
+
 		NGPhyiscs::updateTransforms();
 		m_camera.update(timestep);
 		m_ActiveScene->OnUpdate(timestep);
@@ -449,6 +455,20 @@ namespace Engine {
 		ImGui::PopStyleVar(2);
 		ImGui::PopStyleColor(3);
 		ImGui::End();
+    
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		ImGui::Begin("Test");
+		ImGui::Text("This is window A");
+		ImGui::End();
+	
+		ImGui::Render();
+		glfwMakeContextCurrent((GLFWwindow*)app.getAppWindow()->getNativewindow());
+		glClear(GL_COLOR_BUFFER_BIT);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 	}
 
 #pragma region -- [ GUIInputManager ] --
@@ -473,7 +493,6 @@ namespace Engine {
 			moveUpdate(e);
 #pragma endregion
 
-		//Log::info("Key Pressed GUI");
 	}
 
 	void ImGuiLayer::cameraUpdate(MouseMovedEvent e)
@@ -512,7 +531,6 @@ namespace Engine {
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseDown[e.getButton()] = true;
 
-		//Log::info("Mouse Button Pressed GUI");
 	}
 
 	void ImGuiLayer::onMouseBtnReleased(MouseButtonReleasedEvent& e)
@@ -526,7 +544,6 @@ namespace Engine {
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseWheelH += e.getXScroll();
 		io.MouseWheel += e.getYScroll();
-		//Log::info("Mouse Scrolled GUI");
 	}
 #pragma endregion
 

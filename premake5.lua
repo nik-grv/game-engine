@@ -182,6 +182,7 @@ project "Engine-Editor"
 			"%{prj.name}/editorcode/src/**.cpp",
 			"%{prj.name}/editorcode/panels/**.h",
 			"%{prj.name}/editorcode/panels/**.cpp",
+			"%{prj.name}/editorcode/OpenGL/**.cpp"
 		}
 	
 		includedirs
