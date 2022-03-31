@@ -1,7 +1,6 @@
 /*\file containers.cpp*/
 
 #include "engine_pch.h"
-#include "UI/containers.h"
 #include "UI/modalWindow.h"
 
 namespace Engine

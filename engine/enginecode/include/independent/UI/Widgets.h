@@ -3,13 +3,11 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "rendering/Renderer2D.h"
+
 #include "UI/UIComponent.h"
 
 namespace Engine
 {
-	class HorizontalContainer;
-
 	class Widget : public UIComponent //!< Widget Component, with update of position and size
 	{
 	public:

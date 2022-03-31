@@ -1,8 +1,9 @@
 /*\file widgets.cpp*/
 
 #include "engine_pch.h"
+#include "rendering/Renderer2D.h"
 #include "UI/Widgets.h"
-#include "UI/containers.h"
+//#include "UI/containers.h"
 #include "UI/modalWindow.h"
 
 namespace Engine
@@ -123,5 +124,39 @@ namespace Engine
 	{
 		Renderer2D::submit(Quad::createCentreHalfExtens(m_sliderPosition, glm::vec2(m_sliderWidth, m_sliderHeight)), m_colourScheme->highlight);
 		Renderer2D::submit(Quad::createCentreHalfExtens(m_grabPosition, glm::ivec2(m_sliderHeight / 2, m_sliderHeight * 2)), m_colourScheme->foreground);
+
+
+		Renderer2D::submit(m_lowText, m_lowTextPosition, m_colourScheme->foreground);
+		Renderer2D::submit(m_highText, m_highTextPosition, m_colourScheme->foreground);
+		Renderer2D::submit(m_valueText, m_grabTextPosition, m_colourScheme->foreground);
 	}
+
+	void Slider::onMouseBtnPressed(glm::ivec2& mousePosition, int32_t button)
+	{
+		if (button = NG_MOUSE_BUTTON_1)
+		{
+			m_grabActive =
+				m_grabPosition.x <= mousePosition.x && mousePosition.x <= m_grabPosition.x + m_sliderHeight / 2 &&
+				m_grabPosition.y <= mousePosition.y && mousePosition.y <= m_grabPosition.y + m_sliderHeight * 2;
+		}
+	}
+
+	void Slider::onMouseBtnReleased(glm::ivec2& mousePosition, int32_t button)
+	{
+		m_grabActive = false;
+	}
+
+	void Slider::onMouseMoved(glm::ivec2& mousePosition)
+	{
+		if (m_grabActive)
+		{
+			m_grabPosition.x = std::min(std::max(m_sliderPosition.x, mousePosition.x), m_sliderPosition.x + (int32_t)m_sliderWidth);
+			float t = (float)(m_grabPosition.x - m_sliderPosition.x) / m_sliderWidth;
+			m_currentvalue = m_lowerBound + t * (m_higherBound - m_lowerBound);
+			sprintf_s(m_valueText, 128, "%.2f", m_currentvalue);
+			auto valueTextSize = Renderer2D::getTextSize(m_valueText);
+			m_grabTextPosition.x = m_grabPosition.x - (valueTextSize.x / 2);
+		}
+	}
+
 }
