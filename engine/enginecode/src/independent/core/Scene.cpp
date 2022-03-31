@@ -75,7 +75,7 @@ namespace Engine
 
 	void Scene::OnUpdate(float ts)
 	{
-
+		//m_Registry.clear();
 	}
 
 }
