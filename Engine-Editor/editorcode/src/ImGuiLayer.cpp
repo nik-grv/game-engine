@@ -5,7 +5,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <assimpLoader.h>
-#include "../editorcode/include/ImGuiHelper.h";
+//#include "../editorcode/include/ImGuiHelper.h";
 
 namespace Engine {
 
@@ -218,10 +218,10 @@ namespace Engine {
 		//m_ActiveScene->Reg().emplace<TransformComponent>(tank);
 		//m_ActiveScene->Reg().emplace<SpriteRenderComponent>(tank, glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
 
-		Application& app = Application::getInstance();
+		//Application& app = Application::getInstance();
 		
-		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)app.getAppWindow()->getNativewindow(), true);
-		ImGui_ImplOpenGL3_Init("#version 440");
+		//ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)app.getAppWindow()->getNativewindow(), true);
+		//ImGui_ImplOpenGL3_Init("#version 440");
 	}
 
 	void ImGuiLayer::OnDettach()
@@ -455,19 +455,6 @@ namespace Engine {
 		ImGui::PopStyleVar(2);
 		ImGui::PopStyleColor(3);
 		ImGui::End();
-    
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-
-		ImGui::Begin("Test");
-		ImGui::Text("This is window A");
-		ImGui::End();
-	
-		ImGui::Render();
-		glfwMakeContextCurrent((GLFWwindow*)app.getAppWindow()->getNativewindow());
-		glClear(GL_COLOR_BUFFER_BIT);
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	}
 

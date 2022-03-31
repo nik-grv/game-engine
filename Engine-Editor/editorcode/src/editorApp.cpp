@@ -15,10 +15,9 @@ namespace Engine
 		m_layerStack.Push(new Engine::ImGuiLayer("ImGUI Layer"));
 		//m_layerStack.Push(new EditorLayer("Editor Layer"));
     //MERGE MAIN CHANGEES!!!
-	  m_layerStack.Push(new Engine::ImGuiLayer("ImGUI Layer"));
-    EditorLayer::init();
-  }
-}
+		 EditorLayer::init();
+		 //m_layerStack.Push(new Engine::ImGuiLayer("ImGUI Layer"));
+	}
 
 	EditorApp::~EditorApp()
 	{
