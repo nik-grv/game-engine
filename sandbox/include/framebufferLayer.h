@@ -116,7 +116,7 @@ namespace Engine {
 		std::shared_ptr<Material> wireframeMat;
 		std::shared_ptr<Material> plateMat;
 
-		glm::mat4 m_view3D,m_view2D;
+		glm::mat4 m_view3D, m_view2D;
 		glm::mat4 m_projection3D, m_projection2D;
 		using SceneWideUniforms = std::unordered_map<const char*, std::pair<ShaderDataType, void*>>; //!< sceen wide uniform 
 		SceneWideUniforms m_swu3D, m_swu2D;
@@ -147,6 +147,7 @@ namespace Engine {
 		Quad m_screenQuad;
 		SubTexture m_screenTexture;
 		bool usePP = false;
+
 		bool m_isPlayerCam = false;
 
 		GeneralEventListener eventListener;

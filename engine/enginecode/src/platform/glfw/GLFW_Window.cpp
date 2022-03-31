@@ -56,7 +56,7 @@ namespace Engine
 
 		GLFWcursor* cursor = glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR);
 		glfwSetCursor(m_native, cursor);
-		glfwSetInputMode(m_native, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetInputMode(m_native, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		//window callbacks
 		glfwSetWindowCloseCallback(m_native, [](GLFWwindow* window)
 		{

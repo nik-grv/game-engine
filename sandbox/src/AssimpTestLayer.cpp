@@ -50,7 +50,7 @@ AssimpLayer::AssimpLayer(const char* name) : Layer(name)
 
 void AssimpLayer::OnUpdate(float timestep)
 {
-	Log::info("ATL UPDATE!");
+	//Log::info("ATL UPDATE!");
 	glm::mat4 rotX = glm::rotate(glm::mat4(1.0f), m_rotation.x, { 1.f, 0.f, 0.f });
 	glm::mat4 rotY = glm::rotate(glm::mat4(1.0f), m_rotation.y, { 0.f, 1.f, 0.f });
 	glm::mat4 rotZ = glm::rotate(glm::mat4(1.0f), m_rotation.z, { 0.f, 0.f, 1.f });

@@ -274,7 +274,7 @@ namespace Engine {
 
 		//framebuffer stuff...
 
-		FramebufferLayout fbLayout = { {AttachmentType::Color,true},{AttachmentType::Depth,false }  };
+		FramebufferLayout fbLayout = { {AttachmentType::Color,true},{AttachmentType::Depth,false } };
 
 		textureTarget.reset(Framebuffer::create(glm::ivec2(window->getWidth(), window->getHeight()), fbLayout));
 		defaultTarget.reset(Framebuffer::createDefault());
@@ -295,7 +295,7 @@ namespace Engine {
 		world->setEventListener(&eventListener);
 	}
 
-	
+
 	void FramebufferLayer::OnUpdate(float timestep)
 	{
 		ScriptSystem::UpdateScripts(timestep);
@@ -310,7 +310,7 @@ namespace Engine {
 	}
 
 	void FramebufferLayer::OnRender()
-	{	
+	{
 		textureTarget->use();
 
 		//render 3d scene...
@@ -382,7 +382,6 @@ namespace Engine {
 		defaultTarget->use();
 
 		RendererShared::actionCommand(disableDepthCommand);
-		
 
 		Renderer2D::begin(m_swu2D);
 		Renderer2D::submit(m_screenQuad, m_screenTexture);
@@ -392,10 +391,7 @@ namespace Engine {
 		RendererShared::actionCommand(standardBlend);
 
 		Renderer2D::begin(m_swu2D);
-		if(m_isPlayerCam)
-		Renderer2D::submit("Player cam", glm::vec2(500, 500), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-		else
-			Renderer2D::submit("Free cam", glm::vec2(500, 500), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		Renderer2D::submit("2D Renderer Framebuffer", glm::vec2(500, 500), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 		Renderer2D::end();
 
 	}
@@ -412,18 +408,17 @@ namespace Engine {
 		//}
 	}
 
+
 	void FramebufferLayer::onMouseBtnPressed(MouseButtonPressedEvent& e)
 	{
 		ScriptSystem::OnMouseBtnPressed(e);
 		
 	}
-	
 
 	void FramebufferLayer::onKeyPressed(KeyPressedEvent& e)
 	{
 		float rot = 0.25;
 		float scale = 0.01;
-		
 
 		if (e.getKeyCode() == NG_KEY_0)
 		{
@@ -435,6 +430,7 @@ namespace Engine {
 		}
 
 		ScriptSystem::OnKeyPressed(e);
+
 		/*if (e.getKeyCode() == NG_KEY_KP_ADD)
 		{
 			if (InputPoller::isKeyPressed(NG_KEY_X)) { m_rotation.x += rot; Log::info("X pressed"); }

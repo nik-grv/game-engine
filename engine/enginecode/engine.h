@@ -6,6 +6,9 @@
 
 #include "core/application.h"
 #include "core/Layer.h"
+#include "core/Scene.h"
+//#include "core/Components.h"
+#include <reactphysics3d/reactphysics3d.h>
 
 #include <rendering/Renderer3D.h>
 #include <rendering/Renderer2D.h>

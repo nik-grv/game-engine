@@ -42,12 +42,12 @@ namespace Engine {
 	*/
 	class Application
 	{
+
 	protected:
 		Application(); //!< Constructor
-
+		
 		std::shared_ptr<Log> m_loggerSystem; //!< logger system var
 		std::shared_ptr<System> m_windowSystem; //!< window system
-
 		std::shared_ptr<PhysicsSystem> m_physics; // Physics Sytem
 
 		std::shared_ptr<Window> m_window; //!< timer var
@@ -69,7 +69,9 @@ namespace Engine {
 		bool onMouseBtnReleased(MouseButtonReleasedEvent& e); //!<run when mouse button is released
 		bool onMouseScrolled(MouseScrollEvent& e); //!<run when mouse button is released
 
+
 	private:
+		unsigned char* pixel;
 		static Application* s_instance;		//!< Singleton instance of the application
 		bool m_running = true;	//!< Is the application running
 		glm::mat4 projection;		//<! 3D camera projection
