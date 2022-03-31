@@ -39,13 +39,13 @@ namespace Engine {
 	{
 		for (auto ent : m_entities)
 			ent = m_registry.create();
-		
+
 		if (s_instance == nullptr)
 		{
 			s_instance = this;
 		}
 		//Start system and logger
-		m_loggerSystem.reset(new Log); 
+		m_loggerSystem.reset(new Log);
 		m_loggerSystem->start();
 
 		Log::info("Core Starting...");
@@ -58,8 +58,6 @@ namespace Engine {
 #endif
 		m_windowSystem->start();
 
-		m_physics.reset(new PhysicsSystem);
-		m_physics->start(); // reset first? we need?
 		//m_physics->m_world->setGravity(reactphysics3d::Vector3(0.f, -10.f, 0.f));
 		//m_physics->m_world->setIsGravityEnabled(true);
 
@@ -74,7 +72,7 @@ namespace Engine {
 		{
 			std::cout << "\nStart with Fullscreen (Y/N) ?\n";
 			std::cin >> m_setFullScreen;
-			
+
 			while (tolower(m_setFullScreen) != 'y' && tolower(m_setFullScreen) != 'n')
 			{
 				std::cout << "\nPlease enter Y or N as ur choice : ";
@@ -95,12 +93,12 @@ namespace Engine {
 				std::cout << "\nLaunching in Minimised Mode!\n";
 				std::cin.ignore();
 			}
-		
+
 		}
 		*/
 #pragma endregion
 
-		WindowProperties props("My Game Engine",RendererShared::SCR_WIDTH, RendererShared::SCR_HEIGHT,m_isFullscreen);
+		WindowProperties props("My Game Engine", RendererShared::SCR_WIDTH, RendererShared::SCR_HEIGHT, m_isFullscreen);
 		m_window.reset(Window::create(props));
 		
 		int width, height; 
@@ -123,7 +121,7 @@ namespace Engine {
 		//keyboard callbacks
 		m_window->getEventHandler().setOnKeyPressedEvent(std::bind(&Application::onKeyPressed, this, std::placeholders::_1));
 		m_window->getEventHandler().setOnKeyReleasedEvent(std::bind(&Application::onKeyReleased, this, std::placeholders::_1));
-		
+
 		//mouse callbacks
 		m_window->getEventHandler().setOnMouseMovedEvent(std::bind(&Application::onMouseMoved, this, std::placeholders::_1));
 		m_window->getEventHandler().setOnMouseBtnPressedEvent(std::bind(&Application::onMouseBtnPressed, this, std::placeholders::_1));
@@ -137,8 +135,14 @@ namespace Engine {
 
 		Renderer2D::init();
 		//Renderer3D::init();
-		Log::info("== Core Running ==");
-		Log::info("");
+		//Log::info("== Core Running ==");
+		//Log::info("");
+
+		m_physics.reset(new PhysicsSystem);
+		m_physics->start(); // reset first? we need?
+
+		m_physics->m_world->setGravity(rp3d::Vector3(0.0f, -9.8f, 0.0f));
+		m_physics->m_world->setIsGravityEnabled(true);
 	}
 
 
@@ -309,8 +313,10 @@ namespace Engine {
 		m_windowSystem->stop();
 		free(pixel);
 		for (auto ent : m_entities)
-			m_registry.destroy(ent);
-
+		{
+			if(m_registry.valid(ent))
+				m_registry.destroy(ent);
+		}
 	}
 
 
@@ -320,17 +326,32 @@ namespace Engine {
 	*/
 	void Application::run()
 	{
+
+#pragma endregion RenderCommands
+
 		float timestep = 0.f;
 		while (m_running)
 		{
 			timestep = m_timer->getElapsedTime();
+
 			m_timer->reset();
 
-			m_physics->m_world->update(timestep);
+			timestep = std::min(timestep, 1.f / 8.f);
+
+			if (!isFirstFrame)
+			{
+				m_physics->m_world->update(timestep);
+			}
 			m_layerStack.Update(timestep);
 			m_layerStack.Render();
 			m_window->onUpdate(timestep);
+
 			glClear(GL_COLOR_BUFFER_BIT);
+
+
+			if(isFirstFrame)
+				isFirstFrame = false;
+
 		}
 
 	}

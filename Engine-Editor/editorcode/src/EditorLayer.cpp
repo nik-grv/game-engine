@@ -50,8 +50,6 @@ EditorLayer::EditorLayer(const char* name) : Layer(name), m_registry(Application
 	Renderer3D::registerShader(shader);
 
 	//1st model
-	//Loader::ASSIMPLoad("./assets/models/zard/mesh.3DS", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
-	//Loader::ASSIMPLoad("./assets/models/bob/boblampclean.md5mesh", aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace );
 	Loader::ASSIMPLoad("./assets/models/Tank.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
 
 	m_VAO1.reset(VertexArray::create());

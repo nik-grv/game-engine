@@ -196,6 +196,7 @@ project "Engine-Editor"
 			"%{prj.name}/editorcode/src/**.cpp",
 			"%{prj.name}/editorcode/panels/**.h",
 			"%{prj.name}/editorcode/panels/**.cpp",
+			"%{prj.name}/editorcode/OpenGL/**.cpp"
 		}
 	
 		includedirs
@@ -249,6 +250,7 @@ project "Engine-Editor"
 			4244,
 			4267,
 			4307,
+
 		}
 	
 		filter "system:windows"

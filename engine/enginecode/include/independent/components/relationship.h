@@ -19,9 +19,14 @@ namespace  Engine
 		entt::entity next = entt::null;
 		entt::entity parent = entt::null;
 
-		void setChild(entt::entity parentEntity, entt::entity childEntity);
-		void UpdateChildren();
-
+		
 	};
+
+	namespace HierarchySystem
+	{
+		void setChild(entt::entity parentEntity, entt::entity childEntity);
+		void UpdateChildren(entt::entity root);
+		entt::entity GetChildEntity(entt::entity parentEntity, int childNumber);
+	}
 
 }
