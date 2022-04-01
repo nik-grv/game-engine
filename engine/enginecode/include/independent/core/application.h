@@ -56,7 +56,7 @@ namespace Engine {
 
 		EventHandler m_eventHandler; //!< Event handler
 
-		
+		std::shared_ptr< AudioManager> m_audio;
 		
 		
 		bool onWindowClose(WindowCloseEvent& e); //!<run when window closes

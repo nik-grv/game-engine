@@ -281,7 +281,10 @@ namespace Engine
 
 	void AudioManager::getEventParameter(const std::string& strEventName, const std::string& strEventParameter, float* value)
 	{
-
+		auto it = m_events.find(strEventName);
+		if (it == m_events.end())
+			return;
+		errorCheck(it->second->getParameterByName(strEventParameter.c_str(), value));
 	}
 
 	void AudioManager::setEventParameter(const std::string& strEventName, const std::string& strParameterName, float value)
