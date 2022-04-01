@@ -111,7 +111,7 @@ namespace Engine {
 		//m_registry.emplace<TransformComponent>(m_entities[5]);
 
 		auto tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
-		
+
 		auto cubeTransform = m_registry.get<TransformComponent>(m_entities[2]).GetTransform();
 		Log::error("{0},{1},{2}", cubeTransform[3][0], cubeTransform[3][1], cubeTransform[3][2]);
 
@@ -133,8 +133,8 @@ namespace Engine {
 		m_registry.emplace<RenderComponent>(m_entities[2], m_VAO2, mat2);
 		m_registry.emplace<RenderComponent>(m_entities[4], m_VAO2, mat1);
 
-		
-		auto& e = m_registry.emplace<EmitterComponent>(m_entities[4], 1.0f, glm::vec3(0.f),glm::vec3(0.0f,0.5f,0.0f));
+
+		auto& e = m_registry.emplace<EmitterComponent>(m_entities[4], 1.0f, glm::vec3(0.f), glm::vec3(0.0f, 0.5f, 0.0f));
 		e.blendModes = BlendModes::Additive;
 		e.hostProps.linearVelocity = { 0.0f,1.5f,0.0f };
 		e.hostProps.linearAccelaration = { 0.0f,0.0f,0.0f };
@@ -144,7 +144,7 @@ namespace Engine {
 		e.hostProps.endSize = { 0.7f,0.7f };
 		e.hostProps.startColor = { 0.7f,0.7f,0.7f,0.9f };
 		e.hostProps.endColor = { 0.2f,0.2f,0.2f,0.5f };
-		e.hostProps.lifetime = 1.0f;
+		e.hostProps.lifetime = 60.0f;
 		e.hostProps.lifetimeRemaining = e.hostProps.lifetime;
 		e.hostProps.velocityRandomisation = { 0.15f,0.05f,0.15f };
 		e.hostProps.velRandomType = RandomTypes::Normal;
@@ -152,19 +152,25 @@ namespace Engine {
 		e.hostProps.posRandomType = RandomTypes::Normal;
 		e.deviceProps.linearPosition = { cubeTransform[3][0],cubeTransform[3][1] ,cubeTransform[3][2] };
 		uint32_t index = 0;
-		ParticleSystem::AddTexture("assets/textures/letterCube.png",index);
+		ParticleSystem::AddTexture("assets/textures/letterCube.png", index);
 		//ParticleSystem::GetUVs(16, e.deviceProps.current_UVStart, e.deviceProps.current_UVEnd);
 		e.trackingVelocity = true;
 
 
-
+		m_particle.reset(new Particle(e.hostProps, e.deviceProps, BlendModes::Additive));
+		for (int i = 0; i < 500; i++)
+		{
+			ParticleSystem::AddParticle(*m_particle);
+		}
 	}
 
 	bool doit = true;
 	void EnTTLayer::OnUpdate(float timestep)
-	{		
-		if(doit)
-			NGPhyiscs::updateTransforms();
+	{	
+
+		m_particle->OnUpdate(timestep);
+
+		NGPhyiscs::updateTransforms();
 		//doit = false;
 		m_camera.update(timestep);
 		ParticleSystem::OnUpdate(timestep, m_camera.getCameraPos());
@@ -230,7 +236,7 @@ namespace Engine {
 
 		Renderer2DBillboard::begin(m_swu3D);
 		
-		Renderer2DBillboard::submit(quad, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		//Renderer2DBillboard::submit(quad, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 		Renderer2DBillboard::end();
 
 		ParticleSystem::OnRender(m_swu3D);

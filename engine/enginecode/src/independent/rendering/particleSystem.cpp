@@ -111,6 +111,7 @@ namespace Engine {
 			s_data->additiveBlendParticleDrawCount += 4;
 			break;
 		}
+		Log::error("DRW COUNT - {0}", s_data->additiveBlendParticleDrawCount);
 
 		for (int i = 0; i < 4; i++) {
 			(*pRenderVerts)[i + startIndex].position = model * s_data->quad[i];
@@ -177,7 +178,7 @@ namespace Engine {
 			{
 				return glm::length2(camera - p1.deviceProps.linearPosition) < glm::length2(camera - p2.deviceProps.linearPosition);
 			});
-		s_data->mixedBlendParticleDrawCount = 0;
+		s_data->additiveBlendParticleDrawCount = 0;
 
 		for (int i = 0; i < s_data->additiveBlendParticles.size(); i++) {
 			s_data->additiveBlendParticles[i].OnUpdate(timestep);
@@ -200,6 +201,9 @@ namespace Engine {
 	}
 
 	void ParticleSystem::OnRender(const SceneWideUniforms& swu) {
+
+		Log::error("DRW COUNT on rendr- {0}", s_data->additiveBlendParticleDrawCount);
+
 		glUseProgram(s_data->shader->getRenderID());
 		//s_data->shader->uploadIntArray("u_texData", &s_data->textureUnit,32); //sort this to be correct
 
@@ -213,16 +217,18 @@ namespace Engine {
 
 		s_data->VAO->getVertexBuffers().at(0)->edit(s_data->nonBlendVertecies.data(), sizeof(ParticleVertex) * s_data->nonBlendParticleDrawCount,0);
 		glDrawElements(GL_QUADS, s_data->nonBlendParticleDrawCount, GL_UNSIGNED_INT, nullptr);
+		s_data->nonBlendParticleDrawCount = 0;
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		s_data->VAO->getVertexBuffers().at(0)->edit(s_data->mixedBlendVertecies.data(), sizeof(ParticleVertex) * s_data->mixedBlendParticleDrawCount,0);
 		glDrawElements(GL_QUADS, s_data->mixedBlendParticleDrawCount, GL_UNSIGNED_INT, nullptr);
+		s_data->mixedBlendParticleDrawCount= 0;
 
 		glBlendFunc(GL_ONE, GL_ONE);
 		s_data->VAO->getVertexBuffers().at(0)->edit(s_data->additiveBlendVertecies.data(), sizeof(ParticleVertex) * s_data->additiveBlendParticleDrawCount,0);
 		glDrawElements(GL_QUADS, s_data->additiveBlendParticleDrawCount, GL_UNSIGNED_INT, nullptr);
-
+		s_data->additiveBlendParticleDrawCount = 0;
 		glDisable(GL_BLEND);
 	}
 

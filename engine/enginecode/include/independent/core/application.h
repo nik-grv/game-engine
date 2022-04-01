@@ -23,7 +23,6 @@
 
 #include "systems/log.h"
 #include "systems/physics.h"
-#include "systems/randomiser.h"
 #include "events/events.h"
 #include "core/timer.h"
 #include "core/window.h"
@@ -32,7 +31,7 @@
 #include "camera/Camera.h"
 #include "camera/FollowPlayer.h"
 #include <entt/entt.hpp>
-#include "rendering/particleSystem.h"
+#include "systems/randomiser.h"
 
 
 namespace Engine {
@@ -44,17 +43,17 @@ namespace Engine {
 	*/
 	class Application
 	{
+
 	protected:
 		Application(); //!< Constructor
-
+		
 		std::shared_ptr<Log> m_loggerSystem; //!< logger system var
 		std::shared_ptr<System> m_windowSystem; //!< window system
-		std::shared_ptr<Randomiser> m_randomiserSystem; //system not started yet, dont need it for now
 		std::shared_ptr<PhysicsSystem> m_physics; // Physics Sytem
-		std::shared_ptr<ParticleSystem> m_particleSystem;
 
 		std::shared_ptr<Window> m_window; //!< timer var
 		std::shared_ptr<Timer> m_timer; //!< timer var
+		std::shared_ptr<Randomiser> m_randomiserSystem; //!< timer var
 
 		EventHandler m_eventHandler; //!< Event handler
 		
@@ -72,7 +71,9 @@ namespace Engine {
 		bool onMouseBtnReleased(MouseButtonReleasedEvent& e); //!<run when mouse button is released
 		bool onMouseScrolled(MouseScrollEvent& e); //!<run when mouse button is released
 
+
 	private:
+		unsigned char* pixel;
 		static Application* s_instance;		//!< Singleton instance of the application
 		bool m_running = true;	//!< Is the application running
 		glm::mat4 projection;		//<! 3D camera projection
@@ -92,7 +93,7 @@ namespace Engine {
 
 		bool m_isFullscreen = false; //!< is window fullscreen
 		bool m_fullscreenSet = false; //!< is window fullscreen
-		char m_setFullScreen; //!< input for fullscreen
+		char m_setFullScreen; //!< input for full screen
 	public:
 		virtual ~Application(); //!< Deconstructor
 		inline static Application& getInstance() { return *s_instance; } //!< Instance getter from singleton pattern
@@ -105,8 +106,11 @@ namespace Engine {
 
 		entt::registry m_registry; //ESC registry whatever that is
 		std::vector<entt::entity> m_entities; //Entities
+
+		bool isFirstFrame = true;
 	};
 
 	// To be defined in users code
 	Application* startApplication(); //!< Function definition which provides an entry hook
+	
 }

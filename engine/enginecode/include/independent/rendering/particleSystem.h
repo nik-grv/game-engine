@@ -1,7 +1,7 @@
 #pragma once
 
 #include "rendering/RendererShared.h"
-//#include "systems/randomiser.h"
+#include "systems/randomiser.h"
 
 namespace Engine {
 
@@ -16,8 +16,8 @@ namespace Engine {
 		float angularAcceleration = 0.f;
 		float angularDrag = 0.f;
 
-		float lifetime = 1.f;
-		float lifetimeRemaining = 1.f;
+		float lifetime = 60.f;
+		float lifetimeRemaining = 60.f;
 
 		glm::vec4 startColor = { 0.f, 1.f, 1.f, 1.f };
 		glm::vec4 endColor = { 0.f, 0.f, 0.f, 0.f };
@@ -50,7 +50,7 @@ namespace Engine {
 
 	class Particle {
 	public:
-		Particle::Particle(ParticleHostProperties& Hprops, ParticleDeviceProperties& Dprops, BlendModes p_blendMode = BlendModes::None);
+		Particle(ParticleHostProperties& Hprops, ParticleDeviceProperties& Dprops, BlendModes p_blendMode = BlendModes::None);
 		void OnUpdate(float timestep);
 		ParticleHostProperties hostProps;
 		ParticleDeviceProperties deviceProps;

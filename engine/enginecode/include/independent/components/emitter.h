@@ -24,7 +24,7 @@ namespace Engine {
 		glm::vec3 positionOffset;
 		float emissionRate;
 		float timeBetweenEmissions;
-		float elapsedTime = 0.f;
+		float elapsedTime = 60.f;
 		bool trackingVelocity = false;
 	};
 

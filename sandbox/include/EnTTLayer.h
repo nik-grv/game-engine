@@ -124,6 +124,7 @@ namespace Engine {
 		std::shared_ptr<ShaderRend> shader;
 		std::shared_ptr<Material> mat1, mat2;
 		std::shared_ptr<Material> wireframeMat;
+		std::shared_ptr<Particle> m_particle;
 
 		glm::mat4 m_view3D;
 		glm::mat4 m_projection3D;
