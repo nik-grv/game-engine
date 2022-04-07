@@ -15,5 +15,7 @@ namespace Engine
 		void OnImGuiRender();
 	private:
 		entt::registry& m_registry = Application::getInstance().m_registry;
+
+		void ImGuiSomething(entt::entity entity);
 	};
 }

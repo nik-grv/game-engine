@@ -31,10 +31,10 @@ namespace Engine
 			{
 				layer->Begin();
 				layer->onImGuiRender();
+				layer->OnRender();
 				layer->End();
 			}
 			
-			layer->OnRender();
 		}
 	}
 

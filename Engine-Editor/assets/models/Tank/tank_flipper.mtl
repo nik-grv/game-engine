@@ -1,0 +1,9 @@
+newmtl Tank:orig_01___Default
+illum 4
+Kd 0.00 0.00 0.00
+Ka 1.00 1.00 1.00
+Tf 1.00 1.00 1.00
+map_Kd TNKGAMECAMO1.png
+Ni 1.45
+Ks 0.50 0.50 0.50
+Ns 225.00
