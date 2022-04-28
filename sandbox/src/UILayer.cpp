@@ -26,17 +26,17 @@ UILayer::UILayer(const char* name) : Layer(name)
 	middle.addWidget<Spacer>(50, 10);
 	middle.addWidget<Label>(400, 100, "This is a Pause Menu");
 
-	slider.addWidget<Slider>(200, 0, 100, "Low", "High");
-	slider.addWidget<Spacer>(200, 10);
-	slider.addWidget<Slider>(200, 25, 75, "Min", "Max");
+	//slider.addWidget<Slider>(200, 0, 100, "Low", "High");
+	//slider.addWidget<Spacer>(200, 10);
+	//slider.addWidget<Slider>(200, 25, 75, "Min", "Max");
 
-	bottom.addWidget<Button>(200, 60, "Button 1", []() {Log::info("clicked on button 1");  });
+	bottom.addWidget<Button>(200, 200, "Button 1", []() {Log::info("clicked on button 1");  });
 	bottom.addWidget<Spacer>(300, 10);
 	bottom.addWidget<Button>(200, 60, "Button 2", []() {Log::info("clicked on button 2");  });
 
 	m_window.addContainer(top);
 	m_window.addContainer(middle);
-	m_window.addContainer(slider);
+	//m_window.addContainer(slider);
 	m_window.addContainer(bottom);
 
 	m_window.show();

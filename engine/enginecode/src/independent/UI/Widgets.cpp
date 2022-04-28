@@ -51,14 +51,14 @@ namespace Engine
 	{
 		m_position = relativePosition; 
 		glm::ivec2 textSize = Renderer2D::getTextSize(m_text);
-		glm::ivec2 centre = m_position + m_size / 2;
+		centre = m_position + m_size / 2;
 		m_textPosition.x = centre.x - textSize.x / 2;
 		m_textPosition.y = centre.y + textSize.y / 2;
 	}
 
 	void Button::onRender() const
 	{
-		Renderer2D::submit(Quad::createCentreHalfExtens(m_position, m_size), glm::vec4(0.5, 0.5, 0.5, 1.0));
+		Renderer2D::submit(Quad::createCentreHalfExtens(glm::vec2(centre.x,centre.y),glm::vec2(m_size.x * 0.5f,m_size.y * 0.5f)), glm::vec4(0.5, 0.5, 0.5, 1.0));
 		Renderer2D::submit(m_text, m_textPosition, glm::vec4(1.f));
 	}
 

@@ -9,7 +9,7 @@ namespace Engine
 	struct UIColourScheme
 	{
 		glm::vec4 background = { 0.2f, 0.2f,0.2f,1.f }; //!< background colour
-		glm::vec4 foreground = { 1.f, 1.f,1.f,1.f }; //!< foreground colour 
+		glm::vec4 foreground = { 1.f, 0.f,0.f,1.f }; //!< foreground colour 
 		glm::vec4 highlight = { 0.4f, 0.2f,0.6f,1.f }; //!< highlight colour 
 	};
 

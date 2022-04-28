@@ -30,6 +30,8 @@ namespace Engine
 		Label(int32_t sizeX, int32_t sizeY, const char* labelText);
 		virtual void onRender() const;
 		virtual void updatePosition(glm::ivec2& relativePosition) override;
+		glm::ivec2 centre;
+
 	protected:
 		const char* m_text;
 		glm:: ivec2 m_textPosition;

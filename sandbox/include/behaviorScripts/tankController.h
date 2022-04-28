@@ -130,8 +130,6 @@ public:
 			projectiel_rb.m_body->setUserData(reinterpret_cast<uint32_t*>(i));
 			
 			registry.emplace<DestroyOnContactComponent>(projectileEntity);
-			
-			Log::error("SIZE --{0}", m_entities.size());
 
 		}
 	}
@@ -141,6 +139,7 @@ public:
 		entt::registry& registry = Application::getInstance().m_registry;
 		auto& m_tankHead = registry.get<RigidBodyComponent>(HierarchySystem::GetChildEntity(m_entity, 0));
 		auto& m_tankBarrel = registry.get<RigidBodyComponent>(HierarchySystem::GetChildEntity(HierarchySystem::GetChildEntity(m_entity, 0), 0));
+		auto& m_tankBarrelTransform = registry.get<TransformComponent>(HierarchySystem::GetChildEntity(HierarchySystem::GetChildEntity(m_entity, 0), 0));
 		float xpos = e.getX();
 		float ypos = e.getY();
 
@@ -180,44 +179,66 @@ public:
 
 			//m_tankHead.rotation = quatX + quatY + quatZ;
 			//m_tankHead.rotation += glm::quat(0, 0, 2.0f, 0);
-			m_tankHead.m_body->setAngularVelocity(rp3d::Vector3(0, -1.f, 0.0f));
-			m_tankHead.m_body->setAngularDamping(0.9f);
+			m_tankHead.m_body->setAngularVelocity(rp3d::Vector3(0, -0.8f, 0.0f));
+			m_tankHead.m_body->setAngularDamping(0.99f);
 		}
 		else if (xoffset < -0.5f)
 		{
 			//m_tankHead.rotation += glm::quat(0, 0, -2.0f, 0);
-			m_tankHead.m_body->setAngularVelocity(rp3d::Vector3(0, 1.f, 0.0f));
-			m_tankHead.m_body->setAngularDamping(0.9f);
+			m_tankHead.m_body->setAngularVelocity(rp3d::Vector3(0, 0.8f, 0.0f));
+			m_tankHead.m_body->setAngularDamping(0.99f);
 		}
 
 
 		if (yoffset > 0.8f)
 		{
 			m_tankBarrel.m_body->setAngularVelocity(rp3d::Vector3(0.5f, 0.0f, 0.0f));
-			m_tankBarrel.m_body->setAngularDamping(0.9f);
+			m_tankBarrel.m_body->setAngularDamping(0.99f);
 
 		}
 		else if (yoffset < -0.8f)
 		{
 			m_tankBarrel.m_body->setAngularVelocity(rp3d::Vector3(-0.5f, 0.0f, 0.0f));
-			m_tankBarrel.m_body->setAngularDamping(0.9f);
+			m_tankBarrel.m_body->setAngularDamping(0.99f);
 		}
 		rp3d::Transform t = m_tankBarrel.m_body->getTransform();
 
 
-		if (m_tankBarrel.m_body->getTransform().getOrientation().x > 0.12f)
+		if (m_tankBarrel.m_body->getTransform().getOrientation().x >= 0.12f)
 		{
-			//Log::error("Clamping,,...");
+			Log::error("Clamping,,...");
 			rp3d::Vector3 ve = { 0.12f,0,0 };
 			rp3d::Quaternion quat = { 0,ve };
-			t.setOrientation(quat);
+			//t.setOrientation(quat);
+			m_tankBarrelTransform.rotation = glm::quat(quat.w,quat.x,quat.y,quat.z);
+
+			m_tankBarrel.m_body->setAngularVelocity(rp3d::Vector3(-0.1f, 0.0f, 0.0f));
+			m_tankBarrel.m_body->setAngularDamping(0.0f);
+
+			m_tankBarrelTransform.SetTransform(m_tankBarrelTransform.GetTransform(), m_tankBarrelTransform.translation, m_tankBarrelTransform.rotation, m_tankBarrelTransform.scale);
+			m_tankBarrelTransform.UpdateTransform();
 		}
-		else if (m_tankBarrel.m_body->getTransform().getOrientation().x < 0.000f)
+		else if (m_tankBarrel.m_body->getTransform().getOrientation().x <= 0.000f)
 		{
+			Log::error("Clamping,,...");
 			rp3d::Vector3 ve = { 0,0,0 };
 			rp3d::Quaternion quat = { ve, 0 };
-			t.setOrientation(quat);
+			//t.setOrientation(quat);
+			m_tankBarrelTransform.rotation = glm::quat(quat.w, quat.x, quat.y, quat.z);
+
+			m_tankBarrel.m_body->setAngularVelocity(rp3d::Vector3(0.1f, 0.0f, 0.0f));
+			m_tankBarrel.m_body->setAngularDamping(0.0f);
+
+			m_tankBarrelTransform.SetTransform(m_tankBarrelTransform.GetTransform(), m_tankBarrelTransform.translation, m_tankBarrelTransform.rotation, m_tankBarrelTransform.scale);
+			m_tankBarrelTransform.UpdateTransform(); 
+
 		}
+
+		//else
+		//{
+		//	m_tankBarrel.m_body->setAngularVelocity(rp3d::Vector3(0.1f, 0.0f, 0.0f));
+		//	m_tankBarrel.m_body->setAngularDamping(0.0f);
+		//}
 
 		//Log::warn(m_tankBarrel.m_body->getTransform().getOrientation().x);
 

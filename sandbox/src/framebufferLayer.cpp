@@ -191,6 +191,24 @@ namespace Engine {
 		auto& barrelTransform = m_registry.get<TransformComponent>(m_entities[12]).GetTransform();
 		//auto slopeTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
 
+		m_camera.setCameraPos(glm::vec3(-1.0f, 1.0f, 8.0f));
+
+		auto& transform = m_registry.get<TransformComponent>(m_entities[0]).GetTransform();
+		m_followCam.reset(new FollowPlayer(transform));
+
+		if (!m_isPlayerCam)
+		{
+			m_view3D = m_camera.getCameraViewMatrix();
+		}
+		else
+		{
+			glm::mat4 view = glm::mat4(1.0f);
+			m_view3D = m_followCam->getViewMatrix();
+		}
+
+		m_projection3D =
+			glm::perspective(glm::radians(m_camera.getFOV()), (float)RendererShared::SCR_WIDTH / (float)RendererShared::SCR_HEIGHT, 0.1f, 100.f);
+
 		auto tank_rb = m_registry.emplace<RigidBodyComponent>(m_entities[1], RigidBodyType::Dynamic, tankTransform);
 		auto tankHead_rb = m_registry.emplace<RigidBodyComponent>(m_entities[6], RigidBodyType::Kinematic, tankHeadTransform);
 		auto tankBarrel_rb = m_registry.emplace<RigidBodyComponent>(m_entities[7], RigidBodyType::Kinematic, tankBarrelTransform);
@@ -202,6 +220,7 @@ namespace Engine {
 		auto crate_rb3 = m_registry.emplace<RigidBodyComponent>(m_entities[10], RigidBodyType::Dynamic, crateTransform3,10.0);
 		auto crate2_rb = m_registry.emplace<RigidBodyComponent>(m_entities[11], RigidBodyType::Dynamic, crate2Transform);
 		auto  barrel_rb = m_registry.emplace<RigidBodyComponent>(m_entities[12], RigidBodyType::Dynamic, barrelTransform,10.0);
+
 
 		//auto slope_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Static, slopeTransform);
 
@@ -248,23 +267,7 @@ namespace Engine {
 
 		//set player cam
 
-		m_camera.setCameraPos(glm::vec3(-1.0f, 1.0f, 8.0f));
-
-		auto& transform = m_registry.get<TransformComponent>(m_entities[0]);
-		m_followCam.reset(new FollowPlayer(transform.GetTransform()));
-
-		if (!m_isPlayerCam)
-		{
-			m_view3D = m_camera.getCameraViewMatrix();
-		}
-		else
-		{
-			glm::mat4 view = glm::mat4(1.0f);
-			m_view3D = m_followCam->getViewMatrix();
-		}
-
-		m_projection3D =
-			glm::perspective(glm::radians(m_camera.getFOV()), (float)RendererShared::SCR_WIDTH / (float)RendererShared::SCR_HEIGHT, 0.1f, 100.f);
+		
 
 		m_swu3D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_view3D)));
 		m_swu3D["u_projection"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_projection3D)));
@@ -399,13 +402,10 @@ namespace Engine {
 	void FramebufferLayer::onMouseMoved(MouseMovedEvent& e)
 	{
 		ScriptSystem::OnMouseMoved(e);
-		//	
-		//}
-		//else
-		//{
-		if(!m_isPlayerCam)
+
+
+		if (!m_isPlayerCam)
 			m_camera.mouseMovement(e.getMousePos().x, e.getMousePos().y);
-		//}
 	}
 
 
@@ -431,21 +431,6 @@ namespace Engine {
 
 		ScriptSystem::OnKeyPressed(e);
 
-		/*if (e.getKeyCode() == NG_KEY_KP_ADD)
-		{
-			if (InputPoller::isKeyPressed(NG_KEY_X)) { m_rotation.x += rot; Log::info("X pressed"); }
-			else if (InputPoller::isKeyPressed(NG_KEY_Y)) { m_rotation.y += rot; }
-			else if (InputPoller::isKeyPressed(NG_KEY_Z)) { m_rotation.z += rot; }
-			else { m_scale += scale; }
-		}
-
-		if (e.getKeyCode() == NG_KEY_KP_SUBTRACT)
-		{
-			if (InputPoller::isKeyPressed(NG_KEY_X)) { m_rotation.x -= rot; }
-			else if (InputPoller::isKeyPressed(NG_KEY_Y)) { m_rotation.y -= rot; }
-			else if (InputPoller::isKeyPressed(NG_KEY_Z)) { m_rotation.z -= rot; }
-			else if (m_scale > scale) { m_scale -= scale; }
-		}*/
 
 
 		////switch camera type
@@ -454,23 +439,6 @@ namespace Engine {
 			m_isPlayerCam = !m_isPlayerCam;
 		}
 
-
-		//if (e.getKeyCode() == NG_KEY_UP)
-		//{
-		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, -25.0f));
-		//}
-		//if (e.getKeyCode() == NG_KEY_DOWN)
-		//{
-		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, 25.0f));
-		//}
-		//if (e.getKeyCode() == NG_KEY_LEFT)
-		//{
-		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(-25.0f, 0.0f, 0.0f));
-		//}
-		//if (e.getKeyCode() == NG_KEY_RIGHT)
-		//{
-		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(25.0f, 0.0f, 0.0f));
-		//}
 
 
 	}
