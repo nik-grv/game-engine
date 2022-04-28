@@ -34,16 +34,31 @@ namespace Engine
 
 	void SceneHierarchyPanel::ImGuiSomething(entt::entity entity)
 	{
-		auto& relComp = m_registry.get<RelationshipComponent>(entity);
+		//Getting the parent component
+		auto relComp = m_registry.get<RelationshipComponent>(entity);
+		//Getting the first child of the parent
 		auto child = relComp.first;
-
+		auto& labelCompEntt = m_registry.get<LabelComponent>(entity);
+		ImGui::Text("%s", labelCompEntt.m_label);
+		//Iterate through all children of the parent (if present)
 		for (int i = 0; i < relComp.children; i++)
 		{
+			//Getting the child's label component
 			auto& labelComp = m_registry.get<LabelComponent>(child);
-			child = relComp.next;
 
+			//Print child's label
 			ImGui::Text("%s", labelComp.m_label);
-			ImGuiSomething(child);
+			//Get the child's relationship component
+			relComp = m_registry.get<RelationshipComponent>(child);
+
+			//If the child has children
+			if (relComp.children > 0)
+			{
+				child = relComp.first;
+				//Go again
+				ImGuiSomething(child);
+			}
+
 		}
 	}
 
