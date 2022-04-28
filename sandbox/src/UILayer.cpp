@@ -21,13 +21,13 @@ UILayer::UILayer(const char* name) : Layer(name)
 	HorizontalContainer top, middle, slider, bottom;
 
 	top.addWidget<Spacer>(100, 10);
-	top.addWidget<Label>(300, 100, "Hello World!");
+	top.addWidget<Label>(300, 100, "This is Our Tank Game");
 
 	middle.addWidget<Spacer>(50, 10);
-	middle.addWidget<Label>(500, 100, "some text message.");
+	middle.addWidget<Label>(400, 100, "This is a Pause Menu");
 
-	slider.addWidget<Slider>(400, 0, 100, "Low", "High");
-	slider.addWidget<Spacer>(50, 10);
+	slider.addWidget<Slider>(200, 0, 100, "Low", "High");
+	slider.addWidget<Spacer>(200, 10);
 	slider.addWidget<Slider>(200, 25, 75, "Min", "Max");
 
 	bottom.addWidget<Button>(200, 60, "Button 1", []() {Log::info("clicked on button 1");  });
