@@ -27,6 +27,10 @@ public:
 	virtual void onMouseMoved(MouseMovedEvent& e) override;
 	virtual void onMouseBtnPressed(MouseButtonPressedEvent& e) override;
 	virtual void onMouseBtnReleased(MouseButtonReleasedEvent& e) override;
+
+	bool playBtnPressed = false;
+	bool quitBtnPressed = false;
+
 private:
 	float m_timestep;
 	std::shared_ptr<RendererCommands> enableBlendCommand;
@@ -39,10 +43,12 @@ private:
 	glm::mat4 m_view2D;
 	glm::mat4 m_projection2D;
 
+	std::shared_ptr<Window> window;
+
 	using SceneWideUniforms = std::unordered_map<const char*, std::pair<ShaderDataType, void*>>; //!< sceen wide uniform 
 	SceneWideUniforms m_swu;
 
 	ModalWindow m_window;
 	std::vector<Quad> m_quad;
-	UILayerState m_state = UILayerState::InActive;
+	UILayerState m_state = UILayerState::Active;
 };

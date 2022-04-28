@@ -2,7 +2,8 @@
 
 UILayer::UILayer(const char* name) : Layer(name)
 {
-
+	setActive(true);
+	Log::error(isActive());
 	blendFuncAlphaCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::blendFuncCommand, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 	enableBlendCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::enableCommand, GL_BLEND));
 	disableDepthCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::disableCommand, GL_DEPTH_TEST));
@@ -10,7 +11,7 @@ UILayer::UILayer(const char* name) : Layer(name)
 	disableBlendCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::disableCommand, GL_BLEND));
 	setStandardBlendCommand.reset(RenderCommandFactory::createCommand(RendererCommands::Commands::blendFuncCommand, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-	auto& window = Application::getInstance().getAppWindow();
+	window = Application::getInstance().getAppWindow();
 
 	m_view2D = glm::mat4(1.0f);
 	m_projection2D = glm::ortho(0.0f, static_cast<float>(window->getWidth()), static_cast<float>(window->getHeight()), 0.0f);
@@ -30,9 +31,11 @@ UILayer::UILayer(const char* name) : Layer(name)
 	//slider.addWidget<Spacer>(200, 10);
 	//slider.addWidget<Slider>(200, 25, 75, "Min", "Max");
 
-	bottom.addWidget<Button>(200, 200, "Button 1", []() {Log::info("clicked on button 1");  });
+	bottom.addWidget<Button>(200, 200, "Start ", [&]() { setActive(false); playBtnPressed = true;
+	glfwSetInputMode(reinterpret_cast<GLFWwindow*>(window->getNativewindow()), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		});
 	bottom.addWidget<Spacer>(300, 10);
-	bottom.addWidget<Button>(200, 60, "Button 2", []() {Log::info("clicked on button 2");  });
+	bottom.addWidget<Button>(200, 200, "Quit This Epic Game", [&]() { quitBtnPressed = true; window->close();  });
 
 	m_window.addContainer(top);
 	m_window.addContainer(middle);
