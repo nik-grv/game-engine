@@ -27,13 +27,13 @@ namespace Engine
 	{
 		for (auto& layer : m_layers)
 		{
+			layer->Begin();
 			if (layer->getLayerName() == "ImGUI Layer") //Be good to find a way to do it for every gui layer ?
 			{
-				layer->Begin();
 				layer->onImGuiRender();
-				layer->OnRender();
-				layer->End();
 			}
+			layer->OnRender();
+			layer->End();
 			
 		}
 	}
