@@ -73,3 +73,11 @@
 	path = vendor/STBimage
 	url = https://github.com/nothings/stb.git
 	branch = master
+[submodule "vendor/imgui"]
+	path = vendor/imgui
+	url = https://github.com/TheCherno/imgui.git
+	branch = docking
+[submodule "vendor/yaml-cpp"]
+	path = vendor/yaml-cpp
+	url = https://github.com/TheCherno/yaml-cpp.git
+	branch = master

@@ -3,6 +3,7 @@
 
 
 #include <rendering/Renderer3D.h>
+#include <rendering/Renderer2D.h>
 
 #include <rendering/shaderDataType.h>
 #include "engine.h"
@@ -10,7 +11,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "camera/Camera.h"
-
+#include <entt/entt.hpp>
+#include "include/independent/components/transform.h"
+#include "include/independent/components/relationship.h"
+#include "include/independent/components/render.h"
+#include "include/independent/components/label.h"
+#include "include/independent/components/rigidBody.h"
+#include <assimpLoader.h>
+#include <rendering/framebuffer.h>
 
 using namespace Engine;
 
@@ -18,52 +26,20 @@ class EditorLayer : public Layer
 {
 public:
 	EditorLayer(const char* name);
+	static void init();
+	static void begin();
+	static void end();
+	static void shutdown();
 	void OnUpdate(float timestep) override;
+	void OnAttach() override;
+	void OnDettach() override;
 	void OnRender() override;
 	void onMouseMoved(MouseMovedEvent& e) override;
+	void onKeyPressed(KeyPressedEvent& e) override;
+	void cameraUpdate(MouseMovedEvent e);
+	void moveUpdate(KeyPressedEvent e);
 private:
-
-	std::shared_ptr<RendererCommands> clearColorAndDepthCommand;
-
-
-#pragma region RAW_DATA
-
-	////vertices data when using texture atlast
-//float cubeVertices[8 * 24] = {
-//	//	 <------ Pos ------>  <--- normal --->  <-- UV -->
-//		 0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterSubTex.transformU(0.f),  letterSubTex.transformV(0.f),
-//		 0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterSubTex.transformU(0.f),  letterSubTex.transformV(0.5f),
-//		-0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(0.5f),
-//		-0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(0.f),
-
-//		-0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(0.5f),
-//		 0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(0.5f),
-//		 0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(0.f),
-//		-0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterSubTex.transformU(0.33), letterSubTex.transformV(0.f),
-
-//		-0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterSubTex.transformU(1.f),  letterSubTex.transformV(0.f),
-//		 0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(0.f),
-//		 0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(0.5f),
-//		-0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterSubTex.transformU(1.0f), letterSubTex.transformV(0.5f),
-
-//		0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,	letterSubTex.transformU(0.f),  letterSubTex.transformV(0.5f),
-//		 0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterSubTex.transformU(0.f),  letterSubTex.transformV(1.0f),
-//		-0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(1.0f),
-//		-0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  letterSubTex.transformU(0.3f), letterSubTex.transformV(0.5f),
-
-//		-0.5f,  0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(0.5f),
-//		-0.5f,  0.5f, -0.5f, -1.f,  0.f,  0.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(0.5f),
-//		-0.5f, -0.5f, -0.5f, -1.f,  0.f,  0.f,  letterSubTex.transformU(0.33f),letterSubTex.transformV(1.0f),
-//		-0.5f, -0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterSubTex.transformU(0.66f),letterSubTex.transformV(1.0f),
-
-//		0.5f, -0.5f, -0.5f,  1.f,  0.f,  0.f,   letterSubTex.transformU(1.0f), letterSubTex.transformV(1.0f),
-//		0.5f,  0.5f, -0.5f,  1.f,  0.f,  0.f,   letterSubTex.transformU(1.0f), letterSubTex.transformV(0.5f),
-//		0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,   letterSubTex.transformU(0.66f),letterSubTex.transformV(0.5f),
-//		0.5f, -0.5f, 0.5f,   1.f,  0.f,  0.f,   letterSubTex.transformU(0.66f),letterSubTex.transformV(1.0f)
-//};
-
-
-
+	//vertices adata
 	float cubeVertices[8 * 24] = {
 		//	 <------ Pos ------>  <--- normal --->  <-- UV -->
 			 0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  0.f,  0.f,
@@ -148,43 +124,46 @@ private:
 		20, 21, 22,
 		22, 23, 20
 	};
-#pragma endregion
-
-
-
-
-	std::shared_ptr<RendererCommands> enableBlendCommand;
-	std::shared_ptr<RendererCommands> disableDepthCommand;
-	std::shared_ptr<RendererCommands> blendFuncAlphaCommand;
-
-	std::shared_ptr<VertexArray> cubeVAO;
-	std::shared_ptr<VertexBuffer> cubeVBO;
-	std::shared_ptr<IndexBuffer> cubeIBO;
-
+	//
 
 	std::shared_ptr<VertexArray> m_VAO1, m_VAO2;
 	std::shared_ptr<VertexBuffer> m_VBO1, m_VBO2;
 	std::shared_ptr<IndexBuffer> m_IBO1, m_IBO2;
 	std::shared_ptr<ShaderRend> shader;
 	std::shared_ptr<Material> mat1, mat2;
+	std::shared_ptr<Material> wireframeMat;
 
-	
-	std::shared_ptr<ShaderRend> TPShader;
-	std::shared_ptr<Material> letterMat;
-
-
-	Camera m_camera;
-	glm::mat4 m_view3D;
-	glm::mat4 m_projection3D;
-	using SceneWideUniforms = std::unordered_map<const char*, std::pair<ShaderDataType, void*>>; //!< scene wide uniform 
-	SceneWideUniforms m_swu3D;
-
+	glm::mat4 m_view3D, m_view2D;
+	glm::mat4 m_projection3D, m_projection2D;
+	using SceneWideUniforms = std::unordered_map<const char*, std::pair<ShaderDataType, void*>>; //!< sceen wide uniform 
+	SceneWideUniforms m_swu3D, m_swu2D;
 	glm::mat4 m_model1, m_model2;
 
-	glm::vec3 m_rotation = { 0.f, 0.f, 0.f };
-	float m_scale = 1.f;
+	entt::registry& m_registry; //ESC registry whatever that is
+	std::vector<entt::entity>& m_entities; //Entities
 
+	entt::entity m_currentCamera; //Camera thing
 
+	Camera m_camera;
 
+	std::shared_ptr<RendererCommands> clearColorAndDepthCommand;
+	std::shared_ptr<RendererCommands> setGlLineCmd;
+	std::shared_ptr<RendererCommands> setGlFillCmd;
 
+	std::shared_ptr<RendererCommands> enableBlendCommand;
+	std::shared_ptr<RendererCommands> disableDepthCommand;
+	std::shared_ptr<RendererCommands> enableDepthCommand;
+	std::shared_ptr<RendererCommands> disableBlendCommand;
+	std::shared_ptr<RendererCommands> standardBlend;
+
+	std::shared_ptr<Framebuffer> defaultTarget;
+	std::shared_ptr<Framebuffer> textureTarget;
+	std::shared_ptr<Framebuffer> depthTarget;
+
+	std::shared_ptr<Framebuffer> m_sceneFBO;
+	std::shared_ptr<Framebuffer> m_defaultFBO;
+
+	Quad m_screenQuad;
+	SubTexture m_screenTexture;
+	bool usePP = false, m_ViewportFocused = false;
 };

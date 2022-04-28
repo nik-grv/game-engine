@@ -4,7 +4,7 @@
 
 #include "rendering/Framebuffer.h"
 
-namespace Engine 
+namespace Engine
 {
 	class OpenGLFramebuffer : public Framebuffer
 	{

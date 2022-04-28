@@ -15,8 +15,17 @@ namespace Engine {
 		glm::vec3 scale = { 1.f, 1.f, 1.f };
 
 		TransformComponent() { transform = glm::mat4(1.f); }
+
 		TransformComponent(glm::vec3 t, glm::vec3 r, glm::vec3 s) {
 			SetTransform(t, r, s);
+		}		
+
+		TransformComponent(glm::vec3 t, glm::quat r, glm::vec3 s) {
+
+			translation = t;
+			rotation = r;
+			scale = s;
+			UpdateTransform();
 		}
 
 		glm::mat4& SetTransform(glm::vec3 t, glm::vec3 r, glm::vec3 s) {
@@ -48,6 +57,14 @@ namespace Engine {
 			scale = s;
 			return UpdateTransform(parentTransform);
 		}
+		
+		
+		glm::mat4& SetTransform(glm::mat4 parentTransform, glm::vec3 t, glm::quat r, glm::vec3 s) {
+			translation = t;
+			rotation = r;
+			scale = s;
+			return UpdateTransform(parentTransform);
+		}
 
 
 		glm::mat4& UpdateTransform() {
@@ -62,6 +79,7 @@ namespace Engine {
 			return transform;
 		}
 
+		
 		glm::mat4& GetTransform() { return transform; }
 	private:
 		glm::mat4 transform;

@@ -1,0 +1,13 @@
+{
+    "name": "Tank",
+    "object": 1,
+    "active": true,
+    "answer": {
+      "everything": 21
+    },
+    "list": [1, 0, 2],
+    "obj": {
+      "vertices": "182f946129461z98274961408286y97",
+      "shader": 18.1
+    }
+  }

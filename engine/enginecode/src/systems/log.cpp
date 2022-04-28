@@ -11,14 +11,26 @@ namespace Engine
 	* that contains a shared pointer to a static spdlog logger
 	*/
 	std::shared_ptr<spdlog::logger> Log::s_myLogger = nullptr;
+	std::shared_ptr<spdlog::logger> Log::s_Editor = nullptr;
+	std::shared_ptr<spdlog::logger> Log::s_Sandbox = nullptr;
 	std::shared_ptr<spdlog::logger> Log::s_myFileLogger = nullptr;
 
 	void Engine::Log::start(SystemSignal init, ...)
 	{
-		spdlog::set_pattern("%^[%T]: %v%$");
+		spdlog::set_pattern("%^[%T] %n : %v%$");
 		spdlog::set_level(spdlog::level::trace);
 
-		s_myLogger = spdlog::stdout_color_mt("Console");
+		s_myLogger = spdlog::stdout_color_mt("[ Engine ]");
+		s_myLogger->set_level(spdlog::level::trace);
+
+		s_Editor = spdlog::stdout_color_mt("[ Editor ]");
+		s_Editor->set_level(spdlog::level::trace);
+
+		s_Sandbox = spdlog::stdout_color_mt("[ Sandbox ]");
+		s_Sandbox->set_level(spdlog::level::trace);
+
+		s_myFileLogger = spdlog::stdout_color_mt("[ File ]");
+		s_myFileLogger->set_level(spdlog::level::trace);
 
 		char filePath[256] = "logs/";
 		char time[128];
@@ -43,7 +55,10 @@ namespace Engine
 
 	void Engine::Log::stop(SystemSignal close, ...)
 	{
-		s_myLogger->info("Stopping logger");
+		s_myLogger->info("Shutting Down...");
+		s_myLogger.reset();
+		s_Sandbox.reset();
+		s_Editor.reset();
 		s_myLogger.reset();
 	}
 

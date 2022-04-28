@@ -13,13 +13,13 @@ namespace Engine
 		entt::registry& reg = Application::getInstance().m_registry;
 		std::vector<entt::entity>& m_entities = Application::getInstance().m_entities;
 		auto group = reg.view<TransformComponent,RigidBodyComponent>();
-
+		
 		for (auto entity : group)
 		{
 			auto& transform = group.get<TransformComponent>(entity);
 			rp3d::Transform currTransform = group.get<RigidBodyComponent>(entity).m_body->getTransform();
 			transform.translation = glm::vec3(currTransform.getPosition().x, currTransform.getPosition().y, currTransform.getPosition().z);
-
+			//Log::warn("{0} -- {1},{2},{3}", reg.get<LabelComponent>(entity).m_label, transform.translation.x, transform.translation.y, transform.translation.z);
 			//getting the rotation with a quaternion and setting it to a quat
 			transform.rotation = glm::quat(currTransform.getOrientation().w, currTransform.getOrientation().x, currTransform.getOrientation().y, currTransform.getOrientation().z);
 			transform.UpdateTransform();
