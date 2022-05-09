@@ -31,6 +31,7 @@
 #include "camera/Camera.h"
 #include "camera/FollowPlayer.h"
 #include <entt/entt.hpp>
+#include "systems/audioManager.h"
 
 
 namespace Engine {
@@ -54,6 +55,8 @@ namespace Engine {
 		std::shared_ptr<Timer> m_timer; //!< timer var
 
 		EventHandler m_eventHandler; //!< Event handler
+
+		
 		
 		bool onWindowClose(WindowCloseEvent& e); //!<run when window closes
 		bool onWindowResize(WindowResizeEvent& e); //!<run when resizes
@@ -104,6 +107,8 @@ namespace Engine {
 
 		entt::registry m_registry; //ESC registry whatever that is
 		std::vector<entt::entity> m_entities; //Entities
+		std::shared_ptr< AudioManager> m_audio;//!< audio manager
+
 
 		bool isFirstFrame = true;
 	};

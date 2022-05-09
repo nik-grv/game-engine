@@ -112,6 +112,14 @@ namespace Engine {
 		m_BarrelVAO->setIndexBuffer(m_BarrelIBO);
 		barrelMat.reset(new Material(shader, Loader::output.diffusTex, glm::vec4(1.0f)));
 
+		auto& audio = Application::getInstance().m_audio;
+
+		//m_followCam->getPosition
+
+		//audio->set3dListenerAndOrientation(, glm::vec3(1, 1, 1));//currently broken
+		audio->loadSound("194963__soundmary__tractor-approaching.mp3", true, true, false);
+		audio->playSound("194963__soundmary__tractor-approaching.mp3");
+
 		plateMat.reset(new Material(shader, numberTexture));
 		// height data used for a height map later on
 		std::vector<float> heigthData;

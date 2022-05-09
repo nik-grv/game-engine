@@ -27,10 +27,14 @@ namespace Engine {
 		inline glm::vec3 getOffset() const { return m_offset; } //!< get the offset
 		void SetRotation(glm::vec3 rotation);
 		glm::vec3 getPosition();
+		glm::vec3 getForwards();
+		glm::vec3 getUp();
 	private:
+		glm::mat4 m_viewMatrix; //!< camera view matrrix
 		float m_deltaTime; //!< time elapsed 
 		glm::mat4& m_playerModel; //!< my player model ref
 		glm::vec3 m_offset; //!< offset betwen the player and camera
-		glm::mat4 m_viewMatrix; //!< camera view matrrix
+		glm::vec3 camUp;
+		glm::vec3 camForward;
 	};
 }
