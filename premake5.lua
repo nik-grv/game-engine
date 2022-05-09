@@ -65,7 +65,7 @@ project "Engine"
 		"vendor/box2d/include",
 		"vendor/lua",
 		"vendor/react3d/include",
-		"vendor/yaml_cpp"
+
 	}
 	
 	links 
@@ -113,11 +113,24 @@ project "Engine"
 		defines "NG_DEBUG"
 		runtime "Debug"
 		symbols "On"
+		
+		links
+		{
+			"fmodL_vc.lib",
+			"fmodstudioL_vc.lib"		
+		}
 
 	filter "configurations:Release"
 		defines "NG_RELEASE"
 		runtime "Release"
 		optimize "On"
+		
+		links
+		{
+			"Engine",
+			"fmodL_vc.lib",
+			"fmodstudioL_vc.lib"		
+		}
 
 project "Sandbox"
 	location "sandbox"
@@ -153,11 +166,17 @@ project "Sandbox"
 		"vendor/box2d/include",
 		"vendor/lua",
 		"vendor/react3d/include",
+
 	}
 
 	links
 	{
 		"Engine"
+	}
+	
+	debugenvs
+	{
+		"PATH=PATH;../vendor/FMOD/core/lib/x64;../vendor/FMOD/studio/lib/x64"
 	}
 
 	filter "system:windows"

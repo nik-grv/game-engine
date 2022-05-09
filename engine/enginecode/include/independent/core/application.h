@@ -31,6 +31,7 @@
 #include "camera/Camera.h"
 #include "camera/FollowPlayer.h"
 #include <entt/entt.hpp>
+#include "systems/audioManager.h"
 
 
 namespace Engine {
@@ -54,6 +55,9 @@ namespace Engine {
 		std::shared_ptr<Timer> m_timer; //!< timer var
 
 		EventHandler m_eventHandler; //!< Event handler
+
+		std::shared_ptr< AudioManager> m_audio;//!< audio manager
+		
 		
 		bool onWindowClose(WindowCloseEvent& e); //!<run when window closes
 		bool onWindowResize(WindowResizeEvent& e); //!<run when resizes
