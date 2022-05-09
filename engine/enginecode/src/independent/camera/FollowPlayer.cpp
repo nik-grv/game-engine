@@ -68,8 +68,8 @@ namespace Engine
 	void FollowPlayer::SetRotation(glm::vec3 rotation)
 	{
 		glm::vec3 camRight(m_playerModel[0][0], m_playerModel[0][1], m_playerModel[0][2]);
-		glm::vec3 camUp(m_playerModel[1][0], m_playerModel[1][1], m_playerModel[1][2]);
-		glm::vec3 camForward(m_playerModel[2][0], m_playerModel[2][1], m_playerModel[2][2]);
+		camUp=glm::vec3(m_playerModel[1][0], m_playerModel[1][1], m_playerModel[1][2]);
+	    camForward=glm::vec3(m_playerModel[2][0], m_playerModel[2][1], m_playerModel[2][2]);
 		glm::vec3 playerPos = glm::vec3(m_playerModel[3][0], m_playerModel[3][1], m_playerModel[3][2]);
 
 		camForward.x += rotation.x;
@@ -93,5 +93,13 @@ namespace Engine
 	{
 		glm::vec3 pos = glm::vec3(m_playerModel[3][0] + m_offset.x, m_playerModel[3][1] + m_offset.y, m_playerModel[3][2] + m_offset.z);
 		return pos;
+	}
+	glm::vec3 FollowPlayer::getForwards()
+	{
+		return camForward;
+	}
+	glm::vec3 FollowPlayer::getUp()
+	{
+		return camUp;
 	}
 }

@@ -28,6 +28,8 @@
 #include "rendering/Renderer2D.h"
 #include <stb_image.h>
 
+
+
 namespace Engine {
 	// Set static vars
 	Application* Application::s_instance = nullptr;
@@ -143,6 +145,9 @@ namespace Engine {
 
 		m_physics->m_world->setGravity(rp3d::Vector3(0.0f, -9.8f, 0.0f));
 		m_physics->m_world->setIsGravityEnabled(true);
+
+		m_audio.reset(new AudioManager());
+		m_audio->start();
 	}
 
 
@@ -300,6 +305,10 @@ namespace Engine {
 
 #pragma endregion
 
+#pragma region audiosetup
+
+#pragma endregion
+
 	Application::~Application()
 	{
 		//delete world
@@ -345,13 +354,11 @@ namespace Engine {
 			m_layerStack.Update(timestep);
 			m_layerStack.Render();
 			m_window->onUpdate(timestep);
-
 			glClear(GL_COLOR_BUFFER_BIT);
 
 
-			if(isFirstFrame)
+			if (isFirstFrame)
 				isFirstFrame = false;
-
 		}
 
 	}
