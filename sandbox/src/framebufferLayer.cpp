@@ -57,6 +57,14 @@ namespace Engine {
 		m_IBO1.reset(IndexBuffer::create(Loader::output.indicies.data(), Loader::output.indicies.size()));
 		m_VAO1->addVertexBuffer(m_VBO1);
 		m_VAO1->setIndexBuffer(m_IBO1);
+		
+		
+		Loader::ASSIMPLoad("./assets/models/Tank/tank_flipper.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
+		m_enemyTankVAO.reset(VertexArray::create());
+		m_enemyTankVBO.reset(VertexBuffer::create(Loader::output.vertices.data(), sizeof(Renderer3DVertex) * Loader::output.vertices.size(), cubeBufferLayout));
+		m_enemyTankIBO.reset(IndexBuffer::create(Loader::output.indicies.data(), Loader::output.indicies.size()));
+		m_enemyTankVAO->addVertexBuffer(m_enemyTankVBO);
+		m_enemyTankVAO->setIndexBuffer(m_enemyTankIBO);
 
 
 		Loader::ASSIMPLoad("./assets/models/Tank/TankHead.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
@@ -136,7 +144,7 @@ namespace Engine {
 
 		}
 
-		m_entities.resize(13);
+		m_entities.resize(14);
 		m_entities[0] = m_registry.create();
 		m_entities[1] = m_registry.create();
 		m_entities[2] = m_registry.create();
@@ -150,6 +158,7 @@ namespace Engine {
 		m_entities[10] = m_registry.create();
 		m_entities[11] = m_registry.create();
 		m_entities[12] = m_registry.create();
+		m_entities[13] = m_registry.create();
 
 
 		m_registry.emplace<RootComponent>(m_entities[0]);
@@ -167,6 +176,7 @@ namespace Engine {
 		m_registry.emplace<LabelComponent>(m_entities[10], "Cratev1-3");
 		m_registry.emplace<LabelComponent>(m_entities[11], "Cratev2-1");
 		m_registry.emplace<LabelComponent>(m_entities[12], "Barrel");
+		m_registry.emplace<LabelComponent>(m_entities[13], "Enemy1");
 		//m_registry.emplace<LabelComponent>(m_entities[5], "Slope");
 
 
@@ -177,13 +187,14 @@ namespace Engine {
 		m_registry.emplace<TransformComponent>(m_entities[5], glm::vec3(0, 0.f, -3.2f), glm::vec3(0), glm::vec3(0.125f));//FIRE POINT
 		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(10.0f, 20.f, 0), glm::vec3(0), glm::vec3(1));//CUBE
 		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));//CAMERA (NOT IN USE)
-		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(50.0f, 1.f, 50.0f));//FLOOR
+		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(100.0f, 1.f, 100.0f));//FLOOR
 		m_registry.emplace<TransformComponent>(m_entities[8], glm::vec3(-5.0f, 2.f, 0), glm::vec3(0), glm::vec3(0.25f));//CRATE 1 - 1
 		m_registry.emplace<TransformComponent>(m_entities[9], glm::vec3(-5.0f, 5.f, 0), glm::vec3(0), glm::vec3(0.25f));//CRATE 1 - 2
 		m_registry.emplace<TransformComponent>(m_entities[10], glm::vec3(-5.0f, 7.f, 0), glm::vec3(0), glm::vec3(0.25f));//CRATE 1 - 3
 		m_registry.emplace<TransformComponent>(m_entities[11], glm::vec3(-10.0f, 2.f, 0), glm::vec3(0), glm::vec3(0.02f));//CRATE 2
 		m_registry.emplace<TransformComponent>(m_entities[12], glm::vec3(5.0f, 2.f, 0), glm::vec3(0), glm::vec3(0.5f));//BARREL 
-		//m_registry.emplace<TransformComponent>(m_entities[5]);
+		m_registry.emplace<TransformComponent>(m_entities[13], glm::vec3(6.0f, 2.f, 5), glm::vec3(0), glm::vec3(0.5f)); //ENEMY
+		
 
 		
 		auto& tankTransform = m_registry.get<TransformComponent>(m_entities[1]).GetTransform();
@@ -197,7 +208,7 @@ namespace Engine {
 		auto& crateTransform3 = m_registry.get<TransformComponent>(m_entities[10]).GetTransform();
 		auto& crate2Transform = m_registry.get<TransformComponent>(m_entities[11]).GetTransform();
 		auto& barrelTransform = m_registry.get<TransformComponent>(m_entities[12]).GetTransform();
-		//auto slopeTransform = m_registry.get<TransformComponent>(m_entities[5]).GetTransform();
+		auto& enemy1Transform= m_registry.get<TransformComponent>(m_entities[13]).GetTransform();
 
 		m_camera.setCameraPos(glm::vec3(-1.0f, 1.0f, 8.0f));
 
@@ -228,18 +239,21 @@ namespace Engine {
 		auto crate_rb3 = m_registry.emplace<RigidBodyComponent>(m_entities[10], RigidBodyType::Dynamic, crateTransform3,10.0);
 		auto crate2_rb = m_registry.emplace<RigidBodyComponent>(m_entities[11], RigidBodyType::Dynamic, crate2Transform);
 		auto  barrel_rb = m_registry.emplace<RigidBodyComponent>(m_entities[12], RigidBodyType::Dynamic, barrelTransform,10.0);
+		auto  enemy1_rb = m_registry.emplace<RigidBodyComponent>(m_entities[13], RigidBodyType::Dynamic, enemy1Transform,5.0);
 
 
 		//auto slope_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Static, slopeTransform);
 
 		m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(2.72f, 1.25f, 5.f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[2], cube_rb, glm::vec3(1.0f, 1.f, 1.0f) * 0.5f);
-		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(50.0f, 1.f,50.0f) * 0.5f);
+		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(100.0f, 1.f,100.0f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[8], crate_rb1, glm::vec3(2.f, 2.f, 2.f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[9], crate_rb2, glm::vec3(2.f, 2.f, 2.f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[10], crate_rb3, glm::vec3(2.f, 2.f, 2.f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[11], crate2_rb, glm::vec3(2.f, 2.f, 2.f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[12], barrel_rb, glm::vec3(1.f, 1.5f, 1.f) * 0.5f);
+		m_registry.emplace<BoxColliderComponent>(m_entities[13], enemy1_rb, glm::vec3(1.25f, 0.8f, 2.5f) * 0.5f);
+
 		//m_registry.emplace<BoxColliderComponent>(m_entities[6], tankHead_rb, glm::vec3(2.0f, 0.5f,2.9f) * 0.5f);
 		//auto something = m_registry.emplace<HeightmapCollider>(m_entities[5], slope_rb, 7, 7, -3, 3, heigthData);
 
@@ -254,6 +268,8 @@ namespace Engine {
 		m_registry.emplace<RenderComponent>(m_entities[10], m_crateVAO, crateMat);
 		m_registry.emplace<RenderComponent>(m_entities[11], m_crate2VAO, crate2Mat);
 		m_registry.emplace<RenderComponent>(m_entities[12], m_BarrelVAO, barrelMat);
+
+		m_registry.emplace<RenderComponent>(m_entities[13], m_enemyTankVAO, plateMat);
 		
 		m_registry.emplace<RelationshipComponent>(m_entities[0]);
 		m_registry.emplace<RelationshipComponent>(m_entities[1]);
@@ -271,6 +287,10 @@ namespace Engine {
 		//set tank script
 		auto& script = m_registry.emplace<NativeScriptComponent>(m_entities[1]);
 		script.create<TankController>(m_entities[1], 5.f, true);
+		
+		//set tank script
+		auto& enemyScript = m_registry.emplace<NativeScriptComponent>(m_entities[13]);
+		enemyScript.create<EnemyTank>(m_entities[13], 1.25f, true , 5);
 
 
 		//set player cam

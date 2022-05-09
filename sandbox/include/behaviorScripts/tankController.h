@@ -13,7 +13,6 @@ public:
 		m_movementSpeed(movementSpeed),
 		m_active(active)
 	{
-
 		entt::registry& registry = Application::getInstance().m_registry;
 		Loader::ASSIMPLoad("./assets/models/Tank/shell.obj", aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_Triangulate);
 
@@ -122,7 +121,7 @@ public:
 				glm::vec3 forward(-barrelTransform[2][0], -barrelTransform[2][1], -barrelTransform[2][2]);
 			
 				glm::quat projOrientation = glm::toQuat(barrelTransform);
-				Log::error("{0},{1},{2}",projOrientation.x, projOrientation.y, projOrientation.z);
+
 				auto projTC = registry.emplace<TransformComponent>(projectileEntity, firePosition, projOrientation, glm::vec3(0.25f));
 				registry.emplace<RenderComponent>(projectileEntity, m_shellVAO, shellMat);
 				if (registry.valid(projectileEntity))

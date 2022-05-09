@@ -45,7 +45,7 @@ namespace Engine
 		m_size.x = std::max(childSize.x + (padding * 2), m_size.x);
 		m_size.y = std::max(childSize.y + (padding * 2), m_size.y);
 
-		glm::ivec2 winSize = glm::ivec2(Application::getInstance().getAppWindow()->getWidth(), Application::getInstance().getAppWindow()->getHeight());
+		glm::ivec2 winSize = glm::ivec2(1.45 * Application::getInstance().getAppWindow()->getWidth(), 1.45 * Application::getInstance().getAppWindow()->getHeight());
 
 		m_position = (winSize - m_size) / 2;
 		m_container.updatePosition(m_position + glm::ivec2(ModalWindow::padding, ModalWindow::padding));

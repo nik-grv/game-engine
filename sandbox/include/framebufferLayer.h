@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "behaviorScripts/tankController.h"
+#include "behaviorScripts/enemyTank.h"
 #include <assimpLoader.h>
 
 namespace Engine {
@@ -108,9 +109,9 @@ namespace Engine {
 		//
 
 
-		std::shared_ptr<VertexArray> m_VAO1, m_VAO2, m_VAO3, m_VAO4, m_crateVAO, m_crate2VAO, m_BarrelVAO;
-		std::shared_ptr<VertexBuffer> m_VBO1, m_VBO2, m_VBO3, m_VBO4, m_crateVBO, m_crate2VBO, m_BarrelVBO;
-		std::shared_ptr<IndexBuffer> m_IBO1, m_IBO2, m_IBO3, m_IBO4, m_crateIBO, m_crate2IBO, m_BarrelIBO;
+		std::shared_ptr<VertexArray> m_VAO1, m_VAO2, m_VAO3, m_VAO4, m_crateVAO, m_crate2VAO, m_BarrelVAO ,m_enemyTankVAO;
+		std::shared_ptr<VertexBuffer> m_VBO1, m_VBO2, m_VBO3, m_VBO4, m_crateVBO, m_crate2VBO, m_BarrelVBO , m_enemyTankVBO;
+		std::shared_ptr<IndexBuffer> m_IBO1, m_IBO2, m_IBO3, m_IBO4, m_crateIBO, m_crate2IBO, m_BarrelIBO , m_enemyTankIBO;
 		std::shared_ptr<ShaderRend> shader;
 		std::shared_ptr<Material> mat1, mat2,crateMat, crate2Mat,barrelMat;
 		std::shared_ptr<Material> wireframeMat;
