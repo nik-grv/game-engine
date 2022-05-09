@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 PlatformToolSet=v142:VCToolArchitecture=Native32Bit:VCToolsVersion=14.29.30037:TargetPlatformVersion=10.0.19041.0:
 Debug|x64|H:\Documents\Y3\IMAT3905_2122_502GameEngineDevelopment\Newversion\Tankery-Here-It-Comes\|
+=======
+#TargetFrameworkVersion=v4.0:PlatformToolSet=v141:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=10.0.22000.0
+Debug|x64|D:\University\Github\Tankery-Here-It-Comes\|
+>>>>>>> 299a5bef1b0e0a405a5319a4ea8aa021b0652448
