@@ -220,7 +220,7 @@ public:
 		}
 		else if (m_tankBarrel.m_body->getTransform().getOrientation().x <= 0.000f)
 		{
-			Log::error("Clamping,,...");
+			//Log::error("Clamping,,...");
 			rp3d::Vector3 ve = { 0,0,0 };
 			rp3d::Quaternion quat = { ve, 0 };
 			//t.setOrientation(quat);
