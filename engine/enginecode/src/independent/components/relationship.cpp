@@ -46,7 +46,7 @@ namespace Engine
 		entt::registry& reg = Application::getInstance().m_registry;
 		std::vector<entt::entity>& m_entities = Application::getInstance().m_entities;
 		//get all objects with relationship and transform component excluding root
-		auto view = reg.view<RelationshipComponent, TransformComponent>(entt::exclude<RootComponent>);
+		//auto view = reg.view<RelationshipComponent, TransformComponent>(entt::exclude<RootComponent>);
 		
 		//get the root entity eg Tank Body
 			//for loop -update transforms for all its children

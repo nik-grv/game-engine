@@ -9,6 +9,10 @@
 #include "core/Scene.h"
 //#include "core/Components.h"
 #include <reactphysics3d/reactphysics3d.h>
+#include "UI/containers.h"
+#include "UI/modalWindow.h"
+#include "UI/UIComponent.h"
+#include "UI/widgets.h"
 
 #include <rendering/Renderer3D.h>
 #include <rendering/Renderer2D.h>

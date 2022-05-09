@@ -7,7 +7,7 @@ using namespace Engine;
 
 class TankController : public Engine::NativeScript {
 public:
-
+	int firstClick = 0;
 	TankController(entt::entity& entity, float movementSpeed, bool active) :
 		NativeScript(entity),
 		m_movementSpeed(movementSpeed),
@@ -82,57 +82,63 @@ public:
 		//projectle shooting....
 
 		//shoot projectile with mouse click
-		if (e.getButton() == 0)
+
+		if (firstClick == 0)
 		{
-			std::vector<entt::entity>& m_entities = Application::getInstance().m_entities;
-			entt::registry& registry = Application::getInstance().m_registry;
-			bool found = false;
-			uint32_t i;
-			for (i = 0; i < m_entities.size(); i++)
+			firstClick = 1;
+		}
+		else
+		{
+			if (e.getButton() == 0)
 			{
-				if (!found)
+				std::vector<entt::entity>& m_entities = Application::getInstance().m_entities;
+				entt::registry& registry = Application::getInstance().m_registry;
+				bool found = false;
+				uint32_t i;
+				for (i = 0; i < m_entities.size(); i++)
 				{
-					if (!registry.valid(m_entities[i]))
+					if (!found)
 					{
-						found = true;
-						break;
+						if (!registry.valid(m_entities[i]))
+						{
+							found = true;
+							break;
+						}
 					}
 				}
+				entt::entity projectileEntity = registry.create();
+				if (i == m_entities.size())
+					m_entities.push_back(projectileEntity);
+				else
+					m_entities[i] = projectileEntity;
+				registry.emplace<LabelComponent>(projectileEntity, "Projectile");
+
+				auto& barrelTransform = registry.get<TransformComponent>(m_entities[7]).GetTransform();
+
+				auto& firePointTransform = registry.get<TransformComponent>(m_entities[5]).GetTransform();
+
+				glm::vec3 firePosition = glm::vec3(firePointTransform[3][0], firePointTransform[3][1], firePointTransform[3][2]);
+
+				glm::vec3 forward(-barrelTransform[2][0], -barrelTransform[2][1], -barrelTransform[2][2]);
+			
+				glm::quat projOrientation = glm::toQuat(barrelTransform);
+				Log::error("{0},{1},{2}",projOrientation.x, projOrientation.y, projOrientation.z);
+				auto projTC = registry.emplace<TransformComponent>(projectileEntity, firePosition, projOrientation, glm::vec3(0.25f));
+				registry.emplace<RenderComponent>(projectileEntity, m_shellVAO, shellMat);
+				if (registry.valid(projectileEntity))
+				{
+					auto projectiel_rb = registry.emplace<RigidBodyComponent>(projectileEntity, RigidBodyType::Dynamic, firePosition, projOrientation);
+					auto& sc = registry.emplace<SphereColliderComponent>(projectileEntity, projectiel_rb, 0.25f);
+					sc.collider->getMaterial().setMassDensity(5);
+					glm::vec3 force = (forward) * 1500.5f;
+					projectiel_rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(force.x, force.y, force.z));
+
+					projectiel_rb.m_body->setUserData(reinterpret_cast<uint32_t*>(i));
+
+					registry.emplace<DestroyOnContactComponent>(projectileEntity);
+
+				}
 			}
-
-			entt::entity projectileEntity = registry.create();
-			if (i == m_entities.size())
-				m_entities.push_back(projectileEntity);
-			else
-				m_entities[i] = projectileEntity;
-
-			registry.emplace<LabelComponent>(projectileEntity, "Projectile");
-
-			auto& barrelTransform = registry.get<TransformComponent>(m_entities[7]).GetTransform();
-
-			auto& firePointTransform = registry.get<TransformComponent>(m_entities[5]).GetTransform();
-
-			glm::vec3 firePosition = glm::vec3(firePointTransform[3][0], firePointTransform[3][1], firePointTransform[3][2]);
-
-			glm::vec3 forward(-barrelTransform[2][0], -barrelTransform[2][1], -barrelTransform[2][2]);
-
-			glm::quat projOrientation = glm::toQuat(barrelTransform);
-
-			auto projTC = registry.emplace<TransformComponent>(projectileEntity, firePosition, projOrientation, glm::vec3(0.25f));
-			registry.emplace<RenderComponent>(projectileEntity, m_shellVAO, shellMat);
-
-			auto projectiel_rb = registry.emplace<RigidBodyComponent>(projectileEntity, RigidBodyType::Dynamic, firePosition, projOrientation);
-			auto& sc = registry.emplace<SphereColliderComponent>(projectileEntity, projectiel_rb, 0.25f);
-			sc.collider->getMaterial().setMassDensity(5);
-			glm::vec3 force = (forward) * 1500.5f;
-			projectiel_rb.m_body->applyForceToCenterOfMass(rp3d::Vector3(force.x, force.y, force.z));
-			
-			projectiel_rb.m_body->setUserData(reinterpret_cast<uint32_t*>(i));
-			
-			registry.emplace<DestroyOnContactComponent>(projectileEntity);
-			
-			Log::error("SIZE --{0}", m_entities.size());
-
 		}
 	}
 
@@ -141,6 +147,7 @@ public:
 		entt::registry& registry = Application::getInstance().m_registry;
 		auto& m_tankHead = registry.get<RigidBodyComponent>(HierarchySystem::GetChildEntity(m_entity, 0));
 		auto& m_tankBarrel = registry.get<RigidBodyComponent>(HierarchySystem::GetChildEntity(HierarchySystem::GetChildEntity(m_entity, 0), 0));
+		auto& m_tankBarrelTransform = registry.get<TransformComponent>(HierarchySystem::GetChildEntity(HierarchySystem::GetChildEntity(m_entity, 0), 0));
 		float xpos = e.getX();
 		float ypos = e.getY();
 
@@ -180,46 +187,51 @@ public:
 
 			//m_tankHead.rotation = quatX + quatY + quatZ;
 			//m_tankHead.rotation += glm::quat(0, 0, 2.0f, 0);
-			m_tankHead.m_body->setAngularVelocity(rp3d::Vector3(0, -1.f, 0.0f));
-			m_tankHead.m_body->setAngularDamping(0.9f);
+			m_tankHead.m_body->setAngularVelocity(rp3d::Vector3(0, -0.8f, 0.0f));
+			m_tankHead.m_body->setAngularDamping(0.99f);
 		}
 		else if (xoffset < -0.5f)
 		{
 			//m_tankHead.rotation += glm::quat(0, 0, -2.0f, 0);
-			m_tankHead.m_body->setAngularVelocity(rp3d::Vector3(0, 1.f, 0.0f));
-			m_tankHead.m_body->setAngularDamping(0.9f);
+			m_tankHead.m_body->setAngularVelocity(rp3d::Vector3(0, 0.8f, 0.0f));
+			m_tankHead.m_body->setAngularDamping(0.99f);
 		}
 
 
 		if (yoffset > 0.8f)
 		{
 			m_tankBarrel.m_body->setAngularVelocity(rp3d::Vector3(0.5f, 0.0f, 0.0f));
-			m_tankBarrel.m_body->setAngularDamping(0.9f);
+			m_tankBarrel.m_body->setAngularDamping(0.99f);
 
 		}
 		else if (yoffset < -0.8f)
 		{
 			m_tankBarrel.m_body->setAngularVelocity(rp3d::Vector3(-0.5f, 0.0f, 0.0f));
-			m_tankBarrel.m_body->setAngularDamping(0.9f);
+			m_tankBarrel.m_body->setAngularDamping(0.99f);
 		}
 		rp3d::Transform t = m_tankBarrel.m_body->getTransform();
 
 
-		if (m_tankBarrel.m_body->getTransform().getOrientation().x > 0.12f)
+		if (m_tankBarrel.m_body->getTransform().getOrientation().x >= 0.12f)
 		{
 			//Log::error("Clamping,,...");
 			rp3d::Vector3 ve = { 0.12f,0,0 };
 			rp3d::Quaternion quat = { 0,ve };
-			t.setOrientation(quat);
+
+			m_tankBarrel.m_body->setAngularVelocity(rp3d::Vector3(-0.1f, 0.0f, 0.0f));
+			m_tankBarrel.m_body->setAngularDamping(0.0f);
+
 		}
-		else if (m_tankBarrel.m_body->getTransform().getOrientation().x < 0.000f)
+		else if (m_tankBarrel.m_body->getTransform().getOrientation().x <= 0.000f)
 		{
+			//Log::error("Clamping,,...");
 			rp3d::Vector3 ve = { 0,0,0 };
 			rp3d::Quaternion quat = { ve, 0 };
-			t.setOrientation(quat);
-		}
 
-		//Log::warn(m_tankBarrel.m_body->getTransform().getOrientation().x);
+			m_tankBarrel.m_body->setAngularVelocity(rp3d::Vector3(0.1f, 0.0f, 0.0f));
+			m_tankBarrel.m_body->setAngularDamping(0.0f);
+
+		}
 
 	}
 

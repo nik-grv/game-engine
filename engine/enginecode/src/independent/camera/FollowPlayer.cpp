@@ -19,7 +19,7 @@ namespace Engine
 	*/
 	FollowPlayer::FollowPlayer(glm::mat4& playerModel) : m_playerModel(playerModel)
 	{
-		m_offset = glm::vec3(0.0f, 2.5f, 7.0f);
+		m_offset = glm::vec3(0.0f, 2.5f, 12.0f);
 	}
 
 	//! Separate function to set the players' model matrix to be followed
@@ -65,9 +65,41 @@ namespace Engine
 	{
 		m_offset = offset;
 	}
+	void FollowPlayer::SetRotation(glm::vec3 rotation)
+	{
+		glm::vec3 camRight(m_playerModel[0][0], m_playerModel[0][1], m_playerModel[0][2]);
+		camUp=glm::vec3(m_playerModel[1][0], m_playerModel[1][1], m_playerModel[1][2]);
+	    camForward=glm::vec3(m_playerModel[2][0], m_playerModel[2][1], m_playerModel[2][2]);
+		glm::vec3 playerPos = glm::vec3(m_playerModel[3][0], m_playerModel[3][1], m_playerModel[3][2]);
+
+		camForward.x += rotation.x;
+		camForward.y += rotation.y;
+		camForward.z += rotation.z;
+
+		glm::vec3 deltaOffset(0.0f);
+		deltaOffset += camRight * getOffset().x;
+		deltaOffset += camUp * getOffset().y;
+		deltaOffset += camForward * getOffset().z;
+
+		glm::vec3 camPos = playerPos + deltaOffset;
+
+		glm::vec3 deltaPos = playerPos - camPos;
+		glm::vec3 upVector = glm::cross(camRight, deltaPos);
+
+		m_viewMatrix = glm::lookAt(camPos, playerPos, upVector);
+		
+	}
 	glm::vec3 FollowPlayer::getPosition()
 	{
 		glm::vec3 pos = glm::vec3(m_playerModel[3][0] + m_offset.x, m_playerModel[3][1] + m_offset.y, m_playerModel[3][2] + m_offset.z);
 		return pos;
+	}
+	glm::vec3 FollowPlayer::getForwards()
+	{
+		return camForward;
+	}
+	glm::vec3 FollowPlayer::getUp()
+	{
+		return camUp;
 	}
 }

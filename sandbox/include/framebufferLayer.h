@@ -148,7 +148,7 @@ namespace Engine {
 		SubTexture m_screenTexture;
 		bool usePP = false;
 
-		bool m_isPlayerCam = false;
+		bool m_isPlayerCam = true;
 
 		GeneralEventListener eventListener;
 
