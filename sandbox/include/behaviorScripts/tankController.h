@@ -2,6 +2,7 @@
 
 #include "engine.h"
 #include <assimpLoader.h>
+#include "DestroyAutoComponent.h"
 
 using namespace Engine;
 
@@ -42,22 +43,22 @@ public:
 		fwd = -forward;
 
 
-		if (InputPoller::isKeyPressed(NG_KEY_UP))
+		if (InputPoller::isKeyPressed(NG_KEY_W))
 		{
 			desSpeed = fwd * m_movementSpeed;
 		}
 
-		if (InputPoller::isKeyPressed(NG_KEY_DOWN))
+		if (InputPoller::isKeyPressed(NG_KEY_S))
 		{
 			desSpeed = fwd * -m_movementSpeed;
 		}
 
-		if (InputPoller::isKeyPressed(NG_KEY_LEFT))
+		if (InputPoller::isKeyPressed(NG_KEY_A))
 		{
 			desRotVel = 3.f;
 		}
 
-		if (InputPoller::isKeyPressed(NG_KEY_RIGHT))
+		if (InputPoller::isKeyPressed(NG_KEY_D))
 		{
 			desRotVel = -3.f;
 		}
@@ -119,7 +120,7 @@ public:
 				glm::vec3 firePosition = glm::vec3(firePointTransform[3][0], firePointTransform[3][1], firePointTransform[3][2]);
 
 				glm::vec3 forward(-barrelTransform[2][0], -barrelTransform[2][1], -barrelTransform[2][2]);
-			
+
 				glm::quat projOrientation = glm::toQuat(barrelTransform);
 
 				auto projTC = registry.emplace<TransformComponent>(projectileEntity, firePosition, projOrientation, glm::vec3(0.25f));
@@ -134,8 +135,10 @@ public:
 
 					projectiel_rb.m_body->setUserData(reinterpret_cast<uint32_t*>(i));
 
-					registry.emplace<DestroyOnContactComponent>(projectileEntity);
+					auto& script = registry.emplace<NativeScriptComponent>(m_entities[i]);
+					script.create<DestroyAutoComponent>(projectileEntity, 5.0f, i);
 
+					registry.emplace<DestroyOnContactComponent>(projectileEntity);
 				}
 			}
 		}
@@ -238,23 +241,6 @@ public:
 	{
 		entt::registry& registry = Application::getInstance().m_registry;
 		auto& m_tankRB = registry.get<RigidBodyComponent>(m_entity);
-
-		//if (e.getKeyCode() == NG_KEY_UP)
-		//{
-		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, -25.0f));
-		//}
-		//if (e.getKeyCode() == NG_KEY_DOWN)
-		//{
-		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(0.0f, 0.0f, 25.0f));
-		//}
-		//if (e.getKeyCode() == NG_KEY_LEFT)
-		//{
-		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(-25.0f, 0.0f, 0.0f));
-		//}
-		//if (e.getKeyCode() == NG_KEY_RIGHT)
-		//{
-		//	m_tankRB.m_body->applyForceToCenterOfMass(rp3d::Vector3(25.0f, 0.0f, 0.0f));
-		//}
 
 	}
 

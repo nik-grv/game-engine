@@ -177,9 +177,11 @@ namespace Engine {
 	};
 
 
+
 	struct DestroyOnContactComponent
 	{
 		bool destroyChildren = false;
+		bool destroyAuto = true;
 	};
 
 	class GeneralEventListener : public rp3d::EventListener
@@ -208,10 +210,11 @@ namespace Engine {
 				bool destroy1 = registry.any_of<DestroyOnContactComponent>(entity1);
 				bool destroy2 = registry.any_of<DestroyOnContactComponent>(entity2);
 
-				if (destroy1)
+				if (destroy1 && destroy2)
+				{
 					toBeDestroyed.push_back(index1);
-				if (destroy2)
 					toBeDestroyed.push_back(index2);
+				}//if (destroy2)
 
 			}
 		}

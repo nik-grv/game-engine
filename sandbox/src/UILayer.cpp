@@ -31,11 +31,11 @@ UILayer::UILayer(const char* name) : Layer(name)
 	//slider.addWidget<Spacer>(200, 10);
 	//slider.addWidget<Slider>(200, 25, 75, "Min", "Max");
 
-	bottom.addWidget<Button>(150, 300, "Start ", [&]() { setActive(false); playBtnPressed = true;
+	bottom.addWidget<Button>(250, 250, "Start ", [&]() { setActive(false); playBtnPressed = true;
 	glfwSetInputMode(reinterpret_cast<GLFWwindow*>(window->getNativewindow()), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		});
 	bottom.addWidget<Spacer>(300, 10);
-	bottom.addWidget<Button>(200, 200, "Quit This Epic Game", [&]() { quitBtnPressed = true; window->close();  });
+	bottom.addWidget<Button>(250, 250, "Quit This Epic Game", [&]() { quitBtnPressed = true; window->close();  });
 
 	bottom.addWidget<Spacer>(800, 500);
 

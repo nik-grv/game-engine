@@ -144,7 +144,7 @@ namespace Engine {
 
 		}
 
-		m_entities.resize(14);
+		m_entities.resize(15);
 		m_entities[0] = m_registry.create();
 		m_entities[1] = m_registry.create();
 		m_entities[2] = m_registry.create();
@@ -159,6 +159,7 @@ namespace Engine {
 		m_entities[11] = m_registry.create();
 		m_entities[12] = m_registry.create();
 		m_entities[13] = m_registry.create();
+		m_entities[14] = m_registry.create();
 
 
 		m_registry.emplace<RootComponent>(m_entities[0]);
@@ -177,6 +178,7 @@ namespace Engine {
 		m_registry.emplace<LabelComponent>(m_entities[11], "Cratev2-1");
 		m_registry.emplace<LabelComponent>(m_entities[12], "Barrel");
 		m_registry.emplace<LabelComponent>(m_entities[13], "Enemy1");
+		m_registry.emplace<LabelComponent>(m_entities[14], "Enemy2");
 		//m_registry.emplace<LabelComponent>(m_entities[5], "Slope");
 
 
@@ -193,7 +195,8 @@ namespace Engine {
 		m_registry.emplace<TransformComponent>(m_entities[10], glm::vec3(-5.0f, 7.f, 0), glm::vec3(0), glm::vec3(0.25f));//CRATE 1 - 3
 		m_registry.emplace<TransformComponent>(m_entities[11], glm::vec3(-10.0f, 2.f, 0), glm::vec3(0), glm::vec3(0.02f));//CRATE 2
 		m_registry.emplace<TransformComponent>(m_entities[12], glm::vec3(5.0f, 2.f, 0), glm::vec3(0), glm::vec3(0.5f));//BARREL 
-		m_registry.emplace<TransformComponent>(m_entities[13], glm::vec3(6.0f, 2.f, 5), glm::vec3(0), glm::vec3(0.5f)); //ENEMY
+		m_registry.emplace<TransformComponent>(m_entities[13], glm::vec3(6.0f, 2.f, 5), glm::vec3(0), glm::vec3(0.5f)); //ENEMY 1
+		m_registry.emplace<TransformComponent>(m_entities[14], glm::vec3(0.0f, 2.f, 15), glm::vec3(0), glm::vec3(0.5f)); //ENEMY 2
 		
 
 		
@@ -209,6 +212,7 @@ namespace Engine {
 		auto& crate2Transform = m_registry.get<TransformComponent>(m_entities[11]).GetTransform();
 		auto& barrelTransform = m_registry.get<TransformComponent>(m_entities[12]).GetTransform();
 		auto& enemy1Transform= m_registry.get<TransformComponent>(m_entities[13]).GetTransform();
+		auto& enemy2Transform= m_registry.get<TransformComponent>(m_entities[14]).GetTransform();
 
 		m_camera.setCameraPos(glm::vec3(-1.0f, 1.0f, 8.0f));
 
@@ -240,6 +244,7 @@ namespace Engine {
 		auto crate2_rb = m_registry.emplace<RigidBodyComponent>(m_entities[11], RigidBodyType::Dynamic, crate2Transform);
 		auto  barrel_rb = m_registry.emplace<RigidBodyComponent>(m_entities[12], RigidBodyType::Dynamic, barrelTransform,10.0);
 		auto  enemy1_rb = m_registry.emplace<RigidBodyComponent>(m_entities[13], RigidBodyType::Dynamic, enemy1Transform,5.0);
+		auto  enemy2_rb = m_registry.emplace<RigidBodyComponent>(m_entities[14], RigidBodyType::Dynamic, enemy2Transform,5.0);
 
 
 		//auto slope_rb = m_registry.emplace<RigidBodyComponent>(m_entities[5], RigidBodyType::Static, slopeTransform);
@@ -253,6 +258,7 @@ namespace Engine {
 		m_registry.emplace<BoxColliderComponent>(m_entities[11], crate2_rb, glm::vec3(2.f, 2.f, 2.f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[12], barrel_rb, glm::vec3(1.f, 1.5f, 1.f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[13], enemy1_rb, glm::vec3(1.25f, 0.8f, 2.5f) * 0.5f);
+		m_registry.emplace<BoxColliderComponent>(m_entities[14], enemy2_rb, glm::vec3(1.25f, 0.8f, 2.5f) * 0.5f);
 
 		//m_registry.emplace<BoxColliderComponent>(m_entities[6], tankHead_rb, glm::vec3(2.0f, 0.5f,2.9f) * 0.5f);
 		//auto something = m_registry.emplace<HeightmapCollider>(m_entities[5], slope_rb, 7, 7, -3, 3, heigthData);
@@ -270,6 +276,7 @@ namespace Engine {
 		m_registry.emplace<RenderComponent>(m_entities[12], m_BarrelVAO, barrelMat);
 
 		m_registry.emplace<RenderComponent>(m_entities[13], m_enemyTankVAO, plateMat);
+		m_registry.emplace<RenderComponent>(m_entities[14], m_enemyTankVAO, plateMat);
 		
 		m_registry.emplace<RelationshipComponent>(m_entities[0]);
 		m_registry.emplace<RelationshipComponent>(m_entities[1]);
@@ -289,19 +296,21 @@ namespace Engine {
 		script.create<TankController>(m_entities[1], 5.f, true);
 		
 		//set tank script
-		auto& enemyScript = m_registry.emplace<NativeScriptComponent>(m_entities[13]);
-		enemyScript.create<EnemyTank>(m_entities[13], 1.25f, true , 5);
+		auto& enemy1Script = m_registry.emplace<NativeScriptComponent>(m_entities[13]);
+		auto& enemy2Script = m_registry.emplace<NativeScriptComponent>(m_entities[14]);
+		enemy1Script.create<EnemyTank>(m_entities[13], 1.75f, true, 5);
+		enemy2Script.create<EnemyTank>(m_entities[14], 1.25f, false, 5);
+
+		enemy1_rb.m_body->setUserData(reinterpret_cast<uint32_t*>(13));
+		enemy2_rb.m_body->setUserData(reinterpret_cast<uint32_t*>(14));
+
+		m_registry.emplace<DestroyOnContactComponent>(m_entities[13]);
+		m_registry.emplace<DestroyOnContactComponent>(m_entities[14]);
 
 
-		//set player cam
-
-		
 
 		m_swu3D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_view3D)));
 		m_swu3D["u_projection"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_projection3D)));
-
-
-	
 
 		//framebuffer stuff...
 

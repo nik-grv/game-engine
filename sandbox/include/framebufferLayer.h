@@ -8,6 +8,7 @@
 
 #include "behaviorScripts/tankController.h"
 #include "behaviorScripts/enemyTank.h"
+#include "behaviorScripts/DestroyAutoComponent.h"
 #include <assimpLoader.h>
 
 namespace Engine {
