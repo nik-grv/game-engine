@@ -145,6 +145,9 @@ namespace Engine {
 
 		m_physics->m_world->setGravity(rp3d::Vector3(0.0f, -9.8f, 0.0f));
 		m_physics->m_world->setIsGravityEnabled(true);
+
+		m_audio.reset(new AudioManager());
+		m_audio->start();
 	}
 
 
@@ -351,7 +354,11 @@ namespace Engine {
 			m_layerStack.Update(timestep);
 			m_layerStack.Render();
 			m_window->onUpdate(timestep);
+			glClear(GL_COLOR_BUFFER_BIT);
 
+
+			if (isFirstFrame)
+				isFirstFrame = false;
 		}
 
 	}

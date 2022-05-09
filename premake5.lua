@@ -65,7 +65,17 @@ project "Engine"
 		"vendor/box2d/include",
 		"vendor/lua",
 		"vendor/react3d/include",
+		"vendor/FMOD/core/inc",
+		"vendor/FMOD/fsbank/inc",
+		"vendor/FMOD/studio/inc"
 
+	}
+
+	libdirs
+	{
+		"vendor/FMOD/core/lib/x64",
+		"vendor/FMOD/fsbank/lib/x64",
+		"vendor/FMOD/studio/lib/x64"
 	}
 	
 	links 
@@ -166,6 +176,9 @@ project "Sandbox"
 		"vendor/box2d/include",
 		"vendor/lua",
 		"vendor/react3d/include",
+		"vendor/FMOD/core/inc",
+		"vendor/FMOD/fsbank/inc",
+		"vendor/FMOD/studio/inc"
 
 	}
 

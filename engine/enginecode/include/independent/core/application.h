@@ -56,7 +56,6 @@ namespace Engine {
 
 		EventHandler m_eventHandler; //!< Event handler
 
-		std::shared_ptr< AudioManager> m_audio;//!< audio manager
 		
 		
 		bool onWindowClose(WindowCloseEvent& e); //!<run when window closes
@@ -108,6 +107,8 @@ namespace Engine {
 
 		entt::registry m_registry; //ESC registry whatever that is
 		std::vector<entt::entity> m_entities; //Entities
+		std::shared_ptr< AudioManager> m_audio;//!< audio manager
+
 
 		bool isFirstFrame = true;
 	};
