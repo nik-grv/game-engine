@@ -256,7 +256,10 @@ project "Engine-Editor"
 			"vendor/assimp/include",
 			"vendor/box2d/include",
 			"vendor/lua",
-			"vendor/react3d/include"
+			"vendor/react3d/include",
+            "vendor/FMOD/core/inc",
+            "vendor/FMOD/fsbank/inc",
+            "vendor/FMOD/studio/inc"
 		}
 	
 		links
