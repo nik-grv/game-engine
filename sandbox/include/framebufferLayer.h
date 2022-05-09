@@ -1,23 +1,13 @@
 /** framebufferLayer.h */
 #pragma once
 
-#include <rendering/Renderer3D.h>
-#include <rendering/Renderer2D.h>
-
-#include <rendering/shaderDataType.h>
 #include "engine.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "camera/Camera.h"
-#include <entt/entt.hpp>
-#include "include/independent/components/transform.h"
-#include "include/independent/components/relationship.h"
-#include "include/independent/components/render.h"
-#include "include/independent/components/label.h"
-#include "include/independent/components/rigidBody.h"
+
+#include "behaviorScripts/tankController.h"
 #include <assimpLoader.h>
-#include <rendering/framebuffer.h>
 
 namespace Engine {
 
@@ -27,6 +17,7 @@ namespace Engine {
 		void OnUpdate(float timestep) override;
 		void OnRender() override;
 		void onMouseMoved(MouseMovedEvent& e) override;
+		void onMouseBtnPressed(MouseButtonPressedEvent& e) override;
 		void onKeyPressed(KeyPressedEvent& e) override;
 	private:
 		//vertices adata
@@ -117,14 +108,15 @@ namespace Engine {
 		//
 
 
-		std::shared_ptr<VertexArray> m_VAO1, m_VAO2;
-		std::shared_ptr<VertexBuffer> m_VBO1, m_VBO2;
-		std::shared_ptr<IndexBuffer> m_IBO1, m_IBO2;
+		std::shared_ptr<VertexArray> m_VAO1, m_VAO2, m_VAO3, m_VAO4, m_crateVAO, m_crate2VAO, m_BarrelVAO;
+		std::shared_ptr<VertexBuffer> m_VBO1, m_VBO2, m_VBO3, m_VBO4, m_crateVBO, m_crate2VBO, m_BarrelVBO;
+		std::shared_ptr<IndexBuffer> m_IBO1, m_IBO2, m_IBO3, m_IBO4, m_crateIBO, m_crate2IBO, m_BarrelIBO;
 		std::shared_ptr<ShaderRend> shader;
-		std::shared_ptr<Material> mat1, mat2;
+		std::shared_ptr<Material> mat1, mat2,crateMat, crate2Mat,barrelMat;
 		std::shared_ptr<Material> wireframeMat;
+		std::shared_ptr<Material> plateMat;
 
-		glm::mat4 m_view3D,m_view2D;
+		glm::mat4 m_view3D, m_view2D;
 		glm::mat4 m_projection3D, m_projection2D;
 		using SceneWideUniforms = std::unordered_map<const char*, std::pair<ShaderDataType, void*>>; //!< sceen wide uniform 
 		SceneWideUniforms m_swu3D, m_swu2D;
@@ -136,6 +128,7 @@ namespace Engine {
 		entt::entity m_currentCamera; //Camera thing
 
 		Camera m_camera;
+		std::shared_ptr<FollowPlayer> m_followCam;
 
 		std::shared_ptr<RendererCommands> clearColorAndDepthCommand;
 		std::shared_ptr<RendererCommands> setGlLineCmd;
@@ -154,5 +147,10 @@ namespace Engine {
 		Quad m_screenQuad;
 		SubTexture m_screenTexture;
 		bool usePP = false;
+
+		bool m_isPlayerCam = true;
+
+		GeneralEventListener eventListener;
+
 	};
 }

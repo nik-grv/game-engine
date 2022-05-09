@@ -25,6 +25,8 @@ namespace Engine {
 		void setOffset(glm::vec3 offset); //!< set offset
 		inline glm::mat4 getViewMatrix() const { return m_viewMatrix; } //!< get the view matrix
 		inline glm::vec3 getOffset() const { return m_offset; } //!< get the offset
+		void SetRotation(glm::vec3 rotation);
+		glm::vec3 getPosition();
 	private:
 		float m_deltaTime; //!< time elapsed 
 		glm::mat4& m_playerModel; //!< my player model ref

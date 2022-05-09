@@ -17,7 +17,7 @@ namespace Engine
 		glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 
 		uint32_t colAttachmentCount = 0;
-		for (auto& [type, isSampled] : m_layout)
+		for (auto&[type, isSampled] : m_layout)
 		{
 			if (isSampled)
 			{

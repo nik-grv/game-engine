@@ -57,6 +57,7 @@ namespace Engine
 		std::fstream handle(filePath, std::ios::in);
 		if (handle.is_open())
 		{
+			Log::info("Successfully Loaded Shader File : {0}", filePath);
 			while (getline(handle, line))
 			{
 				if (line.find("#region Vertex") != std::string::npos) { region = Region::Vertex; continue; }
@@ -149,7 +150,6 @@ namespace Engine
 			glDeleteShader(vertexShader);
 			return;
 		}
-
 		GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
 		source = fragmentShaderSrc;
@@ -171,7 +171,6 @@ namespace Engine
 
 			return;
 		}
-
 		m_OpenGL_ID = glCreateProgram();
 		glAttachShader(m_OpenGL_ID, vertexShader);
 		glAttachShader(m_OpenGL_ID, fragmentShader);
@@ -194,7 +193,8 @@ namespace Engine
 
 			return;
 		}
-
+		Log::info("Linking Successful!");
+		Log::info("");
 		glDetachShader(m_OpenGL_ID, vertexShader);
 		glDetachShader(m_OpenGL_ID, fragmentShader);
 
