@@ -31,7 +31,7 @@ namespace Engine
 		virtual void onRender() const;
 		virtual void updatePosition(glm::ivec2& relativePosition) override;
 		glm::ivec2 centre;
-
+		int32_t posX, posY;
 	protected:
 		const char* m_text;
 		glm:: ivec2 m_textPosition;
@@ -40,8 +40,8 @@ namespace Engine
 	class Button : public Label //!< Label that's clickable 
 	{
 	public: 
-		Button(int32_t x, int32_t y, const char* buttonText, std::function<void(void)> onClick) :
-			Label(x,y,buttonText),
+		Button(int32_t x, int32_t y , const char* buttonText, std::function<void(void)> onClick) :
+			Label(x,y, buttonText),
 			m_callback(onClick)
 		{}
 		Button(glm::ivec2 size, const char* buttonText, std::function<void(void)> onClick) :
@@ -50,8 +50,10 @@ namespace Engine
 		{}
 		virtual void onRender() const;
 		virtual void onMouseBtnPressed(glm::ivec2& mousePosition, int32_t button) override;
+		virtual void onMouseMoved(glm::ivec2& mousePosition) override;
 	private:
 		std::function<void(void)> m_callback;
+		bool m_Hover;
 	};
 	
 	class Slider : public Widget

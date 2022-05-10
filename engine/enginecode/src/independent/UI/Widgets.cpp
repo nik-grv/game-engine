@@ -40,7 +40,7 @@ namespace Engine
 	{
 		m_size = glm::ivec2(sizeX, sizeY);
 		m_position = { 0,0 };
-		m_textPosition = { 0,0 };
+		m_textPosition = { 0,0};
 	}
 	void Label::onRender() const
 	{
@@ -58,7 +58,20 @@ namespace Engine
 
 	void Button::onRender() const
 	{
-		Renderer2D::submit(Quad::createCentreHalfExtens(glm::vec2(centre.x,centre.y),glm::vec2(m_size.x * 0.5f,m_size.y * 0.5f)), glm::vec4(0.5, 0.5, 0.5, 1.0));
+		glm::vec4 btnTint;
+		float Btnscale;
+		if (m_Hover)
+		{
+			btnTint = glm::vec4(0.4, 0.4, 0.4, 1.0f);
+			Btnscale = 1.15f;
+		}
+		else
+		{
+			btnTint = glm::vec4(0.6, 0.6, 0.6, 1.0f);
+			Btnscale = 1.f;
+		}
+
+		Renderer2D::submit(Quad::createCentreHalfExtens(glm::vec2(centre.x,centre.y),glm::vec2(m_size.x * 0.5f,m_size.y * 0.5f)* Btnscale), btnTint);
 		Renderer2D::submit(m_text, m_textPosition, glm::vec4(1.f));
 	}
 
@@ -73,6 +86,17 @@ namespace Engine
 			if (clickedOn) m_callback();
 		}
 	}
+	
+	void Button::onMouseMoved(glm::ivec2& mousePosition)
+	{
+		
+			m_Hover=
+				m_position.x <= mousePosition.x && mousePosition.x <= m_position.x + m_size.x &&
+				m_position.y <= mousePosition.y && mousePosition.y <= m_position.y + m_size.y;
+			
+		
+	}
+
 	Slider::Slider(int32_t width, float low, float high, const char* lowText, const char* highText) :
 		m_lowText(lowText),
 		m_highText(highText),

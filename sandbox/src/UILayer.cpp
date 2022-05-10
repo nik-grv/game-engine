@@ -21,23 +21,23 @@ UILayer::UILayer(const char* name) : Layer(name)
 
 	HorizontalContainer top, middle, slider, bottom;
 
-	top.addWidget<Spacer>(100, 10);
-	top.addWidget<Label>(300, 100, "This is Our Tank Game");
+	//top.addWidget<Spacer>(100, 10);
+	top.addWidget<Label>(window->getWidth() - 200, window->getHeight()/2, "This is Our Tank Game");
 
-	middle.addWidget<Spacer>(50, 10);
-	middle.addWidget<Label>(400, 100, "This is a Pause Menu");
+	//middle.addWidget<Label>(400, 100, "This is a Pause Menu");
 
 	//slider.addWidget<Slider>(200, 0, 100, "Low", "High");
 	//slider.addWidget<Spacer>(200, 10);
 	//slider.addWidget<Slider>(200, 25, 75, "Min", "Max");
 
-	bottom.addWidget<Button>(250, 250, "Start ", [&]() { setActive(false); playBtnPressed = true;
+	middle.addWidget<Spacer>(50, 10);
+	bottom.addWidget<Button>(400, 150, "Start ", [&]() { setActive(false); playBtnPressed = true;
 	glfwSetInputMode(reinterpret_cast<GLFWwindow*>(window->getNativewindow()), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		});
-	bottom.addWidget<Spacer>(300, 10);
-	bottom.addWidget<Button>(250, 250, "Quit This Epic Game", [&]() { quitBtnPressed = true; window->close();  });
+	bottom.addWidget<Spacer>(250, 10);
+	bottom.addWidget<Button>(400, 150, "Quit This Epic Game", [&]() { quitBtnPressed = true; window->close();  });
 
-	bottom.addWidget<Spacer>(800, 500);
+	bottom.addWidget<Spacer>(550, 500);
 
 	m_window.addContainer(top);
 	m_window.addContainer(middle);

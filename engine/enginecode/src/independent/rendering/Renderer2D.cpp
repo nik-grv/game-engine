@@ -66,8 +66,8 @@ namespace Engine
 
 		//FONT INIT------
 		//Initialise free type lib
-		const char* fontPath = "./assets/fonts/arial.ttf";
-		int32_t charSize = 25;
+		const char* fontPath = "./assets/fonts/emulogic.ttf";
+		int32_t charSize = 20;
 
 		if (FT_Init_FreeType(&s_data->ftLib))
 		{
