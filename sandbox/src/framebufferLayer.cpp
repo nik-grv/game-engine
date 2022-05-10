@@ -340,7 +340,6 @@ namespace Engine {
 		//set random seed
 		srand(time(NULL));
 		m_spawnTime = rand() % 5 + 1;
-		Log::error("{0}", m_spawnTime);
 	}
 
 
@@ -374,10 +373,10 @@ namespace Engine {
 
 			int randX = rand() % (100 + 1) - 50;
 			int randZ = rand() % (100 + 1) - 50;
-			Log::error("{0} -- {1}", randX ,randZ);
-			registry.emplace<TransformComponent>(enemyTankEntt, glm::vec3(randX, 1.f, randZ), glm::vec3(0), glm::vec3(0.5f)); //ENEMY 2
+
+			registry.emplace<TransformComponent>(enemyTankEntt, glm::vec3(randX, 1.f, randZ), glm::vec3(0), glm::vec3(0.5f)); //ENEMY 
 			auto& enemyTransform = registry.get<TransformComponent>(enemyTankEntt).GetTransform();
-			Log::error("{0},{1},{2}", enemyTransform[3][0], enemyTransform[3][1], enemyTransform[3][2]);
+
 			auto  enemy_rb = registry.emplace<RigidBodyComponent>(enemyTankEntt, RigidBodyType::Dynamic, enemyTransform, 5.0);
 			registry.emplace<BoxColliderComponent>(enemyTankEntt, enemy_rb, glm::vec3(1.25f, 0.8f, 2.5f) * 0.5f);
 			registry.emplace<RenderComponent>(enemyTankEntt, m_enemyTankVAO, plateMat);
