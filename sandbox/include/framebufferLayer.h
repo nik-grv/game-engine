@@ -21,6 +21,8 @@ namespace Engine {
 		void onMouseMoved(MouseMovedEvent& e) override;
 		void onMouseBtnPressed(MouseButtonPressedEvent& e) override;
 		void onKeyPressed(KeyPressedEvent& e) override;
+		int score = 0;
+
 	private:
 		//vertices adata
 		float cubeVertices[8 * 24] = {
@@ -151,7 +153,8 @@ namespace Engine {
 		bool usePP = false;
 
 		bool m_isPlayerCam = true;
-
+		float m_timer = 0.0f;
+		float m_spawnTime = 0.0f;
 		GeneralEventListener eventListener;
 
 	};

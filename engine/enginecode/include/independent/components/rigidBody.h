@@ -1,7 +1,7 @@
 /** \file rigidBody.h */
 #pragma once
 
-#include "engine.h"	//Need to include reactphysics here i think?
+#include "engine.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "systems/log.h"
 
@@ -184,6 +184,11 @@ namespace Engine {
 		bool destroyAuto = true;
 	};
 
+	struct EnemyTankScoreComponent
+	{
+		
+	};
+
 	class GeneralEventListener : public rp3d::EventListener
 	{
 	public:
@@ -219,23 +224,28 @@ namespace Engine {
 			}
 		}
 
-		void actionDestroy()
+		bool actionDestroy()
 		{
 			auto world = Application::getInstance().GetWorld();
 			auto& registry = Application::getInstance().m_registry;
 			auto& entities = Application::getInstance().m_entities;
-
+			bool isEnemy = false;
 			for (auto index : toBeDestroyed)
 			{
 				entt::entity entity = entities[index];
 				if (registry.valid(entity))
 				{
 					auto& rb = registry.get<RigidBodyComponent>(entity);
+					if (!isEnemy)
+						isEnemy = registry.any_of<EnemyTankScoreComponent>(entity);
+
 					world->destroyRigidBody(rb.m_body);
 					registry.destroy(entity);
+
 				}
 			}
 			toBeDestroyed.clear();
+			return isEnemy;
 		}
 	};
 

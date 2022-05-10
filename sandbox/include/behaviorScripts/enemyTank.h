@@ -18,6 +18,13 @@ public:
 		startPos = tc.translation;
 	};
 
+
+	virtual void OnDestroy()
+	{
+		Log::error("DESTROYYYYYYYYY");
+	}
+
+
 	virtual void OnUpdate(float time)
 	{
 		entt::registry& registry = Application::getInstance().m_registry;

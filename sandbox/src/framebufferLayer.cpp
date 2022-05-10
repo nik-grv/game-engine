@@ -189,7 +189,7 @@ namespace Engine {
 		m_registry.emplace<TransformComponent>(m_entities[5], glm::vec3(0, 0.f, -3.2f), glm::vec3(0), glm::vec3(0.125f));//FIRE POINT
 		m_registry.emplace<TransformComponent>(m_entities[2], glm::vec3(10.0f, 20.f, 0), glm::vec3(0), glm::vec3(1));//CUBE
 		m_registry.emplace<TransformComponent>(m_entities[3], glm::vec3(-1.0f, 1.0f, 6.0f), glm::vec3(0), glm::vec3(1));//CAMERA (NOT IN USE)
-		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(100.0f, 1.f, 100.0f));//FLOOR
+		m_registry.emplace<TransformComponent>(m_entities[4], glm::vec3(0, 0.f, 0), glm::vec3(0), glm::vec3(150.0f, 1.f, 150.0f));//FLOOR
 		m_registry.emplace<TransformComponent>(m_entities[8], glm::vec3(-5.0f, 2.f, 0), glm::vec3(0), glm::vec3(0.25f));//CRATE 1 - 1
 		m_registry.emplace<TransformComponent>(m_entities[9], glm::vec3(-5.0f, 5.f, 0), glm::vec3(0), glm::vec3(0.25f));//CRATE 1 - 2
 		m_registry.emplace<TransformComponent>(m_entities[10], glm::vec3(-5.0f, 7.f, 0), glm::vec3(0), glm::vec3(0.25f));//CRATE 1 - 3
@@ -251,7 +251,7 @@ namespace Engine {
 
 		m_registry.emplace<BoxColliderComponent>(m_entities[1], tank_rb, glm::vec3(2.72f, 1.25f, 5.f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[2], cube_rb, glm::vec3(1.0f, 1.f, 1.0f) * 0.5f);
-		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(100.0f, 1.f,100.0f) * 0.5f);
+		m_registry.emplace<BoxColliderComponent>(m_entities[4], floor_rb, glm::vec3(150.0f, 1.f,150.0f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[8], crate_rb1, glm::vec3(2.f, 2.f, 2.f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[9], crate_rb2, glm::vec3(2.f, 2.f, 2.f) * 0.5f);
 		m_registry.emplace<BoxColliderComponent>(m_entities[10], crate_rb3, glm::vec3(2.f, 2.f, 2.f) * 0.5f);
@@ -307,6 +307,9 @@ namespace Engine {
 		m_registry.emplace<DestroyOnContactComponent>(m_entities[13]);
 		m_registry.emplace<DestroyOnContactComponent>(m_entities[14]);
 
+		m_registry.emplace<EnemyTankScoreComponent>(m_entities[13]);
+		m_registry.emplace<EnemyTankScoreComponent>(m_entities[14]);
+
 
 
 		m_swu3D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(m_view3D)));
@@ -333,6 +336,11 @@ namespace Engine {
 
 		auto world = Application::getInstance().GetWorld();
 		world->setEventListener(&eventListener);
+
+		//set random seed
+		srand(time(NULL));
+		m_spawnTime = rand() % 5 + 1;
+		Log::error("{0}", m_spawnTime);
 	}
 
 
@@ -346,7 +354,40 @@ namespace Engine {
 			m_camera.update(timestep);
 		HierarchySystem::UpdateChildren(m_entities[1]);
 
-		eventListener.actionDestroy();
+		if (eventListener.actionDestroy())
+		{
+			score += 50;
+		}
+
+		m_timer += timestep;
+		if (m_timer >= m_spawnTime)
+		{
+			m_spawnTime = rand() % 5 + 1;
+			m_timer = 0.0f;
+
+			entt::registry& registry = Application::getInstance().m_registry;
+			
+			entt::entity enemyTankEntt = registry.create();
+			
+			m_entities.push_back(enemyTankEntt);
+			registry.emplace<LabelComponent>(enemyTankEntt, "Enemy");
+
+			int randX = rand() % (100 + 1) - 50;
+			int randZ = rand() % (100 + 1) - 50;
+			Log::error("{0} -- {1}", randX ,randZ);
+			registry.emplace<TransformComponent>(enemyTankEntt, glm::vec3(randX, 1.f, randZ), glm::vec3(0), glm::vec3(0.5f)); //ENEMY 2
+			auto& enemyTransform = registry.get<TransformComponent>(enemyTankEntt).GetTransform();
+			Log::error("{0},{1},{2}", enemyTransform[3][0], enemyTransform[3][1], enemyTransform[3][2]);
+			auto  enemy_rb = registry.emplace<RigidBodyComponent>(enemyTankEntt, RigidBodyType::Dynamic, enemyTransform, 5.0);
+			registry.emplace<BoxColliderComponent>(enemyTankEntt, enemy_rb, glm::vec3(1.25f, 0.8f, 2.5f) * 0.5f);
+			registry.emplace<RenderComponent>(enemyTankEntt, m_enemyTankVAO, plateMat);
+			auto& enemyScript = registry.emplace<NativeScriptComponent>(enemyTankEntt);
+			enemyScript.create<EnemyTank>(enemyTankEntt, 1.25f, false, 5);
+			enemy_rb.m_body->setUserData(reinterpret_cast<uint32_t*>(m_entities.size() - 1));
+			registry.emplace<DestroyOnContactComponent>(enemyTankEntt);
+			registry.emplace<EnemyTankScoreComponent>(enemyTankEntt);
+			
+		}
 	}
 
 	void FramebufferLayer::OnRender()
@@ -431,7 +472,10 @@ namespace Engine {
 		RendererShared::actionCommand(standardBlend);
 
 		Renderer2D::begin(m_swu2D);
-		Renderer2D::submit("2D Renderer Framebuffer", glm::vec2(500, 500), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		Renderer2D::submit("SCORE : ", glm::vec2(100, 100), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		std::string scoreString = std::to_string(score);
+		const char* score_char = scoreString.c_str();
+		Renderer2D::submit(score_char, glm::vec2(250, 100), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 		Renderer2D::end();
 
 	}

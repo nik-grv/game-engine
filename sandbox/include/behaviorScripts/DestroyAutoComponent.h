@@ -8,13 +8,12 @@ class DestroyAutoComponent : public Engine::NativeScript {
 public:
 	DestroyAutoComponent(entt::entity& entity, float timeToDestroy, int index) : NativeScript(entity), m_time(timeToDestroy), m_index(index)
 	{
-		Log::error("MSGGG");
+
 	};
 
 
 	virtual void OnUpdate(float time)
 	{
-		Log::error("{0}", clock);
 		clock += time;
 		if (clock >= m_time)
 		{
@@ -31,12 +30,6 @@ public:
 			}
 
 		}
-	}
-
-
-	virtual void OnMouseMoved(MouseMovedEvent& e)
-	{
-		Log::error("MOVEDDDDD");
 	}
 
 private:

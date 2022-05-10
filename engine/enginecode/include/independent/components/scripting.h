@@ -25,6 +25,7 @@ namespace Engine {
 		NativeScriptComponent() = default;
 		~NativeScriptComponent() = default;
 		void OnUpdate(float timestep) { m_instance->OnUpdate(timestep); };
+		void OnDestroy() { m_instance->OnDestroy(); };
 		void OnKeyPressed(KeyPressedEvent& e) { m_instance->OnKeyPressed(e); };
 		void OnMouseBtnPressed(MouseButtonPressedEvent& e) { m_instance->OnMouseBtnPressed(e); };
 		void OnMouseMoved(MouseMovedEvent& e) { m_instance->OnMouseMoved(e); };
@@ -41,6 +42,7 @@ namespace Engine {
 	namespace ScriptSystem {
 		void UpdateScripts(float timestep);
 		void OnKeyPressed(KeyPressedEvent& e);
+		void onDestroy();
 		void OnMouseBtnPressed(MouseButtonPressedEvent& e);
 		void OnMouseMoved(MouseMovedEvent& e);
 

@@ -136,7 +136,7 @@ public:
 					projectiel_rb.m_body->setUserData(reinterpret_cast<uint32_t*>(i));
 
 					auto& script = registry.emplace<NativeScriptComponent>(m_entities[i]);
-					script.create<DestroyAutoComponent>(projectileEntity, 5.0f, i);
+					script.create<DestroyAutoComponent>(projectileEntity, 2.5f, i);
 
 					registry.emplace<DestroyOnContactComponent>(projectileEntity);
 				}

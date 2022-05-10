@@ -37,8 +37,8 @@ namespace Engine
 		std::vector<std::shared_ptr<Layer>>::const_iterator end() const { return m_layers.end(); }
 		std::vector<std::shared_ptr<Layer>>::const_reverse_iterator rBegin() const { return m_layers.rbegin(); }
 		std::vector<std::shared_ptr<Layer>>::const_reverse_iterator rEnd() const { return m_layers.rend(); }
-	private:
 		std::vector<std::shared_ptr<Layer>> m_layers;
+	private:
 
 	};
 

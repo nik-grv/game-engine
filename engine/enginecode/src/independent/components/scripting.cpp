@@ -16,6 +16,18 @@ namespace Engine {
 		}
 	}
 
+	void ScriptSystem::onDestroy()
+	{
+		entt::registry& registry = Application::getInstance().m_registry;
+
+		auto scriptView = registry.view<NativeScriptComponent>();
+
+		for (auto entity : scriptView) {
+			auto& nsc = registry.get<NativeScriptComponent>(entity);
+			nsc.OnDestroy();
+		}
+	}
+
 	void ScriptSystem::OnKeyPressed(KeyPressedEvent& e) {
 		entt::registry& registry = Application::getInstance().m_registry;
 
