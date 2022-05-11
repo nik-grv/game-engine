@@ -146,8 +146,8 @@ namespace Engine {
 		m_physics->m_world->setGravity(rp3d::Vector3(0.0f, -9.8f, 0.0f));
 		m_physics->m_world->setIsGravityEnabled(true);
 
-		//m_audio.reset(new AudioManager());
-		//m_audio->start();
+		m_audio.reset(new AudioManager());
+		m_audio->start();
 	}
 
 
